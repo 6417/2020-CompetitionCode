@@ -23,8 +23,14 @@ public class RobotContainer extends Commands {
   private final Joystick driveJoystick = new Joystick(Constants.SINGLE_JOYSTICK);
 
   
+  private JoystickButton controlPanelLiftButton;
+  private JoystickButton controlPanelTurnButton;
 
-
+  private JoystickButton flowForwardButton;
+  private JoystickButton flowReverseButton;  
+  private JoystickButton gripperSoloTurnButton;
+  
+  private JoystickButton throwerEnableButton;
   
 
   public RobotContainer() {
@@ -39,6 +45,35 @@ public class RobotContainer extends Commands {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
+      controlPanelLiftButton = new JoystickButton(driveJoystick, Constants.SJ_CONTROL_PANEL_LIFT_BUTTON_ID);
+      controlPanelTurnButton = new JoystickButton(driveJoystick, Constants.SJ_CONTROL_PANEL_TURN_BUTTON_ID);
+
+      controlPanelTurnButton.whenPressed(turnControlPanelCommand);
+      controlPanelLiftButton.whenPressed(contorlPanelConditionalCommand);
+    }
+
+    if(Constants.IS_GRIPPER_SUBSYSTEM_IN_USE) {
+      gripperSoloTurnButton = new JoystickButton(driveJoystick, Constants.SJ_GRIPPER_SOLO_TURN_BUTTON_ID);
+
+      gripperSoloTurnButton.whenHeld(gripperSoloTurnConditionalCommand);
+    }
+
+    if(Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
+      throwerEnableButton = new JoystickButton(driveJoystick, Constants.SJ_THROWER_ENABLE_BUTTON_ID);
+
+      throwerEnableButton.whenPressed(throwerExtrude);
+    }
+
+    if(Constants.IS_GRIPPER_SUBSYSTEM_IN_USE && Constants.IS_TUNNEL_SUBSYSTEM_IN_USE && Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
+      flowForwardButton = new JoystickButton(driveJoystick, Constants.SJ_FLOW_FORWARD_BUTTON_ID);
+      flowReverseButton = new JoystickButton(driveJoystick, Constants.SJ_FLOW_REVERSE_BUTTON_ID);
+ 
+      flowForwardButton.whenPressed(flowForwardConditionalCommand);
+      flowReverseButton.whenHeld(flowReverseConditionalCommand);
+    }
+
   }
 
 
