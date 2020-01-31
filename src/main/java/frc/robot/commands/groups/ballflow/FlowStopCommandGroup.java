@@ -22,7 +22,7 @@ public class FlowStopCommandGroup extends ParallelCommandGroup {
   /**
    * Creates a new FlowStopRace.
    */
-  public FlowStopCommandGroup(GripperSubsystem gripperSubsystem, TunnelSubsystem tunnelSubsystem, ThrowerSubsystem throwerSubsytem) {
-    super(new GripperRetractCommandGroup(gripperSubsystem), new TunnelStopCommand(tunnelSubsystem), new ThrowerStopCommand(throwerSubsytem));
+  public FlowStopCommandGroup(GripperSubsystem gripperSubsystem, TunnelSubsystem tunnelSubsystem, ThrowerSubsystem throwerSubsystem) {
+    super(new GripperRetractCommandGroup(gripperSubsystem), new TunnelStopCommand(tunnelSubsystem), new ThrowerStopCommand(throwerSubsystem));
   }
 }

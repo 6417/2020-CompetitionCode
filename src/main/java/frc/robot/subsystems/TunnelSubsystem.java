@@ -9,9 +9,12 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Motors;
+import frc.robot.RobotContainer;
+import frc.robot.ShuffleBoard;
 
 public class TunnelSubsystem extends SubsystemBase {
   /**
@@ -27,7 +30,8 @@ public class TunnelSubsystem extends SubsystemBase {
   }
 
   public void runForward() {
-    Motors.tunnel_motor.set(ControlMode.PercentOutput, Constants.TUNNEL_MOTOR_SPEED);
+//    Motors.tunnel_motor.set(ControlMode.PercentOutput, Constants.TUNNEL_MOTOR_SPEED);
+    Motors.tunnel_motor.set(ControlMode.PercentOutput, ShuffleBoard.tunnelMotor.getDouble(0.0));
   }
 
   public void runReverse() {

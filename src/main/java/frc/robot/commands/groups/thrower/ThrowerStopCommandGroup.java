@@ -7,23 +7,20 @@
 
 package frc.robot.commands.groups.thrower;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.thrower.ThrowerExtrudeCommand;
-import frc.robot.commands.vision.VisionAlignCommand;
-import frc.robot.subsystems.DriveSubsystem;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.commands.thrower.ThrowerStopCommand;
+import frc.robot.commands.tunnel.TunnelStopCommand;
 import frc.robot.subsystems.ThrowerSubsystem;
 import frc.robot.subsystems.TunnelSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class ThrowerCommandGroup extends SequentialCommandGroup {
+public class ThrowerStopCommandGroup extends ParallelCommandGroup {
   /**
-   * Creates a new ThrowerCommandGroup.
+   * Creates a new ThrowerStopCommandGroup.
    */
-  public ThrowerCommandGroup(ThrowerSubsystem throwerSubsystem, TunnelSubsystem tunnelSubsystem) {
-    super(new ThrowerExtrudeCommand(throwerSubsystem), new WaitCommand(1), new ThrowerSupplyCommandGroup(tunnelSubsystem, throwerSubsystem));
+  public ThrowerStopCommandGroup(ThrowerSubsystem throwerSubsystem, TunnelSubsystem tunnelSubsystem) {
+    super(new ThrowerStopCommand(throwerSubsystem), new TunnelStopCommand(tunnelSubsystem));
   }
 }

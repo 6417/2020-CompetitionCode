@@ -25,33 +25,33 @@ public final class Constants {
     public static final boolean STEERING_WHEEL_USAGE = false;
 
     /* Subsystems in use */
-    public static final boolean IS_DRIVE_SUBSYSTEM_IN_USE = true;
-    public static final boolean IS_CONTORL_PANEL_SUBSYSTEM_IN_USE = true;
-    public static final boolean IS_PNEUMATICS_SUBSYSTEM_IN_USE = true;
-    public static final boolean IS_GRIPPER_SUBSYSTEM_IN_USE = true;
+    public static final boolean IS_DRIVE_SUBSYSTEM_IN_USE = false;
+    public static final boolean IS_CONTORL_PANEL_SUBSYSTEM_IN_USE = false;
+    public static final boolean IS_PNEUMATICS_SUBSYSTEM_IN_USE = false;
+    public static final boolean IS_GRIPPER_SUBSYSTEM_IN_USE = false;
     public static final boolean IS_THROWER_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_TUNNEL_SUBSYSTEM_IN_USE = true;
-    public static final boolean IS_CLIMBING_SUBSYSTEM_IN_USE = true;
-    public static final boolean IS_VISION_SUBSYSTEM_IN_USE = true;
+    public static final boolean IS_CLIMBING_SUBSYSTEM_IN_USE = false;
+    public static final boolean IS_VISION_SUBSYSTEM_IN_USE = false;
 
     /* PCM CAN ID */
     public static final int PCM_CAN_ID = 20;
 
     /* Motor ID */
-    public static final int MOTOR_DRIVE_FRONT_RIGHT_ID = 1;
-    public static final int MOTOR_DRIVE_FRONT_LEFT_ID = 2;
-    public static final int MOTOR_DRIVE_BACK_RIGHT_ID = 3;
-    public static final int MOTOR_DRIVE_BACK_LEFT_ID = 4;
+    public static final int MOTOR_DRIVE_FRONT_RIGHT_ID = 5;
+    public static final int MOTOR_DRIVE_FRONT_LEFT_ID = 6;
+    public static final int MOTOR_DRIVE_BACK_RIGHT_ID = 7;
+    public static final int MOTOR_DRIVE_BACK_LEFT_ID = 8;
 
     public static final int MOTOR_CONTROL_PANEL_ID = 48;
 
     public static final int MOTOR_GRIPPER_ID = 12;
 
-    public static final int MOTOR_LOWER_THROWER_SHAFT_ID = 5;
-    public static final int MOTOR_UPPER_THROWER_SHAFT_LEFT_ID = 6; 
-    public static final int MOTOR_UPPER_THROWER_SHAFT_RIGHT_ID = 7;
+    public static final int MOTOR_LOWER_THROWER_SHAFT_ID = 3;
+    public static final int MOTOR_UPPER_THROWER_SHAFT_LEFT_ID = 2; 
+    public static final int MOTOR_UPPER_THROWER_SHAFT_RIGHT_ID = 1;
 
-    public static final int MOTOR_TUNNEL_ID = 8;
+    public static final int MOTOR_TUNNEL_ID = 4;
 
     public static final int MOTOR_CLIMBER_LEFT_ID = 9;
     public static final int MOTOR_CLIMBER_RIGHT_ID = 10;
@@ -97,7 +97,7 @@ public final class Constants {
     public static final double GRIPPER_MOTOR_SPEED = 0.3;
     public static final double TUNNEL_MOTOR_SPEED = 0.3;
     public static final double THROWER_MOTOR_REVERSE_SPEED = 0.3;
-    public static final double THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED = 0.48;
+    public static final double THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED = -0.48;
     public static final double THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED = 1.0;
     public static final double CLIMBING_MOTOR_SPEED = 0.5;
 

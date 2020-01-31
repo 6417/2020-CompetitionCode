@@ -63,7 +63,7 @@ public class RobotContainer extends Commands {
     if(Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
       throwerEnableButton = new JoystickButton(driveJoystick, Constants.SJ_THROWER_ENABLE_BUTTON_ID);
 
-      throwerEnableButton.whenPressed(throwerExtrude);
+      throwerEnableButton.whenPressed(throwerCommandGroup);
     }
 
     if(Constants.IS_GRIPPER_SUBSYSTEM_IN_USE && Constants.IS_TUNNEL_SUBSYSTEM_IN_USE && Constants.IS_THROWER_SUBSYSTEM_IN_USE) {

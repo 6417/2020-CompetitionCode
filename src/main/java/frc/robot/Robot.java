@@ -21,6 +21,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private Motors motors;
+  private ShuffleBoard shuffleBoard;
   private RobotContainer m_robotContainer;
 
   /**
@@ -31,6 +32,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    shuffleBoard = new ShuffleBoard();
     motors = new Motors();
     m_robotContainer = new RobotContainer();
 
@@ -58,6 +60,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    CommandScheduler.getInstance().cancelAll();
+    motors.disableAll();
   }
 
   @Override

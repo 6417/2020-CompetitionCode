@@ -76,7 +76,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public boolean isAligned() {
     //TODO return true when target is ready to shoot at
-    return false;
+    return true;
   }
 
 }

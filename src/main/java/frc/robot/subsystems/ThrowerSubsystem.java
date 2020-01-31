@@ -7,13 +7,19 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.ControlType;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Motors;
+import frc.robot.ShuffleBoard;
 
 public class ThrowerSubsystem extends SubsystemBase {
 
   private boolean visionSupport;
+
+  private double setPoint;
 
   /**
    * Creates a new ThrowerSubsystem.
@@ -29,6 +35,12 @@ public class ThrowerSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    SmartDashboard.putNumber("Ampere 775", Motors.thrower_motor_upper_shaft_right.getOutputCurrent());
+    SmartDashboard.putNumber("Votls 775", Motors.thrower_motor_upper_shaft_right.getBusVoltage());
+    ShuffleBoard.shooterVelocity.setDouble(Motors.thrower_encoder_right.getVelocity());
+    setPoint = ShuffleBoard.throwerUpperMotor.getDouble(0)* 2000;
+//    Motors.throwerPIDController.setReference(setPoint, ControlType.kVelocity);
   }
 
   public void turnReverse() {
@@ -40,12 +52,14 @@ public class ThrowerSubsystem extends SubsystemBase {
     if(visionSupport == true) {
 
     } else {
-      Motors.thrower_motor_upper_shaft_right.set(Constants.THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED);
+//      Motors.thrower_motor_upper_shaft_right.set(Constants.THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED);
+      Motors.thrower_motor_upper_shaft_right.set(ShuffleBoard.throwerUpperMotor.getDouble(0.0));
     }
   }
 
   public void enableLowerThrower() {
-    Motors.thrower_motor_lower_shaft.set(Constants.THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED);
+//    Motors.thrower_motor_lower_shaft.set(Constants.THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED);
+    Motors.thrower_motor_lower_shaft.set(ShuffleBoard.throwerLowerMotor.getDouble(0.0));
   }
 
   public void stopThrower() {
@@ -59,6 +73,16 @@ public class ThrowerSubsystem extends SubsystemBase {
 
   public boolean getVisionSupport() {
     return visionSupport;
+  }
+
+  public boolean isrunning() {
+    if(Motors.thrower_motor_upper_shaft_right.get() > 0 || Motors.thrower_motor_upper_shaft_right.get() < 0) {
+      System.out.println("Called True");
+      return true;
+    } else {
+      System.out.println("Called False");
+      return false;
+    }
   }
 
 }

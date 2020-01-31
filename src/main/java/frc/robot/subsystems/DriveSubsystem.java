@@ -7,18 +7,29 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Motors;
 
 public class DriveSubsystem extends SubsystemBase {
+
+  private DifferentialDrive diffdrive;
+
   /**
    * Creates a new DriveSubsystem.
    */
   public DriveSubsystem() {
-
+    diffdrive = new DifferentialDrive(Motors.drive_motor_front_left, Motors.drive_motor_front_right);
+    diffdrive.setRightSideInverted(true);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  
+
+
+
 }

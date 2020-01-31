@@ -7,11 +7,17 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Add your docs here.
@@ -33,6 +39,13 @@ public class Motors {
     public static CANSparkMax thrower_motor_lower_shaft;
     public static CANSparkMax thrower_motor_upper_shaft_left;    
     public static CANSparkMax thrower_motor_upper_shaft_right;
+
+    public static CANEncoder thrower_encoder_left;
+    public static CANEncoder thrower_encoder_right;
+
+    public static CANPIDController throwerPIDController;
+
+    public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
 
     public static CANSparkMax climber_motor_left;
     public static CANSparkMax climber_motor_right;
@@ -72,8 +85,11 @@ public class Motors {
 
             drive_motor_back_right.follow(drive_motor_front_right);
             drive_motor_back_left.follow(drive_motor_front_left);
-
-
+            drive_motor_back_right.setInverted(InvertType.FollowMaster);
+            drive_motor_front_right.setInverted(InvertType.None);
+            drive_motor_back_left.setInverted(InvertType.FollowMaster);
+            drive_motor_front_left.setInverted(InvertType.None);
+            
         }
 
     }
@@ -116,7 +132,33 @@ public class Motors {
             thrower_motor_upper_shaft_right.restoreFactoryDefaults();
 
             thrower_motor_upper_shaft_left.follow(thrower_motor_upper_shaft_right, true);
-                                                                       
+
+            thrower_motor_upper_shaft_left.setIdleMode(IdleMode.kBrake);
+            thrower_motor_upper_shaft_right.setIdleMode(IdleMode.kBrake);
+
+            thrower_encoder_left = thrower_motor_upper_shaft_left.getEncoder();
+            thrower_encoder_right = thrower_motor_upper_shaft_right.getEncoder();
+         
+            throwerPIDController = thrower_motor_upper_shaft_right.getPIDController();
+
+            // PID coefficients
+            kP = 0.00004;
+            kI = 0.000001;
+            kD = 0.0; 
+            kIz = 50.0; 
+            kFF = 0.0; 
+            kMaxOutput = 1; 
+            kMinOutput = -1;
+            maxRPM = 5700;
+
+            // set PID coefficients
+            throwerPIDController.setP(kP);
+            throwerPIDController.setI(kI);
+            throwerPIDController.setD(kD);
+            throwerPIDController.setIZone(kIz);
+            throwerPIDController.setFF(kFF);
+            throwerPIDController.setOutputRange(kMinOutput, kMaxOutput);
+
         }
 
     }
@@ -148,6 +190,39 @@ public class Motors {
             climber_encoder_left = climber_motor_left.getEncoder();
             climber_encoder_right = climber_motor_right.getEncoder();
 
+        }
+
+    }
+
+    public void disableAll() {
+        if(Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
+            drive_motor_back_left.stopMotor();
+            drive_motor_back_right.stopMotor();
+            drive_motor_front_left.stopMotor();
+            drive_motor_front_right.stopMotor();
+        }
+
+        if(Constants.IS_GRIPPER_SUBSYSTEM_IN_USE) {
+            gripper_motor.stopMotor();
+        }
+
+        if(Constants.IS_TUNNEL_SUBSYSTEM_IN_USE) {
+            tunnel_motor.stopMotor();
+        }
+
+        if(Constants.IS_CLIMBING_SUBSYSTEM_IN_USE) {
+            climber_motor_left.stopMotor();
+            climber_motor_right.stopMotor();
+        }
+
+        if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
+            control_panel_motor.stopMotor();
+        }
+
+        if(Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
+            thrower_motor_upper_shaft_right.stopMotor();
+            thrower_motor_upper_shaft_left.stopMotor();
+            thrower_motor_lower_shaft.stopMotor();
         }
 
     }

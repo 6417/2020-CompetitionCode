@@ -17,9 +17,11 @@ import frc.robot.commands.groups.ControlPanelRetractCommandGroup;
 import frc.robot.commands.groups.ballflow.FlowForwardRace;
 import frc.robot.commands.groups.ballflow.FlowReverseRace;
 import frc.robot.commands.groups.ballflow.FlowStopCommandGroup;
-import frc.robot.commands.thrower.ThrowerExtrudeCommand;
+import frc.robot.commands.groups.thrower.ThrowerCommandGroup;
+import frc.robot.commands.groups.thrower.ThrowerStopCommandGroup;
 import frc.robot.commands.vision.ReadVisionDataCommand;
 import frc.robot.subsystems.ControlPanelSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GripperSubsystem;
 import frc.robot.subsystems.ThrowerSubsystem;
 import frc.robot.subsystems.TunnelSubsystem;
@@ -37,43 +39,26 @@ public class Commands {
     // The robot's subsystems and commands are defined here...
     public ControlPanelSubsystem controlPanelSubsystem;
 
-    private ControlPanelExtendCommandGroup controlPanelExtend;
-    private ControlPanelRetractCommandGroup controlPanelRetract;
-
-    private ReadControlPanelFMSData readControlPanelCommand;
-
     protected TurnControlPanelCommand turnControlPanelCommand;
 
     protected ConditionalCommand contorlPanelConditionalCommand;
 
-
-
     public GripperSubsystem gripperSubsystem;
 
-    private GripperForward gripperForwardCommand;
-    private GripperReverse gripperReverseCommand;
-
     protected ConditionalCommand gripperSoloTurnConditionalCommand;
-
-
 
     public TunnelSubsystem tunnelSubsystem;
 
     public ThrowerSubsystem throwerSubsystem;
 
-    protected ThrowerExtrudeCommand throwerExtrude;
-
-    private FlowForwardRace flowForward;
-    private FlowReverseRace flowReverse;
-    private FlowStopCommandGroup flowStop;
+    protected ConditionalCommand throwerCommandGroup;
 
     protected ConditionalCommand flowForwardConditionalCommand;
     protected ConditionalCommand flowReverseConditionalCommand;
 
     public VisionSubsystem visionSubsystem;
-    private ReadVisionDataCommand readVisionData;
 
-    
+    public DriveSubsystem driveSubsystem;
 
     private void initialize() {
 
@@ -82,6 +67,8 @@ public class Commands {
         configGripperCommands();
 
         configTunnelCommands();
+
+        configDriveCommands();
 
         configThrowerCommands();
 
@@ -93,17 +80,16 @@ public class Commands {
 
     private void configControlPanelCommands() {
 
-        if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
+        if (Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
 
             controlPanelSubsystem = new ControlPanelSubsystem();
-            readControlPanelCommand = new ReadControlPanelFMSData(controlPanelSubsystem);
-            controlPanelSubsystem.setDefaultCommand(readControlPanelCommand);
-    
-            controlPanelExtend = new ControlPanelExtendCommandGroup(controlPanelSubsystem);
-            controlPanelRetract = new ControlPanelRetractCommandGroup(controlPanelSubsystem);
-    
-            contorlPanelConditionalCommand = new ConditionalCommand(controlPanelExtend, controlPanelRetract, controlPanelSubsystem::getBottomReed);
-    
+            controlPanelSubsystem.setDefaultCommand(new ReadControlPanelFMSData(controlPanelSubsystem));
+
+            contorlPanelConditionalCommand = new ConditionalCommand(
+                new ControlPanelExtendCommandGroup(controlPanelSubsystem),
+                new ControlPanelRetractCommandGroup(controlPanelSubsystem),
+                controlPanelSubsystem::getBottomReed);
+
             turnControlPanelCommand = new TurnControlPanelCommand(controlPanelSubsystem);
 
         }
@@ -112,14 +98,12 @@ public class Commands {
 
     private void configGripperCommands() {
 
-        if(Constants.IS_GRIPPER_SUBSYSTEM_IN_USE) {
+        if (Constants.IS_GRIPPER_SUBSYSTEM_IN_USE) {
 
             gripperSubsystem = new GripperSubsystem();
 
-            gripperForwardCommand = new GripperForward(gripperSubsystem);
-            gripperReverseCommand = new GripperReverse(gripperSubsystem);
-    
-            gripperSoloTurnConditionalCommand = new ConditionalCommand(gripperReverseCommand, gripperForwardCommand, gripperSubsystem::isTurningForward);
+            gripperSoloTurnConditionalCommand = new ConditionalCommand(new GripperReverse(gripperSubsystem), new GripperForward(gripperSubsystem),
+                    gripperSubsystem::isTurningForward);
 
         }
 
@@ -127,7 +111,7 @@ public class Commands {
 
     private void configTunnelCommands() {
 
-        if(Constants.IS_TUNNEL_SUBSYSTEM_IN_USE) {
+        if (Constants.IS_TUNNEL_SUBSYSTEM_IN_USE) {
 
             tunnelSubsystem = new TunnelSubsystem();
 
@@ -135,28 +119,42 @@ public class Commands {
 
     }
 
-    private void configThrowerCommands() {
+    private void configDriveCommands() {
 
-        if(Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
+        if(Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
 
-            throwerSubsystem = new ThrowerSubsystem();
-
-            throwerExtrude = new ThrowerExtrudeCommand(throwerSubsystem);
+            driveSubsystem = new DriveSubsystem();
 
         }
 
     }
 
+    private void configThrowerCommands() {
+
+        if (Constants.IS_THROWER_SUBSYSTEM_IN_USE && Constants.IS_TUNNEL_SUBSYSTEM_IN_USE) {
+
+            throwerSubsystem = new ThrowerSubsystem();
+
+            throwerCommandGroup = new ConditionalCommand(new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem), new ThrowerCommandGroup(throwerSubsystem, tunnelSubsystem), throwerSubsystem::isrunning);
+
+        }
+        
+
+    }
+
     private void configFlowCommands() {
 
-        if(Constants.IS_TUNNEL_SUBSYSTEM_IN_USE && Constants.IS_GRIPPER_SUBSYSTEM_IN_USE && Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
-            
-            flowForward = new FlowForwardRace(gripperSubsystem, tunnelSubsystem);
-            flowReverse = new FlowReverseRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem);
-            flowStop = new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem);
+        if (Constants.IS_TUNNEL_SUBSYSTEM_IN_USE && Constants.IS_GRIPPER_SUBSYSTEM_IN_USE
+                && Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
 
-            flowForwardConditionalCommand = new ConditionalCommand(flowForward, flowStop, gripperSubsystem::getInsideReed);
-            flowReverseConditionalCommand = new ConditionalCommand(flowReverse, flowStop, gripperSubsystem::getInsideReed);
+            flowForwardConditionalCommand = new ConditionalCommand(
+                    new FlowForwardRace(gripperSubsystem, tunnelSubsystem),
+                    new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
+                    gripperSubsystem::getInsideReed);
+            flowReverseConditionalCommand = new ConditionalCommand(
+                    new FlowReverseRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
+                    new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
+                    gripperSubsystem::getInsideReed);
 
         }
 
@@ -164,10 +162,10 @@ public class Commands {
 
     private void configVisionCommands() {
 
-        if(Constants.IS_VISION_SUBSYSTEM_IN_USE) {
-            
+        if (Constants.IS_VISION_SUBSYSTEM_IN_USE) {
+
             visionSubsystem = new VisionSubsystem();
-            visionSubsystem.setDefaultCommand(readVisionData);
+            visionSubsystem.setDefaultCommand(new ReadVisionDataCommand(visionSubsystem));
 
         }
 
