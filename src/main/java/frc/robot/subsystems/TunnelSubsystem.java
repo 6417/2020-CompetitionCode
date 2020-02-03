@@ -9,11 +9,10 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
-import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Motors;
-import frc.robot.RobotContainer;
 import frc.robot.ShuffleBoard;
 
 public class TunnelSubsystem extends SubsystemBase {
@@ -21,7 +20,7 @@ public class TunnelSubsystem extends SubsystemBase {
    * Creates a new TunnelSubsystem.
    */
   public TunnelSubsystem() {
-
+    super.addChild("Tunnel Motor", Motors.tunnel_motor);
   }
 
   @Override
@@ -40,6 +39,12 @@ public class TunnelSubsystem extends SubsystemBase {
 
   public void stopTunnel() {
     Motors.tunnel_motor.stopMotor();
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    // TODO Auto-generated method stub
+    super.initSendable(builder);
   }
 
 }
