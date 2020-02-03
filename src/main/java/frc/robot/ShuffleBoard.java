@@ -8,7 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -39,6 +38,11 @@ public class ShuffleBoard {
     public static NetworkTableEntry shooterVelocity =
         tab.add("Shooter Velocity", 0)
         .withWidget(BuiltInWidgets.kGraph)
+        .getEntry();
+
+    public static NetworkTableEntry gripperMotor =
+        tab.add("Gripper Velocity", 0)
+        .withWidget(BuiltInWidgets.kNumberSlider)
         .getEntry();
 
 }

@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -20,8 +21,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer extends Commands {
   // The robot's subsystems and commands are defined here...
-  private final Joystick driveJoystick = new Joystick(Constants.SINGLE_JOYSTICK);
-
+  public static final Joystick driveJoystick = new Joystick(Constants.SINGLE_JOYSTICK);
   
   private JoystickButton controlPanelLiftButton;
   private JoystickButton controlPanelTurnButton;

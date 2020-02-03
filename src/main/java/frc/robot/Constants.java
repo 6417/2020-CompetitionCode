@@ -28,8 +28,8 @@ public final class Constants {
     public static final boolean IS_DRIVE_SUBSYSTEM_IN_USE = false;
     public static final boolean IS_CONTORL_PANEL_SUBSYSTEM_IN_USE = false;
     public static final boolean IS_PNEUMATICS_SUBSYSTEM_IN_USE = false;
-    public static final boolean IS_GRIPPER_SUBSYSTEM_IN_USE = false;
-    public static final boolean IS_THROWER_SUBSYSTEM_IN_USE = true;
+    public static final boolean IS_GRIPPER_SUBSYSTEM_IN_USE = true;
+    public static final boolean IS_THROWER_SUBSYSTEM_IN_USE = false;
     public static final boolean IS_TUNNEL_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_CLIMBING_SUBSYSTEM_IN_USE = false;
     public static final boolean IS_VISION_SUBSYSTEM_IN_USE = false;
@@ -40,12 +40,12 @@ public final class Constants {
     /* Motor ID */
     public static final int MOTOR_DRIVE_FRONT_RIGHT_ID = 5;
     public static final int MOTOR_DRIVE_FRONT_LEFT_ID = 6;
-    public static final int MOTOR_DRIVE_BACK_RIGHT_ID = 7;
+    public static final int MOTOR_DRIVE_BACK_RIGHT_ID = 12;
     public static final int MOTOR_DRIVE_BACK_LEFT_ID = 8;
 
     public static final int MOTOR_CONTROL_PANEL_ID = 48;
 
-    public static final int MOTOR_GRIPPER_ID = 12;
+    public static final int MOTOR_GRIPPER_ID = 7;
 
     public static final int MOTOR_LOWER_THROWER_SHAFT_ID = 3;
     public static final int MOTOR_UPPER_THROWER_SHAFT_LEFT_ID = 2; 
@@ -66,7 +66,7 @@ public final class Constants {
     public static final int GRIPPER_SOLENOID_RETRACT_ID = 5;
 
     /* Sensors */
-    public static final I2C.Port CONTROL_PANEL_COLOR_SENSOR_I2C_ID = I2C.Port.kOnboard;
+    public static final I2C.Port CONTROL_PANEL_COLOR_SENSOR_I2C_PORT = I2C.Port.kOnboard;
 
     public static final int CONTROL_PANEL_LIFT_BOTTOM_REED_DI_ID = 0;
     public static final int CONTROL_PANEL_LIFT_TOP_REED_DI_ID = 1;

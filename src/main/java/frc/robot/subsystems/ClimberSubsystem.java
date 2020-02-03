@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Motors;
@@ -16,7 +17,8 @@ public class ClimberSubsystem extends SubsystemBase {
    * Creates a new ClimberSubsystem.
    */
   public ClimberSubsystem() {
-
+    super.addChild("Climber Motor Right", Motors.climber_motor_right);
+    super.addChild("Climber Motor Left", Motors.climber_motor_left);
   }
 
   @Override
@@ -34,6 +36,12 @@ public class ClimberSubsystem extends SubsystemBase {
 
   public double getHeight() {
     return Motors.climber_encoder_right.getPosition();
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.addDoubleProperty("Height", () -> getHeight(), ticks -> setHeight((int)ticks));
+    builder.addDoubleProperty("Speed", () -> Motors.climber_motor_right.get(), speed -> Motors.climber_motor_right.set(speed));
   }
 
 }

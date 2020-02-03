@@ -7,8 +7,7 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.ControlType;
-
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -18,6 +17,9 @@ import frc.robot.ShuffleBoard;
 public class ThrowerSubsystem extends SubsystemBase {
 
   private boolean visionSupport;
+
+  private final SlewRateLimiter throwerLimiter = new SlewRateLimiter(3);
+  private double upperSpeed;
 
   private double setPoint;
 
@@ -30,6 +32,10 @@ public class ThrowerSubsystem extends SubsystemBase {
     } else {
       visionSupport = false;
     }
+
+    super.addChild("Thrower Upper Left Motor", Motors.thrower_motor_upper_shaft_left);
+    super.addChild("Thrower Upper Right Motor", Motors.thrower_motor_upper_shaft_right);
+    super.addChild("Thrower Lower Motor", Motors.thrower_motor_lower_shaft);
   }
 
   @Override
@@ -37,7 +43,7 @@ public class ThrowerSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     SmartDashboard.putNumber("Ampere 775", Motors.thrower_motor_upper_shaft_right.getOutputCurrent());
-    SmartDashboard.putNumber("Votls 775", Motors.thrower_motor_upper_shaft_right.getBusVoltage());
+    SmartDashboard.putNumber("Volts 775", Motors.thrower_motor_upper_shaft_right.getBusVoltage());
     ShuffleBoard.shooterVelocity.setDouble(Motors.thrower_encoder_right.getVelocity());
     setPoint = ShuffleBoard.throwerUpperMotor.getDouble(0)* 2000;
 //    Motors.throwerPIDController.setReference(setPoint, ControlType.kVelocity);
@@ -53,7 +59,8 @@ public class ThrowerSubsystem extends SubsystemBase {
 
     } else {
 //      Motors.thrower_motor_upper_shaft_right.set(Constants.THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED);
-      Motors.thrower_motor_upper_shaft_right.set(ShuffleBoard.throwerUpperMotor.getDouble(0.0));
+      upperSpeed = throwerLimiter.calculate(ShuffleBoard.throwerUpperMotor.getDouble(0.0));
+      Motors.thrower_motor_upper_shaft_right.set(upperSpeed);
     }
   }
 

@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -18,6 +19,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import ch.team6417.motorcontroller.FridoCANSparkMax;
 
 /**
  * Add your docs here.
@@ -36,9 +39,9 @@ public class Motors {
 
     public static WPI_TalonSRX tunnel_motor;
 
-    public static CANSparkMax thrower_motor_lower_shaft;
-    public static CANSparkMax thrower_motor_upper_shaft_left;    
-    public static CANSparkMax thrower_motor_upper_shaft_right;
+    public static FridoCANSparkMax thrower_motor_lower_shaft;
+    public static FridoCANSparkMax thrower_motor_upper_shaft_left;    
+    public static FridoCANSparkMax thrower_motor_upper_shaft_right;
 
     public static CANEncoder thrower_encoder_left;
     public static CANEncoder thrower_encoder_right;
@@ -47,8 +50,8 @@ public class Motors {
 
     public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM;
 
-    public static CANSparkMax climber_motor_left;
-    public static CANSparkMax climber_motor_right;
+    public static FridoCANSparkMax climber_motor_left;
+    public static FridoCANSparkMax climber_motor_right;
 
     public static CANEncoder climber_encoder_right;
     public static CANEncoder climber_encoder_left;
@@ -81,7 +84,10 @@ public class Motors {
             drive_motor_front_right.configFactoryDefault();
             drive_motor_front_left.configFactoryDefault();
             drive_motor_back_right.configFactoryDefault();
-            drive_motor_back_left.configFactoryDefault();            
+            drive_motor_back_left.configFactoryDefault();     
+            
+            drive_motor_front_right.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
+            drive_motor_front_left.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
 
             drive_motor_back_right.follow(drive_motor_front_right);
             drive_motor_back_left.follow(drive_motor_front_left);
@@ -123,9 +129,9 @@ public class Motors {
 
         if(Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
 
-            thrower_motor_lower_shaft = new CANSparkMax(Constants.MOTOR_LOWER_THROWER_SHAFT_ID, MotorType.kBrushless);
-            thrower_motor_upper_shaft_left = new CANSparkMax(Constants.MOTOR_UPPER_THROWER_SHAFT_LEFT_ID, MotorType.kBrushless);
-            thrower_motor_upper_shaft_right = new CANSparkMax(Constants.MOTOR_UPPER_THROWER_SHAFT_RIGHT_ID, MotorType.kBrushless);
+            thrower_motor_lower_shaft = new FridoCANSparkMax(Constants.MOTOR_LOWER_THROWER_SHAFT_ID, MotorType.kBrushless);
+            thrower_motor_upper_shaft_left = new FridoCANSparkMax(Constants.MOTOR_UPPER_THROWER_SHAFT_LEFT_ID, MotorType.kBrushless);
+            thrower_motor_upper_shaft_right = new FridoCANSparkMax(Constants.MOTOR_UPPER_THROWER_SHAFT_RIGHT_ID, MotorType.kBrushless);
             
             thrower_motor_lower_shaft.restoreFactoryDefaults();
             thrower_motor_upper_shaft_left.restoreFactoryDefaults();
@@ -179,8 +185,8 @@ public class Motors {
 
         if(Constants.IS_CLIMBING_SUBSYSTEM_IN_USE) {
 
-            climber_motor_left = new CANSparkMax(Constants.MOTOR_CLIMBER_LEFT_ID, MotorType.kBrushless);
-            climber_motor_right = new CANSparkMax(Constants.MOTOR_CLIMBER_RIGHT_ID, MotorType.kBrushless);
+            climber_motor_left = new FridoCANSparkMax(Constants.MOTOR_CLIMBER_LEFT_ID, MotorType.kBrushless);
+            climber_motor_right = new FridoCANSparkMax(Constants.MOTOR_CLIMBER_RIGHT_ID, MotorType.kBrushless);
 
             climber_motor_left.restoreFactoryDefaults();
             climber_motor_right.restoreFactoryDefaults();

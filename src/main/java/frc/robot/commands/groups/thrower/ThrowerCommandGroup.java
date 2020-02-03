@@ -10,11 +10,8 @@ package frc.robot.commands.groups.thrower;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.thrower.ThrowerExtrudeCommand;
-import frc.robot.commands.vision.VisionAlignCommand;
-import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ThrowerSubsystem;
 import frc.robot.subsystems.TunnelSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
