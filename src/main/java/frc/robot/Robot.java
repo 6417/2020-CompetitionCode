@@ -10,6 +10,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -120,5 +121,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+
+    if(RobotContainer.driveJoystick.getRawButton(1)) {
+      Motors.gripper_motor.set(RobotContainer.driveJoystick.getThrottle() * 1);
+//      Motors.thrower_motor_lower_shaft.set(-RobotContainer.driveJoystick.getThrottle() * 0.5);
+//      Motors.thrower_motor_upper_shaft_left.set(-RobotContainer.driveJoystick.getThrottle() * 0.5);
+      Motors.tunnel_motor.set(RobotContainer.driveJoystick.getThrottle() * 1);
+    } else {
+      Motors.gripper_motor.stopMotor();
+      Motors.tunnel_motor.stopMotor();
+      Motors.thrower_motor_upper_shaft_right.stopMotor();
+      Motors.thrower_motor_lower_shaft.stopMotor();
+    } 
+
+    SmartDashboard.putNumber("GripperSpeed", Motors.gripper_motor.get());
+
   }
 }

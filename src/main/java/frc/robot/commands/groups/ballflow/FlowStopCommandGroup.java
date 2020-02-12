@@ -24,5 +24,6 @@ public class FlowStopCommandGroup extends ParallelCommandGroup {
    */
   public FlowStopCommandGroup(GripperSubsystem gripperSubsystem, TunnelSubsystem tunnelSubsystem, ThrowerSubsystem throwerSubsystem) {
     super(new GripperRetractCommandGroup(gripperSubsystem), new TunnelStopCommand(tunnelSubsystem), new ThrowerStopCommand(throwerSubsystem));
+    System.out.println("Flow Stop Command Group initialized");
   }
 }

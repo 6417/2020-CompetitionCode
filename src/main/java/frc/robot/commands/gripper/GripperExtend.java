@@ -27,5 +27,6 @@ public class GripperExtend extends InstantCommand {
   @Override
   public void initialize() {
     m_subsystem.extendGripper();
+    System.out.println("Gripper Extended");
   }
 }

@@ -22,39 +22,40 @@ import edu.wpi.first.wpilibj.I2C;
 public final class Constants {
 
     /* Joystick usage */
-    public static final boolean STEERING_WHEEL_USAGE = false;
+    public static boolean STEERING_WHEEL_USAGE = true;
+    public static boolean TEST_ROBOT = false; //changes the initialisation of the Motor Contorllers and add the type to the controller groups
 
     /* Subsystems in use */
-    public static final boolean IS_DRIVE_SUBSYSTEM_IN_USE = false;
+    public static final boolean IS_DRIVE_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_CONTORL_PANEL_SUBSYSTEM_IN_USE = false;
-    public static final boolean IS_PNEUMATICS_SUBSYSTEM_IN_USE = false;
+    public static final boolean IS_PNEUMATICS_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_GRIPPER_SUBSYSTEM_IN_USE = true;
-    public static final boolean IS_THROWER_SUBSYSTEM_IN_USE = false;
+    public static final boolean IS_THROWER_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_TUNNEL_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_CLIMBING_SUBSYSTEM_IN_USE = false;
     public static final boolean IS_VISION_SUBSYSTEM_IN_USE = false;
 
     /* PCM CAN ID */
-    public static final int PCM_CAN_ID = 20;
+    public static final int PCM_CAN_ID = 30;
 
     /* Motor ID */
-    public static final int MOTOR_DRIVE_FRONT_RIGHT_ID = 5;
-    public static final int MOTOR_DRIVE_FRONT_LEFT_ID = 6;
-    public static final int MOTOR_DRIVE_BACK_RIGHT_ID = 12;
-    public static final int MOTOR_DRIVE_BACK_LEFT_ID = 8;
+    public static final int MOTOR_DRIVE_FRONT_RIGHT_ID = 12;
+    public static final int MOTOR_DRIVE_FRONT_LEFT_ID = 10;
+    public static final int MOTOR_DRIVE_BACK_RIGHT_ID = 13;
+    public static final int MOTOR_DRIVE_BACK_LEFT_ID = 11;
 
-    public static final int MOTOR_CONTROL_PANEL_ID = 48;
+    public static final int MOTOR_CONTROL_PANEL_ID = 16;
 
-    public static final int MOTOR_GRIPPER_ID = 7;
+    public static final int MOTOR_GRIPPER_ID = 14;
 
-    public static final int MOTOR_LOWER_THROWER_SHAFT_ID = 3;
-    public static final int MOTOR_UPPER_THROWER_SHAFT_LEFT_ID = 2; 
-    public static final int MOTOR_UPPER_THROWER_SHAFT_RIGHT_ID = 1;
+    public static final int MOTOR_LOWER_THROWER_SHAFT_ID = 21;
+    public static final int MOTOR_UPPER_THROWER_SHAFT_LEFT_ID = 23; 
+    public static final int MOTOR_UPPER_THROWER_SHAFT_RIGHT_ID = 22;
 
-    public static final int MOTOR_TUNNEL_ID = 4;
+    public static final int MOTOR_TUNNEL_ID = 15;
 
-    public static final int MOTOR_CLIMBER_LEFT_ID = 9;
-    public static final int MOTOR_CLIMBER_RIGHT_ID = 10;
+    public static final int MOTOR_CLIMBER_LEFT_ID = 24;
+    public static final int MOTOR_CLIMBER_RIGHT_ID = 25;
 
     /* Solenoid Ports */
     public static final int CONTROL_PANEL_LIFT_SOLENOID_EXTEND_ID = 0;
@@ -74,8 +75,8 @@ public final class Constants {
     public static final int CONTROL_PANEL_DAMPING_FRONT_REED_DI_ID = 3;
 
     /* Joystick Port */
-    public static final int JOYSTICK_STEER_ID = 0;
-    public static final int JOYSTICK_DRIVE_ID = 1;
+    public static final int JOYSTICK_STEER_ID = 1;
+    public static final int JOYSTICK_DRIVE_ID = 0;
 
     public static final int SINGLE_JOYSTICK = 0;
 

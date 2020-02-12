@@ -29,6 +29,7 @@ public class GripperReverse extends CommandBase {
     if(m_subsystem.getInsideReed()) {
       m_subsystem.setCancel(true);
     }
+    System.out.println("Gripper Reverse Command initialized");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

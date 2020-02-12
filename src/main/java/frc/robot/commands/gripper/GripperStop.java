@@ -27,5 +27,6 @@ public class GripperStop extends InstantCommand {
   @Override
   public void initialize() {
     m_subsystem.stopGripper();
+    System.out.println("Gripper stopped");
   }
 }

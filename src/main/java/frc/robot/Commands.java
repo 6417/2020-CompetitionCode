@@ -10,8 +10,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import frc.robot.commands.controlpanel.ReadControlPanelFMSData;
 import frc.robot.commands.controlpanel.TurnControlPanelCommand;
-import frc.robot.commands.gripper.GripperForward;
-import frc.robot.commands.gripper.GripperReverse;
 import frc.robot.commands.groups.ControlPanelExtendCommandGroup;
 import frc.robot.commands.groups.ControlPanelRetractCommandGroup;
 import frc.robot.commands.groups.ballflow.FlowForwardRace;
@@ -55,6 +53,7 @@ public class Commands {
 
     protected ConditionalCommand flowForwardConditionalCommand;
     protected ConditionalCommand flowReverseConditionalCommand;
+    protected FlowStopCommandGroup flowStopCommandGroup;
 
     public VisionSubsystem visionSubsystem;
 
@@ -102,8 +101,8 @@ public class Commands {
 
             gripperSubsystem = new GripperSubsystem();
 
-            gripperSoloTurnConditionalCommand = new ConditionalCommand(new GripperReverse(gripperSubsystem), new GripperForward(gripperSubsystem),
-                    gripperSubsystem::isTurningForward);
+//            gripperSoloTurnConditionalCommand = new ConditionalCommand(new GripperReverse(gripperSubsystem), new GripperForward(gripperSubsystem),
+//                    gripperSubsystem::isTurningForward);
 
         }
 
@@ -145,16 +144,17 @@ public class Commands {
     private void configFlowCommands() {
 
         if (Constants.IS_TUNNEL_SUBSYSTEM_IN_USE && Constants.IS_GRIPPER_SUBSYSTEM_IN_USE
-                && Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
+                && Constants.IS_THROWER_SUBSYSTEM_IN_USE && false == false) { //TODO change Statement for Flow commands
 
             flowForwardConditionalCommand = new ConditionalCommand(
-                    new FlowForwardRace(gripperSubsystem, tunnelSubsystem),
                     new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
-                    gripperSubsystem::getInsideReed);
+                    new FlowForwardRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
+                    gripperSubsystem::isTurningForward);
             flowReverseConditionalCommand = new ConditionalCommand(
-                    new FlowReverseRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
                     new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
-                    gripperSubsystem::getInsideReed);
+                    new FlowReverseRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
+                    gripperSubsystem::isTurningReverse);
+            flowStopCommandGroup = new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem);
 
         }
 

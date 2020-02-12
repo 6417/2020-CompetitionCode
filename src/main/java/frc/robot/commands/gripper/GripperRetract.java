@@ -27,5 +27,6 @@ public class GripperRetract extends InstantCommand {
   @Override
   public void initialize() {
     m_subsystem.retractGripper();
+    System.out.println("Gripper Retract initialized");
   }
 }

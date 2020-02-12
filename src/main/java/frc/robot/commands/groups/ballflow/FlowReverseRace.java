@@ -24,5 +24,6 @@ public class FlowReverseRace extends ParallelRaceGroup {
    */
   public FlowReverseRace(GripperSubsystem gripperSubsystem, TunnelSubsystem tunnelSubsystem, ThrowerSubsystem throwerSubsystem) {
     super(new GripperReverseCommandGroup(gripperSubsystem), new TunnelSouthCommand(tunnelSubsystem), new ThrowerRevertCommand(throwerSubsystem));
+    System.out.println("Flow Reverse Race activated");
   }
 }

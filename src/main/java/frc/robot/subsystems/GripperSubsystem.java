@@ -67,16 +67,33 @@ public class GripperSubsystem extends SubsystemBase {
   }
 
   public boolean getInsideReed() {
-    return Motors.gripper_motor.isRevLimitSwitchClosed() == 1;
+//    return Motors.gripper_motor.isRevLimitSwitchClosed() == 0;
+    return false;
   }
 
   public boolean isTurningForward() {
     if(Motors.gripper_motor.get() > 0) {
+      System.out.println("Gripper Motor returned true");
       return true;
     } else if(Motors.gripper_motor.get() < 0) {
+      System.out.println("Gripper Motor returned false");
       return false;
     } else {
-      throw new IllegalArgumentException("Motor isnt turning");
+      return false;
+      //      throw new IllegalArgumentException("Motor isnt turning");
+    }
+  }
+
+  public boolean isTurningReverse() {
+    if(Motors.gripper_motor.get() > 0) {
+      System.out.println("Gripper Motor returned false");
+      return false;
+    } else if(Motors.gripper_motor.get() < 0) {
+      System.out.println("Gripper Motor returned true");
+      return true;
+    } else {
+      return false;
+      //      throw new IllegalArgumentException("Motor isnt turning");
     }
   }
 }

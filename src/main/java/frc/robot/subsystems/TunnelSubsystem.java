@@ -29,8 +29,8 @@ public class TunnelSubsystem extends SubsystemBase {
   }
 
   public void runForward() {
-//    Motors.tunnel_motor.set(ControlMode.PercentOutput, Constants.TUNNEL_MOTOR_SPEED);
-    Motors.tunnel_motor.set(ControlMode.PercentOutput, ShuffleBoard.tunnelMotor.getDouble(0.0));
+    Motors.tunnel_motor.set(ControlMode.PercentOutput, Constants.TUNNEL_MOTOR_SPEED);
+//    Motors.tunnel_motor.set(ControlMode.PercentOutput, ShuffleBoard.tunnelMotor.getDouble(0.0));
   }
 
   public void runReverse() {

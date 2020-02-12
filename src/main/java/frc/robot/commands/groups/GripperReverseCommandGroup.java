@@ -22,5 +22,6 @@ public class GripperReverseCommandGroup extends SequentialCommandGroup {
    */
   public GripperReverseCommandGroup(GripperSubsystem subsystem) {
     super(new GripperExtend(subsystem), new WaitCommand(1), new GripperReverse(subsystem));
+    System.out.println("Gripper Reverse Command Group called");
   }
 }

@@ -28,7 +28,9 @@ public class GripperForward extends CommandBase {
   public void initialize() {
     if(m_subsystem.getInsideReed()) {
       m_subsystem.setCancel(true);
+      System.out.println("Gripper Forward Command canceled");
     }
+    System.out.println("Gripper Forward Command initialized called");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

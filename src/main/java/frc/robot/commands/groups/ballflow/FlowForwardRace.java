@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.commands.groups.GripperForwardCommandGroup;
 import frc.robot.commands.tunnel.TunnelNorthCommand;
 import frc.robot.subsystems.GripperSubsystem;
+import frc.robot.subsystems.ThrowerSubsystem;
 import frc.robot.subsystems.TunnelSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -20,7 +21,8 @@ public class FlowForwardRace extends ParallelRaceGroup {
   /**
    * Creates a new FlowForwardRace.
    */
-  public FlowForwardRace(GripperSubsystem gripperSubsystem, TunnelSubsystem tunnelSubsystem) {
+  public FlowForwardRace(GripperSubsystem gripperSubsystem, TunnelSubsystem tunnelSubsystem, ThrowerSubsystem throwerSubsystem) {
     super(new GripperForwardCommandGroup(gripperSubsystem), new TunnelNorthCommand(tunnelSubsystem));
+    System.out.println("Flow Forward Race activated");
   }
 }

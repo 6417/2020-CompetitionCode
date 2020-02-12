@@ -7,19 +7,17 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
-import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import ch.team6417.motorcontroller.FridoCANSparkMax;
+import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
 /**
  * Add your docs here.
@@ -27,10 +25,18 @@ import ch.team6417.motorcontroller.FridoCANSparkMax;
 public class Motors {
 
     /* Motor declarations */
-    public static WPI_TalonSRX drive_motor_front_right;
-    public static WPI_TalonSRX drive_motor_front_left;
-    public static WPI_TalonSRX drive_motor_back_right;
-    public static WPI_TalonSRX drive_motor_back_left;
+    public static FridoCANSparkMax drive_motor_front_right;
+    public static FridoCANSparkMax drive_motor_front_left;
+    public static FridoCANSparkMax drive_motor_back_right;
+    public static FridoCANSparkMax drive_motor_back_left;
+
+    public static WPI_TalonSRX talon_drive_motor_front_right;
+    public static WPI_TalonSRX talon_drive_motor_front_left;
+    public static WPI_TalonSRX talon_drive_motor_back_right;
+    public static WPI_TalonSRX talon_drive_motor_back_left;
+
+    public static SpeedControllerGroup leftMotors;
+    public static SpeedControllerGroup rightMotors;
 
     public static WPI_TalonSRX control_panel_motor;
 
@@ -74,29 +80,53 @@ public class Motors {
     private void configDriveMotors() {
         
         if(Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
+            if(Constants.TEST_ROBOT) {
+                talon_drive_motor_front_right = new WPI_TalonSRX(7);
+                talon_drive_motor_front_left = new WPI_TalonSRX(6);
+                talon_drive_motor_back_right = new WPI_TalonSRX(4);
+                talon_drive_motor_back_left = new WPI_TalonSRX(5);
+    
+                talon_drive_motor_front_right.configFactoryDefault();
+                talon_drive_motor_front_left.configFactoryDefault();
+                talon_drive_motor_back_right.configFactoryDefault();
+                talon_drive_motor_back_left.configFactoryDefault();    
+                
+                talon_drive_motor_front_right.setNeutralMode(NeutralMode.Brake);
+                talon_drive_motor_front_left.setNeutralMode(NeutralMode.Brake);
+                talon_drive_motor_back_right.setNeutralMode(NeutralMode.Brake);
+                talon_drive_motor_back_left.setNeutralMode(NeutralMode.Brake);    
+    
+                talon_drive_motor_back_right.follow(talon_drive_motor_front_right);
+                talon_drive_motor_back_left.follow(talon_drive_motor_front_left);
+                talon_drive_motor_back_right.setInverted(false);
+                talon_drive_motor_back_left.setInverted(false);
+    
+                leftMotors = new SpeedControllerGroup(talon_drive_motor_front_left, talon_drive_motor_back_left);
+                rightMotors = new SpeedControllerGroup(talon_drive_motor_front_right, talon_drive_motor_back_right);
+            } else {
+                drive_motor_front_right = new FridoCANSparkMax(Constants.MOTOR_DRIVE_FRONT_RIGHT_ID, MotorType.kBrushless);
+                drive_motor_front_left = new FridoCANSparkMax(Constants.MOTOR_DRIVE_FRONT_LEFT_ID, MotorType.kBrushless);
+                drive_motor_back_right = new FridoCANSparkMax(Constants.MOTOR_DRIVE_BACK_RIGHT_ID, MotorType.kBrushless);
+                drive_motor_back_left = new FridoCANSparkMax(Constants.MOTOR_DRIVE_BACK_LEFT_ID, MotorType.kBrushless);
 
-            drive_motor_front_right = new WPI_TalonSRX(Constants.MOTOR_DRIVE_FRONT_RIGHT_ID);
-            drive_motor_front_left = new WPI_TalonSRX(Constants.MOTOR_DRIVE_FRONT_LEFT_ID);
-            drive_motor_back_right = new WPI_TalonSRX(Constants.MOTOR_DRIVE_BACK_RIGHT_ID);
-            drive_motor_back_left = new WPI_TalonSRX(Constants.MOTOR_DRIVE_BACK_LEFT_ID);
+                drive_motor_front_right.restoreFactoryDefaults();
+                drive_motor_front_left.restoreFactoryDefaults();
+                drive_motor_back_right.restoreFactoryDefaults();
+                drive_motor_back_left.restoreFactoryDefaults();   
+                
+                drive_motor_front_right.setIdleMode(IdleMode.kBrake);
+                drive_motor_front_left.setIdleMode(IdleMode.kBrake);
+                drive_motor_back_right.setIdleMode(IdleMode.kBrake);
+                drive_motor_back_left.setIdleMode(IdleMode.kBrake); 
 
-            drive_motor_front_right.configFactoryDefault();
-            drive_motor_front_left.configFactoryDefault();
-            drive_motor_back_right.configFactoryDefault();
-            drive_motor_back_left.configFactoryDefault();     
+                drive_motor_back_right.follow(drive_motor_front_right, false);
+                drive_motor_back_left.follow(drive_motor_front_left, false);
+
+                leftMotors = new SpeedControllerGroup(drive_motor_front_left, drive_motor_back_left);
+                rightMotors = new SpeedControllerGroup(drive_motor_front_right, drive_motor_back_right);
             
-            drive_motor_front_right.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-            drive_motor_front_left.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder);
-
-            drive_motor_back_right.follow(drive_motor_front_right);
-            drive_motor_back_left.follow(drive_motor_front_left);
-            drive_motor_back_right.setInverted(InvertType.FollowMaster);
-            drive_motor_front_right.setInverted(InvertType.None);
-            drive_motor_back_left.setInverted(InvertType.FollowMaster);
-            drive_motor_front_left.setInverted(InvertType.None);
-            
+           }
         }
-
     }
 
     private void configContorlPanelMotors() {
@@ -129,19 +159,19 @@ public class Motors {
         if(Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
 
             thrower_motor_lower_shaft = new FridoCANSparkMax(Constants.MOTOR_LOWER_THROWER_SHAFT_ID, MotorType.kBrushless);
-            thrower_motor_upper_shaft_left = new FridoCANSparkMax(Constants.MOTOR_UPPER_THROWER_SHAFT_LEFT_ID, MotorType.kBrushless);
+//            thrower_motor_upper_shaft_left = new FridoCANSparkMax(Constants.MOTOR_UPPER_THROWER_SHAFT_LEFT_ID, MotorType.kBrushless);
             thrower_motor_upper_shaft_right = new FridoCANSparkMax(Constants.MOTOR_UPPER_THROWER_SHAFT_RIGHT_ID, MotorType.kBrushless);
             
             thrower_motor_lower_shaft.restoreFactoryDefaults();
-            thrower_motor_upper_shaft_left.restoreFactoryDefaults();
+//            thrower_motor_upper_shaft_left.restoreFactoryDefaults();
             thrower_motor_upper_shaft_right.restoreFactoryDefaults();
 
-            thrower_motor_upper_shaft_left.follow(thrower_motor_upper_shaft_right, true);
+//            thrower_motor_upper_shaft_left.follow(thrower_motor_upper_shaft_right, true);
 
-            thrower_motor_upper_shaft_left.setIdleMode(IdleMode.kBrake);
+//            thrower_motor_upper_shaft_left.setIdleMode(IdleMode.kBrake);
             thrower_motor_upper_shaft_right.setIdleMode(IdleMode.kBrake);
 
-            thrower_encoder_left = thrower_motor_upper_shaft_left.getEncoder();
+//            thrower_encoder_left = thrower_motor_upper_shaft_left.getEncoder();
             thrower_encoder_right = thrower_motor_upper_shaft_right.getEncoder();
          
             throwerPIDController = thrower_motor_upper_shaft_right.getPIDController();
@@ -201,10 +231,8 @@ public class Motors {
 
     public void disableAll() {
         if(Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
-            drive_motor_back_left.stopMotor();
-            drive_motor_back_right.stopMotor();
-            drive_motor_front_left.stopMotor();
-            drive_motor_front_right.stopMotor();
+            leftMotors.stopMotor();
+            rightMotors.stopMotor();
         }
 
         if(Constants.IS_GRIPPER_SUBSYSTEM_IN_USE) {
@@ -226,7 +254,7 @@ public class Motors {
 
         if(Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
             thrower_motor_upper_shaft_right.stopMotor();
-            thrower_motor_upper_shaft_left.stopMotor();
+//            thrower_motor_upper_shaft_left.stopMotor();
             thrower_motor_lower_shaft.stopMotor();
         }
 

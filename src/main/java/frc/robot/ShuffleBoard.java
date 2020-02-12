@@ -45,4 +45,9 @@ public class ShuffleBoard {
         .withWidget(BuiltInWidgets.kNumberSlider)
         .getEntry();
 
+    public static NetworkTableEntry joystick =
+        tab.add("Steering Wheel Joystick", true)
+        .withWidget(BuiltInWidgets.kToggleButton)
+        .getEntry();
+
 }

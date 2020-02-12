@@ -9,7 +9,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -21,7 +20,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer extends Commands {
   // The robot's subsystems and commands are defined here...
-  public static final Joystick driveJoystick = new Joystick(Constants.SINGLE_JOYSTICK);
+  public static Joystick driveJoystick;
+  public static Joystick steerJoystick;
   
   private JoystickButton controlPanelLiftButton;
   private JoystickButton controlPanelTurnButton;
@@ -35,6 +35,7 @@ public class RobotContainer extends Commands {
 
   public RobotContainer() {
     // Configure the button bindings
+    configureJoysticks();
     configureButtonBindings();
   }
 
@@ -44,6 +45,16 @@ public class RobotContainer extends Commands {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
+
+  private void configureJoysticks() {
+    if(Constants.STEERING_WHEEL_USAGE) {
+      driveJoystick = new Joystick(Constants.JOYSTICK_DRIVE_ID);
+      steerJoystick = new Joystick(Constants.JOYSTICK_STEER_ID);
+    } else {
+      driveJoystick = new Joystick(Constants.SINGLE_JOYSTICK);
+    }
+  }
+
   private void configureButtonBindings() {
 
     if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
@@ -55,9 +66,9 @@ public class RobotContainer extends Commands {
     }
 
     if(Constants.IS_GRIPPER_SUBSYSTEM_IN_USE) {
-      gripperSoloTurnButton = new JoystickButton(driveJoystick, Constants.SJ_GRIPPER_SOLO_TURN_BUTTON_ID);
+//      gripperSoloTurnButton = new JoystickButton(driveJoystick, Constants.SJ_GRIPPER_SOLO_TURN_BUTTON_ID);
 
-      gripperSoloTurnButton.whenHeld(gripperSoloTurnConditionalCommand);
+//      gripperSoloTurnButton.whenHeld(gripperSoloTurnConditionalCommand);
     }
 
     if(Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
@@ -66,12 +77,14 @@ public class RobotContainer extends Commands {
       throwerEnableButton.whenPressed(throwerCommandGroup);
     }
 
-    if(Constants.IS_GRIPPER_SUBSYSTEM_IN_USE && Constants.IS_TUNNEL_SUBSYSTEM_IN_USE && Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
+    //TODO change Statement for flow commands
+    if(false == false && Constants.IS_GRIPPER_SUBSYSTEM_IN_USE && Constants.IS_TUNNEL_SUBSYSTEM_IN_USE && Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
       flowForwardButton = new JoystickButton(driveJoystick, Constants.SJ_FLOW_FORWARD_BUTTON_ID);
       flowReverseButton = new JoystickButton(driveJoystick, Constants.SJ_FLOW_REVERSE_BUTTON_ID);
  
       flowForwardButton.whenPressed(flowForwardConditionalCommand);
       flowReverseButton.whenHeld(flowReverseConditionalCommand);
+      flowReverseButton.whenReleased(flowStopCommandGroup);
     }
 
   }
