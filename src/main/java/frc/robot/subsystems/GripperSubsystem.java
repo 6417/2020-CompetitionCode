@@ -72,13 +72,17 @@ public class GripperSubsystem extends SubsystemBase {
   }
 
   public boolean isTurningForward() {
-    if(Motors.gripper_motor.get() > 0) {
+    if(Motors.gripper_motor.getMotorOutputVoltage() < 0) {
       System.out.println("Gripper Motor returned true");
       return true;
-    } else if(Motors.gripper_motor.get() < 0) {
+    } else if(Motors.gripper_motor.getMotorOutputVoltage() > 0) {
       System.out.println("Gripper Motor returned false");
       return false;
+    } else if(Motors.gripper_motor.getMotorOutputVoltage() == 0) {
+      System.out.println("Gripper Motor not turning");
+      return false;
     } else {
+      System.out.println("Gripper Motor return default");
       return false;
       //      throw new IllegalArgumentException("Motor isnt turning");
     }

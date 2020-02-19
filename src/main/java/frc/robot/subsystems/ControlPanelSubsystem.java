@@ -162,7 +162,7 @@ public class ControlPanelSubsystem extends SubsystemBase {
     setSensorPos(0, 30);;
   }
 
-  public void setSpeed(final double speed) {
+  public void setSpeed(double speed) {
     Motors.control_panel_motor.set(ControlMode.PercentOutput, speed);
   }
 
@@ -237,11 +237,11 @@ public class ControlPanelSubsystem extends SubsystemBase {
 
   /* Getters and Setters */
   public boolean getBottomReed() {
-    return Motors.control_panel_motor.isFwdLimitSwitchClosed() == 1;
+    return Motors.control_panel_motor.isFwdLimitSwitchClosed() == 0;
   }
 
   public boolean getFrontReed() {
-    return Motors.control_panel_motor.isRevLimitSwitchClosed() == 1;
+    return Motors.control_panel_motor.isRevLimitSwitchClosed() == 0;
   }
 
   public void setCancel(boolean cancel) {

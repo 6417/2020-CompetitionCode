@@ -22,17 +22,17 @@ import edu.wpi.first.wpilibj.I2C;
 public final class Constants {
 
     /* Joystick usage */
-    public static boolean STEERING_WHEEL_USAGE = true;
-    public static boolean TEST_ROBOT = false; //changes the initialisation of the Motor Contorllers and add the type to the controller groups
+    public static boolean STEERING_WHEEL_USAGE = false;
+    public static final boolean TEST_ROBOT = false; //changes the initialisation of the Motor Contorllers and add the type to the controller groups
 
     /* Subsystems in use */
     public static final boolean IS_DRIVE_SUBSYSTEM_IN_USE = true;
-    public static final boolean IS_CONTORL_PANEL_SUBSYSTEM_IN_USE = false;
+    public static final boolean IS_CONTORL_PANEL_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_PNEUMATICS_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_GRIPPER_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_THROWER_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_TUNNEL_SUBSYSTEM_IN_USE = true;
-    public static final boolean IS_CLIMBING_SUBSYSTEM_IN_USE = false;
+    public static final boolean IS_CLIMBING_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_VISION_SUBSYSTEM_IN_USE = false;
 
     /* PCM CAN ID */
@@ -58,10 +58,10 @@ public final class Constants {
     public static final int MOTOR_CLIMBER_RIGHT_ID = 25;
 
     /* Solenoid Ports */
-    public static final int CONTROL_PANEL_LIFT_SOLENOID_EXTEND_ID = 0;
-    public static final int CONTROL_PANEL_LIFT_SOLENOID_RETRACT_ID = 1;
-    public static final int CONTROL_PANEL_DAMPING_SOLENOID_EXTEND_ID = 2;
-    public static final int CONTROL_PANEL_DAMPING_SOLENOID_RETRACT_ID = 3;
+    public static final int CONTROL_PANEL_LIFT_SOLENOID_EXTEND_ID = 2;
+    public static final int CONTROL_PANEL_LIFT_SOLENOID_RETRACT_ID = 3;
+    public static final int CONTROL_PANEL_DAMPING_SOLENOID_EXTEND_ID = 0;
+    public static final int CONTROL_PANEL_DAMPING_SOLENOID_RETRACT_ID = 1;
 
     public static final int GRIPPER_SOLENOID_EXTEND_ID = 4;
     public static final int GRIPPER_SOLENOID_RETRACT_ID = 5;
@@ -89,6 +89,8 @@ public final class Constants {
     public static final int SJ_GRIPPER_SOLO_TURN_BUTTON_ID = 5;
     public static final int SJ_THROWER_ENABLE_BUTTON_ID = 6;
 
+    public static final int ENABLE_CLIMB_BUTTON = 12;
+
     /* Joystick Button Ports for Steeringwheel setup */
 
     
@@ -99,7 +101,9 @@ public final class Constants {
     public static final double TUNNEL_MOTOR_SPEED = 0.3;
     public static final double THROWER_MOTOR_REVERSE_SPEED = 0.3;
     public static final double THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED = -0.48;
-    public static final double THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED = 1.0;
+    public static final double THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED = 0.9;
     public static final double CLIMBING_MOTOR_SPEED = 0.5;
+
+    public static final double CLIMBER_LEVEL_SAFETY_TICKS = 10;
 
 }

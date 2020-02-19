@@ -5,42 +5,32 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.climber;
+package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 
-public class ClimbUPCommand extends CommandBase {
+public class DriveCommand extends CommandBase {
 
-  private final ClimberSubsystem m_subsystem;
-
-  private DriveSubsystem m_driveSubsystem;
+  private final DriveSubsystem m_driveSubsystem;
 
   /**
-   * Creates a new ClimbUPCommand.
+   * Creates a new DriveCommand.
    */
-  public ClimbUPCommand(ClimberSubsystem subsystem, DriveSubsystem driveSubsystem) {
-    m_subsystem = subsystem;
+  public DriveCommand(DriveSubsystem driveSubsystem) {
     m_driveSubsystem = driveSubsystem;
 
-    addRequirements(m_subsystem, driveSubsystem);
+    addRequirements(m_driveSubsystem);
   }
 
-  public ClimbUPCommand(ClimberSubsystem subsystem) {
-    m_subsystem = subsystem;
-
-    addRequirements(m_subsystem);
-  }
-
-  // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_subsystem.climb();
+  public void execute() {
+    m_driveSubsystem.arcadeDrive();
   }
+  
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

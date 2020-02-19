@@ -58,16 +58,16 @@ public class ThrowerSubsystem extends SubsystemBase {
     if(visionSupport == true) {
 
     } else {
-//      Motors.thrower_motor_upper_shaft_right.set(Constants.THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED);
-      upperSpeed = throwerLimiter.calculate(ShuffleBoard.throwerUpperMotor.getDouble(0.0));
+//      upperSpeed = throwerLimiter.calculate(ShuffleBoard.throwerUpperMotor.getDouble(0.0));
+      upperSpeed = throwerLimiter.calculate(Constants.THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED);
       Motors.thrower_motor_upper_shaft_right.set(upperSpeed);
     }
   }
 
   public void enableLowerThrower() {
-//    Motors.thrower_motor_lower_shaft.set(Constants.THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED);
-    Motors.thrower_motor_lower_shaft.set(ShuffleBoard.throwerLowerMotor.getDouble(0.0));
-  }
+    Motors.thrower_motor_lower_shaft.set(Constants.THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED);
+//    Motors.thrower_motor_lower_shaft.set(ShuffleBoard.throwerLowerMotor.getDouble(0.0));
+}
 
   public void stopThrower() {
     Motors.thrower_motor_lower_shaft.stopMotor();

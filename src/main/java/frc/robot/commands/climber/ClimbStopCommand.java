@@ -5,22 +5,27 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.groups;
+package frc.robot.commands.climber;
 
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.commands.gripper.GripperExtend;
-import frc.robot.commands.gripper.GripperReverse;
-import frc.robot.subsystems.GripperSubsystem;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class GripperReverseCommandGroup extends SequentialCommandGroup {
-  /**
-   * Creates a new GripperReverseCommandGroup.
-   */
-  public GripperReverseCommandGroup(GripperSubsystem subsystem) {
-    super(new GripperExtend(subsystem), new WaitCommand(1), new GripperReverse(subsystem));
+public class ClimbStopCommand extends InstantCommand {
+
+  private ClimberSubsystem m_subsystem;
+
+  public ClimbStopCommand(ClimberSubsystem subsystem) {
+    m_subsystem = subsystem;
+
+    addRequirements(m_subsystem);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    m_subsystem.stopClimber();
   }
 }

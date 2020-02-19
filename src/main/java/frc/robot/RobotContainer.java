@@ -31,6 +31,8 @@ public class RobotContainer extends Commands {
   private JoystickButton gripperSoloTurnButton;
   
   private JoystickButton throwerEnableButton;
+
+  private JoystickButton enableClimb;
   
 
   public RobotContainer() {
@@ -85,6 +87,13 @@ public class RobotContainer extends Commands {
       flowForwardButton.whenPressed(flowForwardConditionalCommand);
       flowReverseButton.whenHeld(flowReverseConditionalCommand);
       flowReverseButton.whenReleased(flowStopCommandGroup);
+    }
+
+    if(Constants.IS_CLIMBING_SUBSYSTEM_IN_USE) {
+      enableClimb = new JoystickButton(driveJoystick, Constants.ENABLE_CLIMB_BUTTON);
+
+      enableClimb.whileHeld(climbUPCommand, false);
+      enableClimb.whenReleased(climbStopCommand);
     }
 
   }

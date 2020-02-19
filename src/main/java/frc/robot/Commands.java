@@ -8,8 +8,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import frc.robot.commands.climber.ClimbStopCommand;
+import frc.robot.commands.climber.ClimbUPCommand;
 import frc.robot.commands.controlpanel.ReadControlPanelFMSData;
 import frc.robot.commands.controlpanel.TurnControlPanelCommand;
+import frc.robot.commands.drive.DriveCommand;
 import frc.robot.commands.groups.ControlPanelExtendCommandGroup;
 import frc.robot.commands.groups.ControlPanelRetractCommandGroup;
 import frc.robot.commands.groups.ballflow.FlowForwardRace;
@@ -18,9 +21,11 @@ import frc.robot.commands.groups.ballflow.FlowStopCommandGroup;
 import frc.robot.commands.groups.thrower.ThrowerCommandGroup;
 import frc.robot.commands.groups.thrower.ThrowerStopCommandGroup;
 import frc.robot.commands.vision.ReadVisionDataCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ControlPanelSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GripperSubsystem;
+import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.ThrowerSubsystem;
 import frc.robot.subsystems.TunnelSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -34,7 +39,9 @@ public class Commands {
         initialize();
     }
 
-    // The robot's subsystems and commands are defined here...
+    // The robot's subsystems and commands are defined here..
+    public static PneumaticsSubsystem pneumaticsSubsystem;
+    
     public ControlPanelSubsystem controlPanelSubsystem;
 
     protected TurnControlPanelCommand turnControlPanelCommand;
@@ -59,7 +66,16 @@ public class Commands {
 
     public DriveSubsystem driveSubsystem;
 
+    protected DriveCommand driveCommand;
+
+    public ClimberSubsystem climberSubsystem;
+
+    protected ClimbUPCommand climbUPCommand;
+    protected ClimbStopCommand climbStopCommand;
+
     private void initialize() {
+
+        configPneumatics();
 
         configControlPanelCommands();
 
@@ -74,6 +90,18 @@ public class Commands {
         configFlowCommands();
 
         configVisionCommands();
+
+        configClimbCommands();
+
+    }
+
+    private void configPneumatics() {
+
+        if(Constants.IS_PNEUMATICS_SUBSYSTEM_IN_USE) {
+
+            pneumaticsSubsystem = new PneumaticsSubsystem();
+
+        }
 
     }
 
@@ -124,6 +152,10 @@ public class Commands {
 
             driveSubsystem = new DriveSubsystem();
 
+            driveCommand = new DriveCommand(driveSubsystem);
+
+            driveSubsystem.setDefaultCommand(driveCommand);
+
         }
 
     }
@@ -146,6 +178,7 @@ public class Commands {
         if (Constants.IS_TUNNEL_SUBSYSTEM_IN_USE && Constants.IS_GRIPPER_SUBSYSTEM_IN_USE
                 && Constants.IS_THROWER_SUBSYSTEM_IN_USE && false == false) { //TODO change Statement for Flow commands
 
+            flowStopCommandGroup = new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem);
             flowForwardConditionalCommand = new ConditionalCommand(
                     new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
                     new FlowForwardRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
@@ -154,7 +187,6 @@ public class Commands {
                     new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
                     new FlowReverseRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
                     gripperSubsystem::isTurningReverse);
-            flowStopCommandGroup = new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem);
 
         }
 
@@ -166,6 +198,24 @@ public class Commands {
 
             visionSubsystem = new VisionSubsystem();
             visionSubsystem.setDefaultCommand(new ReadVisionDataCommand(visionSubsystem));
+
+        }
+
+    }
+
+    private void configClimbCommands() {
+
+        if(Constants.IS_CLIMBING_SUBSYSTEM_IN_USE && Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
+
+            climberSubsystem = new ClimberSubsystem();
+            climbUPCommand = new ClimbUPCommand(climberSubsystem, driveSubsystem);
+            climbStopCommand = new ClimbStopCommand(climberSubsystem);
+
+        } else if(Constants.IS_CLIMBING_SUBSYSTEM_IN_USE) {
+
+            climberSubsystem = new ClimberSubsystem();
+            climbUPCommand = new ClimbUPCommand(climberSubsystem);
+            climbStopCommand = new ClimbStopCommand(climberSubsystem);
 
         }
 

@@ -126,15 +126,16 @@ public class Robot extends TimedRobot {
       Motors.gripper_motor.set(RobotContainer.driveJoystick.getThrottle() * 1);
 //      Motors.thrower_motor_lower_shaft.set(-RobotContainer.driveJoystick.getThrottle() * 0.5);
 //      Motors.thrower_motor_upper_shaft_left.set(-RobotContainer.driveJoystick.getThrottle() * 0.5);
-      Motors.tunnel_motor.set(RobotContainer.driveJoystick.getThrottle() * 1);
+      Motors.tunnel_motor.set(RobotContainer.driveJoystick.getThrottle() * 0.6);
     } else {
       Motors.gripper_motor.stopMotor();
       Motors.tunnel_motor.stopMotor();
-      Motors.thrower_motor_upper_shaft_right.stopMotor();
-      Motors.thrower_motor_lower_shaft.stopMotor();
+//      Motors.thrower_motor_upper_shaft_right.stopMotor();
+//      Motors.thrower_motor_lower_shaft.stopMotor();
     } 
 
     SmartDashboard.putNumber("GripperSpeed", Motors.gripper_motor.get());
-
+    SmartDashboard.putNumber("Joystick Max Speed", ShuffleBoard.joystickMaxSpeed.getDouble(1));
+    SmartDashboard.putBoolean("Pressure Switch", Commands.pneumaticsSubsystem.getPreasureSwitchValue());
   }
 }

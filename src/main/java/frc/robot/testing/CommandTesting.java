@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.commands.controlpanel.DamperExtendCommand;
 import frc.robot.commands.controlpanel.DamperRetractCommand;
@@ -32,12 +33,26 @@ import frc.robot.commands.thrower.ThrowerSupplyCommand;
 import frc.robot.commands.tunnel.TunnelNorthCommand;
 import frc.robot.commands.tunnel.TunnelSouthCommand;
 import frc.robot.commands.tunnel.TunnelStopCommand;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.ControlPanelSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GripperSubsystem;
+import frc.robot.subsystems.PneumaticsSubsystem;
+import frc.robot.subsystems.ThrowerSubsystem;
+import frc.robot.subsystems.TunnelSubsystem;
 
 /**
  * Add your docs here.
  */
 public class CommandTesting {
+
+    private PneumaticsSubsystem pneumaticsSubsystem;
+    private ControlPanelSubsystem controlPanelSubsystem;
+    private GripperSubsystem gripperSubsystem;
+    private DriveSubsystem driveSubsystem;
+    private ThrowerSubsystem throwerSubsystem;
+    private TunnelSubsystem tunnelSubsystem;
+    private ClimberSubsystem climberSubsystem;
 
     private DamperExtendCommand damperExtendCommand;
     private DamperRetractCommand damperRetractCommand;
@@ -170,7 +185,7 @@ public class CommandTesting {
     }
 
     private void initializePossibleCommandGroups() {
-
+        
     }
 
 }   

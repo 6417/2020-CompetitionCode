@@ -8,15 +8,16 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.revrobotics.CANDigitalInput;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
+import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import ch.team6417.motorcontroller.FridoCANSparkMax;
-import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
 /**
@@ -58,8 +59,18 @@ public class Motors {
     public static FridoCANSparkMax climber_motor_left;
     public static FridoCANSparkMax climber_motor_right;
 
+    public static CANPIDController climberPIDLeft;
+    public static CANPIDController climberPIDRight;
+
+    private double kPclimber, kIclimber, kDclimber, kIzclimber, kFFclimber, kMaxOutputclimber, kMinOutputclimber, maxRPMclimber;
+
     public static CANEncoder climber_encoder_right;
     public static CANEncoder climber_encoder_left;
+
+    public static CANDigitalInput left_limit;
+    public static CANDigitalInput right_limit;
+
+    private PowerDistributionPanel pdp = new PowerDistributionPanel();
 
     public Motors() {
 
@@ -159,19 +170,19 @@ public class Motors {
         if(Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
 
             thrower_motor_lower_shaft = new FridoCANSparkMax(Constants.MOTOR_LOWER_THROWER_SHAFT_ID, MotorType.kBrushless);
-//            thrower_motor_upper_shaft_left = new FridoCANSparkMax(Constants.MOTOR_UPPER_THROWER_SHAFT_LEFT_ID, MotorType.kBrushless);
+            thrower_motor_upper_shaft_left = new FridoCANSparkMax(Constants.MOTOR_UPPER_THROWER_SHAFT_LEFT_ID, MotorType.kBrushless);
             thrower_motor_upper_shaft_right = new FridoCANSparkMax(Constants.MOTOR_UPPER_THROWER_SHAFT_RIGHT_ID, MotorType.kBrushless);
             
             thrower_motor_lower_shaft.restoreFactoryDefaults();
-//            thrower_motor_upper_shaft_left.restoreFactoryDefaults();
+            thrower_motor_upper_shaft_left.restoreFactoryDefaults();
             thrower_motor_upper_shaft_right.restoreFactoryDefaults();
 
-//            thrower_motor_upper_shaft_left.follow(thrower_motor_upper_shaft_right, true);
+            thrower_motor_upper_shaft_left.follow(thrower_motor_upper_shaft_right, true);
 
-//            thrower_motor_upper_shaft_left.setIdleMode(IdleMode.kBrake);
+            thrower_motor_upper_shaft_left.setIdleMode(IdleMode.kBrake);
             thrower_motor_upper_shaft_right.setIdleMode(IdleMode.kBrake);
 
-//            thrower_encoder_left = thrower_motor_upper_shaft_left.getEncoder();
+            thrower_encoder_left = thrower_motor_upper_shaft_left.getEncoder();
             thrower_encoder_right = thrower_motor_upper_shaft_right.getEncoder();
          
             throwerPIDController = thrower_motor_upper_shaft_right.getPIDController();
@@ -220,11 +231,48 @@ public class Motors {
             climber_motor_left.restoreFactoryDefaults();
             climber_motor_right.restoreFactoryDefaults();
 
-            climber_motor_left.follow(climber_motor_right, true);
+            climber_motor_left.setIdleMode(IdleMode.kBrake);
+            climber_motor_right.setIdleMode(IdleMode.kBrake);
+
+            climberPIDLeft = climber_motor_left.getPIDController();
+            climberPIDRight = climber_motor_right.getPIDController();
 
             climber_encoder_left = climber_motor_left.getEncoder();
             climber_encoder_right = climber_motor_right.getEncoder();
 
+            // PID coefficients
+            kPclimber = 0.0002; 
+            kIclimber = 0;
+            kDclimber = 0; 
+            kIzclimber = 0; 
+            kFFclimber = 0.000; 
+            kMaxOutputclimber = 0.7; 
+            kMinOutputclimber = -0.7;
+            maxRPMclimber = 5700;
+
+            // set PID coefficients
+            climberPIDLeft.setP(kPclimber);
+            climberPIDLeft.setI(kIclimber);
+            climberPIDLeft.setD(kDclimber);
+            climberPIDLeft.setIZone(kIzclimber);
+            climberPIDLeft.setFF(kFFclimber);
+            climberPIDLeft.setOutputRange(kMinOutputclimber, kMaxOutputclimber);
+
+            // set PID coefficients
+            climberPIDRight.setP(kPclimber);
+            climberPIDRight.setI(kIclimber);
+            climberPIDRight.setD(kDclimber);
+            climberPIDRight.setIZone(kIzclimber);
+            climberPIDRight.setFF(kFFclimber);
+            climberPIDRight.setOutputRange(kMinOutputclimber, kMaxOutputclimber);
+
+
+            //Config Limits
+            left_limit = climber_motor_left.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+            right_limit = climber_motor_right.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+
+            left_limit.enableLimitSwitch(false);
+            right_limit.enableLimitSwitch(false);
         }
 
     }

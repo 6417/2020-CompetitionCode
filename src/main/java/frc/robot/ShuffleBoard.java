@@ -46,8 +46,13 @@ public class ShuffleBoard {
         .getEntry();
 
     public static NetworkTableEntry joystick =
-        tab.add("Steering Wheel Joystick", true)
+        tab.add("Steering Wheel Joystick", false)
         .withWidget(BuiltInWidgets.kToggleButton)
+        .getEntry();
+
+        public static NetworkTableEntry joystickMaxSpeed =
+        tab.add("Joystick Max Speed", 1)
+        .withWidget(BuiltInWidgets.kNumberSlider)
         .getEntry();
 
 }

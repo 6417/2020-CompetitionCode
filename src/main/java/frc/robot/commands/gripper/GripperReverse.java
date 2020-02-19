@@ -17,8 +17,8 @@ public class GripperReverse extends CommandBase {
   /**
    * Creates a new GripperReverse.
    */
-  public GripperReverse(GripperSubsystem subsytem) {
-    m_subsystem = subsytem;
+  public GripperReverse(GripperSubsystem subsystem) {
+    m_subsystem = subsystem;
 
     addRequirements(m_subsystem);
   }
@@ -26,32 +26,12 @@ public class GripperReverse extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(m_subsystem.getInsideReed()) {
-      m_subsystem.setCancel(true);
-    }
-    System.out.println("Gripper Reverse Command initialized");
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    if(m_subsystem.getCancel() == true) {
-      cancel();
-    } else {
-      m_subsystem.setBackwards();
-    }
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    m_subsystem.setCancel(false);
-    m_subsystem.stopGripper();
+    m_subsystem.setBackwards();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
