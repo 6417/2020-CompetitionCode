@@ -149,6 +149,8 @@ public class Motors {
             control_panel_motor.configFactoryDefault();
 
             control_panel_motor.setNeutralMode(NeutralMode.Brake);
+
+            control_panel_motor.setSensorPhase(true);
         }
 
     }
@@ -243,7 +245,7 @@ public class Motors {
             // PID coefficients
             kPclimber = 0.0002; 
             kIclimber = 0;
-            kDclimber = 0; 
+            kDclimber = 0.0001; 
             kIzclimber = 0; 
             kFFclimber = 0.000; 
             kMaxOutputclimber = 0.7; 
@@ -268,11 +270,11 @@ public class Motors {
 
 
             //Config Limits
-            left_limit = climber_motor_left.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
-            right_limit = climber_motor_right.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+            left_limit = climber_motor_left.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyClosed);
+            right_limit = climber_motor_right.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyClosed);
 
-            left_limit.enableLimitSwitch(false);
-            right_limit.enableLimitSwitch(false);
+            left_limit.enableLimitSwitch(true);
+            right_limit.enableLimitSwitch(true);
         }
 
     }

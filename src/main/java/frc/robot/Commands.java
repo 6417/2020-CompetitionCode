@@ -42,19 +42,19 @@ public class Commands {
     // The robot's subsystems and commands are defined here..
     public static PneumaticsSubsystem pneumaticsSubsystem;
     
-    public ControlPanelSubsystem controlPanelSubsystem;
+    public static ControlPanelSubsystem controlPanelSubsystem;
 
     protected TurnControlPanelCommand turnControlPanelCommand;
 
     protected ConditionalCommand contorlPanelConditionalCommand;
 
-    public GripperSubsystem gripperSubsystem;
+    public static GripperSubsystem gripperSubsystem;
 
     protected ConditionalCommand gripperSoloTurnConditionalCommand;
 
-    public TunnelSubsystem tunnelSubsystem;
+    public static TunnelSubsystem tunnelSubsystem;
 
-    public ThrowerSubsystem throwerSubsystem;
+    public static ThrowerSubsystem throwerSubsystem;
 
     protected ConditionalCommand throwerCommandGroup;
 
@@ -62,13 +62,13 @@ public class Commands {
     protected ConditionalCommand flowReverseConditionalCommand;
     protected FlowStopCommandGroup flowStopCommandGroup;
 
-    public VisionSubsystem visionSubsystem;
+    public static VisionSubsystem visionSubsystem;
 
-    public DriveSubsystem driveSubsystem;
+    public static DriveSubsystem driveSubsystem;
 
     protected DriveCommand driveCommand;
 
-    public ClimberSubsystem climberSubsystem;
+    public static ClimberSubsystem climberSubsystem;
 
     protected ClimbUPCommand climbUPCommand;
     protected ClimbStopCommand climbStopCommand;

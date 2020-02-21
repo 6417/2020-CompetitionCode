@@ -35,6 +35,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     checkSafetyStop();
     calculatePositionDifference();
+    checkLimits();
 
     SmartDashboard.putNumber("Position Left", Motors.climber_motor_left.getEncoder().getPosition());
     SmartDashboard.putNumber("Position Right", Motors.climber_motor_right.getEncoder().getPosition());
@@ -63,6 +64,14 @@ public class ClimberSubsystem extends SubsystemBase {
     Motors.climber_encoder_left.setPosition(0);
   }
 
+  public void resetLeftHeight() {
+    Motors.climber_encoder_left.setPosition(0);
+  }
+
+  public void resetRightHeight() {
+    Motors.climber_encoder_right.setPosition(0);
+  }
+
   public double getHeight() {
     return Motors.climber_encoder_right.getPosition();
   }
@@ -79,6 +88,17 @@ public class ClimberSubsystem extends SubsystemBase {
       Motors.climber_motor_right.stopMotor();
     }
   }
+
+  public void checkLimits() {
+    if(Motors.right_limit.get()) {
+      resetRightHeight();
+    }
+
+    if(Motors.left_limit.get()) {
+      resetLeftHeight();
+    }
+  }
+
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("Height", () -> getHeight(), ticks -> setHeight((int)ticks));

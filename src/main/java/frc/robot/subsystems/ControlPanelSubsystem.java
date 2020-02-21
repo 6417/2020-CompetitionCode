@@ -16,11 +16,12 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SendableRegistry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Motors;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.PneumaticsSubsystem.PneumaticState;
 
 public class ControlPanelSubsystem extends SubsystemBase {
@@ -45,10 +46,17 @@ public class ControlPanelSubsystem extends SubsystemBase {
    * Note: Any example colors should be calibrated as the user needs, these are
    * here as a basic example.
    */
-  private final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
+/*  private final Color kBlueTarget = ColorMatch.makeColor(0.143, 0.427, 0.429);
   private final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
   private final Color kRedTarget = ColorMatch.makeColor(0.43, 0.39, 0.16);
   private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
+*/
+
+  private final Color kBlueTarget = ColorMatch.makeColor(0.09, 0.427, 0.499);
+  private final Color kGreenTarget = ColorMatch.makeColor(0.154 , 0.605, 0.240);
+  private final Color kRedTarget = ColorMatch.makeColor(0.54, 0.35, 0.10);
+  private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
+
 
   public enum ControlPanelMode {
     POSITION_CONTROL, ROTATION_CONTROL
@@ -58,6 +66,16 @@ public class ControlPanelSubsystem extends SubsystemBase {
     RED, GREEN, BLUE, YELLOW, NONE
   }
 
+  private int colorChanges = 25;
+  private int startColorID = 0;
+  private int currentColorID = 0;
+  private int drivenSteps = 0;
+  private int steps = 0;
+  private double stepTicks = 5000; 
+  private double deadband = 1000;
+  private boolean rotationControlFinished = false;
+  private boolean positionControlFinished = false;
+  private ColorDetected[] controlPanelColors = new ColorDetected[]{ColorDetected.RED, ColorDetected.YELLOW, ColorDetected.BLUE, ColorDetected.GREEN};
 
   private ControlPanelMode mode = ControlPanelMode.ROTATION_CONTROL;
 
@@ -78,7 +96,13 @@ public class ControlPanelSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Control Panel Encoder", Motors.control_panel_motor.getSelectedSensorPosition());
+    SmartDashboard.putNumber("colorchanges", colorChanges);
+    if(RobotContainer.driveJoystick.getRawButton(7)) {
+      enableRotationControl();
+    } else if(RobotContainer.driveJoystick.getRawButton(8)) {
+      enablePositionControl();
+    }
   }
 
   public void addColorsToColorMatcher(Color... colors) {
@@ -159,7 +183,7 @@ public class ControlPanelSubsystem extends SubsystemBase {
   }
 
   public void resetSensorPos() {
-    setSensorPos(0, 30);;
+    setSensorPos(0, 30);
   }
 
   public void setSpeed(double speed) {
@@ -177,25 +201,111 @@ public class ControlPanelSubsystem extends SubsystemBase {
   public void decideMode() {
     if(mode == ControlPanelMode.ROTATION_CONTROL) {
       setRotationControl();
+      System.out.println("Rotation Control");
     } else if(mode == ControlPanelMode.POSITION_CONTROL) {
       setPositionControl();
+      System.out.println("Position Control");
     } else {
       System.out.println("Error deciding the Control Panel Mode");
     }
   }
 
   public void setRotationControl() {
-    System.out.println("Rotation control");
-    setSpeed(0.2);
+    if(colorChanges > 3) {
+      driveNextSteps();
+    } else {
+      driveLastSteps();
+    }
+  }
+
+  private void driveNextSteps() {
+    if(getSensorPos() > steps * 3 * stepTicks - deadband && getSensorPos() < steps * 3 *stepTicks + deadband) {
+      System.out.println("in sensor range");
+      if(getColor() != ColorDetected.NONE) {
+        setCurrentColorID();
+        if(currentColorID < startColorID) {
+          currentColorID += 4;
+        }
+        drivenSteps = currentColorID - startColorID;
+        colorChanges -= drivenSteps;
+        setStartColorID();
+        steps++;
+     } else {
+        Motors.control_panel_motor.stopMotor();
+//        colorChanges = 0;
+        System.out.println("Error Detecting color");
+      }
+    } else {
+      Motors.control_panel_motor.set(ControlMode.PercentOutput, 0.3);
+    }
+  }
+
+  private void driveLastSteps() {
+    if(getSensorPos() > (steps - 1) * 3 * stepTicks + colorChanges * stepTicks - deadband) {
+      if(getColor() != ColorDetected.NONE) {
+        setCurrentColorID();
+        if(currentColorID < startColorID) {
+          currentColorID += 4;
+        }
+        drivenSteps = currentColorID - startColorID;
+        if(drivenSteps <= colorChanges && drivenSteps > colorChanges - 3) {
+          rotationControlFinished = true;
+          System.out.println("Rotation Control successfully finished");
+        } else {
+          rotationControlFinished = false;
+          System.out.println("Error reaching the deadband of last color in rotation control");
+          Motors.control_panel_motor.stopMotor();
+        }
+      } else {
+        Motors.control_panel_motor.stopMotor();
+        colorChanges = 0;
+        System.out.println("Error Detecting color");
+      }
+    } else {
+      Motors.control_panel_motor.set(ControlMode.PercentOutput, 0.2);
+    }
   }
 
   public void setPositionControl() {
     System.out.println("position control");
+    if(startColorID > readFMS()) {
+      if(calculateDistantce() - 2 < 0) {
+        driveStepCount(0.3, Math.abs(calculateDistantce() - 2));
+      } else {
+        driveStepCount(-0.3, Math.abs(calculateDistantce() - 2));
+      }
+    } else {
+      if(calculateDistantce() - 2 < 0) {
+        driveStepCount(-0.3, Math.abs(calculateDistantce() - 2));
+      } else {
+        driveStepCount(0.3, Math.abs(calculateDistantce() - 2));
+      }
+    }
+  }
+
+  private int calculateDistantce() {
+    return Math.abs(startColorID - readFMS());
+  }
+
+  private void driveStepCount(double speed, int stepCount) {
+    if(Math.abs(getSensorPos()) > stepCount * stepTicks - deadband && Math.abs(getSensorPos()) < stepCount * stepTicks + deadband) {
+      Motors.control_panel_motor.stopMotor();
+      positionControlFinished = true;
+      System.out.println("Position Control successfully absolved");
+    } else {
+      Motors.control_panel_motor.set(ControlMode.PercentOutput, speed);
+    }
   }
 
   public boolean getFinished() {
     if(mode == ControlPanelMode.ROTATION_CONTROL) {
-      if(getSensorPos() >= Constants.CONTROL_PANEL_MIN_ROTATIONS_IN_TICKS) {
+      if(rotationControlFinished == true) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if(mode == ControlPanelMode.POSITION_CONTROL) {
+      if(positionControlFinished == true) {
         return true;
       } else {
         return false;
@@ -203,6 +313,30 @@ public class ControlPanelSubsystem extends SubsystemBase {
     } else {
       return false;
     }
+  }
+
+  public boolean setStartColorID() {
+    for(int i = 0; i < controlPanelColors.length; i++) {
+      if(getColor() == ColorDetected.NONE) {
+        return false;
+      } else if(controlPanelColors[i] == getColor()) {
+        startColorID = i;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public void setCurrentColorID() {
+    for(int i = 0; i < controlPanelColors.length; i++) {
+      if(getColor() == controlPanelColors[i]) {
+        currentColorID = i;
+      }
+    }
+  }
+
+  public void resetColorChanges() {
+    colorChanges = 25;
   }
 
 
@@ -214,19 +348,19 @@ public class ControlPanelSubsystem extends SubsystemBase {
       {
         case 'B' :
           //Blue case code
-          return 1;
+          return 2;
         case 'G' :
           //Green case code
-          return 2;
+          return 3;
         case 'R' :
           //Red case code
-          return 3;
+          return 0;
         case 'Y' :
           //Yellow case code
-          return 4;
+          return 1;
         default :
           //This is corrupt data
-          return 5;
+          return 4;
       }
     } else {
       //Code for no data received yet
@@ -237,11 +371,20 @@ public class ControlPanelSubsystem extends SubsystemBase {
 
   /* Getters and Setters */
   public boolean getBottomReed() {
-    return Motors.control_panel_motor.isFwdLimitSwitchClosed() == 0;
+    return Motors.control_panel_motor.isRevLimitSwitchClosed() == 1;
   }
 
   public boolean getFrontReed() {
-    return Motors.control_panel_motor.isRevLimitSwitchClosed() == 0;
+    return Motors.control_panel_motor.isFwdLimitSwitchClosed() == 1;
+  }
+
+  public double influenceDrive() {
+    if(getBottomReed()) {
+      return 1.0;
+    } else if (!getFrontReed()) {
+      return 0.0;
+    }
+    return 0.35;
   }
 
   public void setCancel(boolean cancel) {
@@ -250,6 +393,23 @@ public class ControlPanelSubsystem extends SubsystemBase {
 
   public boolean getCancel() {
     return cancel;
+  }
+
+  public void setControlPanelMode(ControlPanelMode controlPanelMode) {
+    mode = controlPanelMode;
+  }
+
+  public void enableRotationControl() {
+    rotationControlFinished = false;
+    colorChanges = 25;
+    steps = 0;
+    drivenSteps = 0;
+    setControlPanelMode(ControlPanelMode.ROTATION_CONTROL);
+  }
+
+  public void enablePositionControl() {
+    positionControlFinished = false;
+    setControlPanelMode(ControlPanelMode.POSITION_CONTROL);
   }
 
   @Override

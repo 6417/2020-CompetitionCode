@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import ch.team6417.utils.Algorithms;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
@@ -17,9 +18,9 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Commands;
 import frc.robot.Constants;
 import frc.robot.Motors;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.ShuffleBoard;
 
@@ -59,12 +60,24 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void arcadeDrive() {
+    double drive;
+    double steer;
+if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
+  double maxSpeed = Commands.controlPanelSubsystem.influenceDrive();
+
+  drive = Math.min(-RobotContainer.driveJoystick.getY(), maxSpeed);
+  steer = Algorithms.scale(RobotContainer.driveJoystick.getX(), -1, 1, -maxSpeed, maxSpeed);
+} else {
+  drive = -RobotContainer.driveJoystick.getY();
+  steer = RobotContainer.driveJoystick.getX();
+}
+
     if(Constants.STEERING_WHEEL_USAGE) {
 //turn with wheel      diffdrive.arcadeDrive(-RobotContainer.driveJoystick.getY(), RobotContainer.steerJoystick.getX());
 //arcade drive for reverse inverted      
 
 
-/*
+
       if(RobotContainer.steerJoystick.getX() < 0) {
         diffdrive.tankDrive((RobotContainer.steerJoystick.getX() + 0.5) * 2 * (-RobotContainer.driveJoystick.getY()), -RobotContainer.driveJoystick.getY());
       } else {
@@ -72,14 +85,14 @@ public class DriveSubsystem extends SubsystemBase {
       }
       SmartDashboard.putNumber("Drive Joystick", -RobotContainer.driveJoystick.getY());
       SmartDashboard.putNumber("Steer Joystick", RobotContainer.steerJoystick.getX());
-*/
+
 
 
       //        diffdrive.tankDrive(RobotContainer.driveJoystick.getY() - RobotContainer.steerJoystick.getX()  + RobotContainer.steerJoystick.getX(), RobotContainer.driveJoystick.getY() - RobotContainer.steerJoystick.getX() - RobotContainer.steerJoystick.getX());
               //diffdrive.arcadeDrive(-RobotContainer.driveJoystick.getY(), RobotContainer.steerJoystick.getX() * Math.abs(RobotContainer.driveJoystick.getY()) * 2);
 //drive with feetpedal      diffdrive.arcadeDrive(RobotContainer.steerJoystick.getZ() - RobotContainer.steerJoystick.getY(), -RobotContainer.steerJoystick.getX() * (RobotContainer.steerJoystick.getZ() - RobotContainer.steerJoystick.getY()));
     } else {
-      diffdrive.arcadeDrive(-RobotContainer.driveJoystick.getY() * ShuffleBoard.joystickMaxSpeed.getDouble(1.0), RobotContainer.driveJoystick.getX() * ShuffleBoard.joystickMaxSpeed.getDouble(1.0) * 0.6);
+      diffdrive.arcadeDrive(drive * ShuffleBoard.joystickMaxSpeed.getDouble(1.0), steer * ShuffleBoard.joystickMaxSpeed.getDouble(1.0) * 0.6);
     }
   }
   
