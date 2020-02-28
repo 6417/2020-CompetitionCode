@@ -7,8 +7,9 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,6 +28,8 @@ public class Robot extends TimedRobot {
   private ShuffleBoard shuffleBoard;
   private RobotContainer m_robotContainer;
 
+  public static AHRS ahrs;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -35,10 +38,16 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+
+    try {
+      ahrs = new AHRS(SPI.Port.kMXP);
+    } catch (RuntimeException ex) {
+      System.out.println("Error instantiating navX-MXP:  " + ex.getMessage());
+    }
+
     shuffleBoard = new ShuffleBoard();
     motors = new Motors();
     m_robotContainer = new RobotContainer();
-
     
   }
 
@@ -56,6 +65,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+  //  shuffleBoard.updateShuffleboard();
   }
 
   /**

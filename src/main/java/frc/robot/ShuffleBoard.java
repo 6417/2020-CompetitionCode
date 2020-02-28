@@ -18,23 +18,55 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 public class ShuffleBoard {
 
     public ShuffleBoard() {}
-
+    
+    private static ShuffleboardTab speeds = Shuffleboard.getTab("2020Speeds");
     private static ShuffleboardTab tab = Shuffleboard.getTab("2020");
+
+    //Setters
     public static NetworkTableEntry throwerUpperMotor =
-        tab.add("Thrower Upper Motor speed", 0)
-        .withWidget(BuiltInWidgets.kNumberSlider)
+        speeds.add("Thrower Upper Motor speed", Constants.THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED)
         .getEntry();
 
     public static NetworkTableEntry throwerLowerMotor =
-        tab.add("Thrower Lower Motor speed", 0)
-        .withWidget(BuiltInWidgets.kNumberSlider)
+        speeds.add("Thrower Lower Motor speed", Constants.THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED)
         .getEntry();
 
-    public static NetworkTableEntry tunnelMotor =
-        tab.add("Tunnel Motor speed", 0)
-        .withWidget(BuiltInWidgets.kNumberSlider)
+    public static NetworkTableEntry throwerReversMotorSpeed =
+        speeds.add("Thrower Reverse Motor speed", Constants.THROWER_MOTOR_REVERSE_SPEED)
         .getEntry();
 
+
+
+    public static NetworkTableEntry tunnelMotorForward =
+        speeds.add("Tunnel Motor Forward speed", Constants.TUNNEL_MOTOR_SPEED_FORWARD)
+        .getEntry();
+
+    public static NetworkTableEntry tunnelMotorReverse = 
+        speeds.add("Tunnel Motor Reverse speed", Constants.TUNNEL_MOTOR_SPEED_REVERSE)
+        .getEntry();
+
+    public static NetworkTableEntry tunnelMotorFeederSpeed = 
+        speeds.add("Tunnel Motor feeder speed", Constants.TUNNEL_MOTOR_SPEED_FEEDER)
+        .getEntry();
+
+
+
+    public static NetworkTableEntry gripperMotorSpeed =
+        speeds.add("Gripper Forward Motor speed", Constants.GRIPPER_MOTOR_SPEED_FORWARD)
+        .getEntry();
+
+    public static NetworkTableEntry gripperMotorReverseSpeed = 
+        speeds.add("Gripper Reverse speed", Constants.GRIPPER_MOTOR_SPEED_REVERSE)
+        .getEntry();
+
+
+
+    public static NetworkTableEntry controlPanelTurnSpeed =
+        speeds.add("Control Panel Motor Turn Speed", Constants.CONTROL_PANEL_TURN_SPEED)
+        .getEntry();
+
+
+    //getters
     public static NetworkTableEntry shooterVelocity =
         tab.add("Shooter Velocity", 0)
         .withWidget(BuiltInWidgets.kGraph)
@@ -46,7 +78,7 @@ public class ShuffleBoard {
         .getEntry();
 
     public static NetworkTableEntry joystick =
-        tab.add("Steering Wheel Joystick", false)
+        tab.add("Steering Wheel Joystick", true)
         .withWidget(BuiltInWidgets.kToggleButton)
         .getEntry();
 
@@ -54,5 +86,20 @@ public class ShuffleBoard {
         tab.add("Joystick Max Speed", 1)
         .withWidget(BuiltInWidgets.kNumberSlider)
         .getEntry();
+
+    public void updateShuffleboard() {
+        Constants.THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED = throwerUpperMotor.getDouble(Constants.THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED);
+        Constants.THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED = throwerLowerMotor.getDouble(Constants.THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED);
+        Constants.THROWER_MOTOR_REVERSE_SPEED = throwerReversMotorSpeed.getDouble(Constants.THROWER_MOTOR_REVERSE_SPEED);
+       
+        Constants.GRIPPER_MOTOR_SPEED_FORWARD = gripperMotorSpeed.getDouble(Constants.GRIPPER_MOTOR_SPEED_FORWARD);
+        Constants.GRIPPER_MOTOR_SPEED_REVERSE = gripperMotorReverseSpeed.getDouble(Constants.GRIPPER_MOTOR_SPEED_REVERSE);
+
+        Constants.TUNNEL_MOTOR_SPEED_FEEDER = tunnelMotorFeederSpeed.getDouble(Constants.TUNNEL_MOTOR_SPEED_FEEDER);
+        Constants.TUNNEL_MOTOR_SPEED_FORWARD = tunnelMotorForward.getDouble(Constants.GRIPPER_MOTOR_SPEED_FORWARD);
+        Constants.TUNNEL_MOTOR_SPEED_REVERSE = tunnelMotorReverse.getDouble(Constants.GRIPPER_MOTOR_SPEED_REVERSE);
+
+        Constants.CONTROL_PANEL_TURN_SPEED = controlPanelTurnSpeed.getDouble(Constants.CONTROL_PANEL_TURN_SPEED);
+    }
 
 }

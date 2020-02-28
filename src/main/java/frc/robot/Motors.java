@@ -10,15 +10,16 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.revrobotics.CANDigitalInput;
+import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
-import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import ch.team6417.motorcontroller.FridoCANSparkMax;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.controller.PIDController;
 
 /**
  * Add your docs here.
@@ -30,6 +31,11 @@ public class Motors {
     public static FridoCANSparkMax drive_motor_front_left;
     public static FridoCANSparkMax drive_motor_back_right;
     public static FridoCANSparkMax drive_motor_back_left;
+
+    public static CANEncoder drive_encoder_front_right;
+    public static CANEncoder drive_encoder_front_left;
+    public static CANEncoder drive_encoder_back_right;
+    public static CANEncoder drive_encoder_back_left;
 
     public static WPI_TalonSRX talon_drive_motor_front_right;
     public static WPI_TalonSRX talon_drive_motor_front_left;
@@ -59,8 +65,8 @@ public class Motors {
     public static FridoCANSparkMax climber_motor_left;
     public static FridoCANSparkMax climber_motor_right;
 
-    public static CANPIDController climberPIDLeft;
-    public static CANPIDController climberPIDRight;
+    public static PIDController climberPIDLeft;
+    public static PIDController climberPIDRight;
 
     private double kPclimber, kIclimber, kDclimber, kIzclimber, kFFclimber, kMaxOutputclimber, kMinOutputclimber, maxRPMclimber;
 
@@ -96,22 +102,22 @@ public class Motors {
                 talon_drive_motor_front_left = new WPI_TalonSRX(6);
                 talon_drive_motor_back_right = new WPI_TalonSRX(4);
                 talon_drive_motor_back_left = new WPI_TalonSRX(5);
-    
+
                 talon_drive_motor_front_right.configFactoryDefault();
                 talon_drive_motor_front_left.configFactoryDefault();
                 talon_drive_motor_back_right.configFactoryDefault();
                 talon_drive_motor_back_left.configFactoryDefault();    
-                
+
                 talon_drive_motor_front_right.setNeutralMode(NeutralMode.Brake);
                 talon_drive_motor_front_left.setNeutralMode(NeutralMode.Brake);
                 talon_drive_motor_back_right.setNeutralMode(NeutralMode.Brake);
                 talon_drive_motor_back_left.setNeutralMode(NeutralMode.Brake);    
-    
+
                 talon_drive_motor_back_right.follow(talon_drive_motor_front_right);
                 talon_drive_motor_back_left.follow(talon_drive_motor_front_left);
                 talon_drive_motor_back_right.setInverted(false);
                 talon_drive_motor_back_left.setInverted(false);
-    
+
                 leftMotors = new SpeedControllerGroup(talon_drive_motor_front_left, talon_drive_motor_back_left);
                 rightMotors = new SpeedControllerGroup(talon_drive_motor_front_right, talon_drive_motor_back_right);
             } else {
@@ -124,7 +130,7 @@ public class Motors {
                 drive_motor_front_left.restoreFactoryDefaults();
                 drive_motor_back_right.restoreFactoryDefaults();
                 drive_motor_back_left.restoreFactoryDefaults();   
-                
+
                 drive_motor_front_right.setIdleMode(IdleMode.kBrake);
                 drive_motor_front_left.setIdleMode(IdleMode.kBrake);
                 drive_motor_back_right.setIdleMode(IdleMode.kBrake);
@@ -135,7 +141,11 @@ public class Motors {
 
                 leftMotors = new SpeedControllerGroup(drive_motor_front_left, drive_motor_back_left);
                 rightMotors = new SpeedControllerGroup(drive_motor_front_right, drive_motor_back_right);
-            
+
+                drive_encoder_front_right = drive_motor_front_right.getEncoder();
+                drive_encoder_front_left = drive_motor_front_left.getEncoder();
+                drive_encoder_back_right = drive_motor_back_right.getEncoder();
+                drive_encoder_back_left = drive_motor_back_left.getEncoder();
            }
         }
     }
@@ -236,37 +246,52 @@ public class Motors {
             climber_motor_left.setIdleMode(IdleMode.kBrake);
             climber_motor_right.setIdleMode(IdleMode.kBrake);
 
-            climberPIDLeft = climber_motor_left.getPIDController();
-            climberPIDRight = climber_motor_right.getPIDController();
+            // climberPIDLeft = climber_motor_left.getPIDController();
+            // climberPIDRight = climber_motor_right.getPIDController();
 
-            climber_encoder_left = climber_motor_left.getEncoder();
-            climber_encoder_right = climber_motor_right.getEncoder();
+             climber_encoder_left = climber_motor_left.getEncoder();
+             climber_encoder_right = climber_motor_right.getEncoder();
 
             // PID coefficients
-            kPclimber = 0.0002; 
-            kIclimber = 0;
-            kDclimber = 0.0001; 
-            kIzclimber = 0; 
+            // kPclimber = 0.0002; 
+            // kIclimber = 0;
+            // kDclimber = 0.0001; 
+            // kIzclimber = 0; 
+            // kFFclimber = 0.000; 
+            // kMaxOutputclimber = 0.7; 
+            // kMinOutputclimber = -0.7;
+            // maxRPMclimber = 5700;
+
+            kPclimber = 0.015; 
+            kIclimber = 0.001;
+            kDclimber = 0.000; 
+            kIzclimber = 0.0;
             kFFclimber = 0.000; 
             kMaxOutputclimber = 0.7; 
             kMinOutputclimber = -0.7;
             maxRPMclimber = 5700;
 
-            // set PID coefficients
-            climberPIDLeft.setP(kPclimber);
-            climberPIDLeft.setI(kIclimber);
-            climberPIDLeft.setD(kDclimber);
-            climberPIDLeft.setIZone(kIzclimber);
-            climberPIDLeft.setFF(kFFclimber);
-            climberPIDLeft.setOutputRange(kMinOutputclimber, kMaxOutputclimber);
+            climberPIDLeft = new PIDController(kPclimber, kIclimber, kDclimber);
+            climberPIDLeft.setIntegratorRange(-0.1, 0.1);
+            climberPIDRight = new PIDController(kPclimber, kIzclimber, kDclimber);
+            climberPIDRight.setIntegratorRange(-0.1, 0.1);
+            climberPIDRight.setSetpoint(0);
 
             // set PID coefficients
-            climberPIDRight.setP(kPclimber);
-            climberPIDRight.setI(kIclimber);
-            climberPIDRight.setD(kDclimber);
-            climberPIDRight.setIZone(kIzclimber);
-            climberPIDRight.setFF(kFFclimber);
-            climberPIDRight.setOutputRange(kMinOutputclimber, kMaxOutputclimber);
+            // climberPIDLeft.setP(kPclimber);
+            // climberPIDLeft.setI(kIclimber);
+            // climberPIDLeft.setD(kDclimber);
+            // climberPIDLeft.setIZone(kIzclimber);
+            // climberPIDLeft.setFF(kFFclimber);
+            // climberPIDLeft.setOutputRange(kMinOutputclimber, kMaxOutputclimber);
+
+            // set PID coefficients
+            // climberPIDRight.setP(kPclimber);
+            // climberPIDRight.setI(kIclimber);
+            // climberPIDRight.setD(kDclimber);
+            // climberPIDRight.setIZone(kIzclimber);
+            // climberPIDRight.setFF(kFFclimber);
+            // climberPIDRight.setOutputRange(kMinOutputclimber, kMaxOutputclimber);
 
 
             //Config Limits
@@ -279,7 +304,7 @@ public class Motors {
 
     }
 
-    public void disableAll() {
+    public static void disableAll() {
         if(Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
             leftMotors.stopMotor();
             rightMotors.stopMotor();

@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
@@ -22,6 +23,9 @@ public class RobotContainer extends Commands {
   // The robot's subsystems and commands are defined here...
   public static Joystick driveJoystick;
   public static Joystick steerJoystick;
+
+  private JoystickButton disableRobotButton;
+  private JoystickButton disableAutonomousSystemsButton;
   
   private JoystickButton controlPanelLiftButton;
   private JoystickButton controlPanelTurnButton;
@@ -29,10 +33,16 @@ public class RobotContainer extends Commands {
   private JoystickButton flowForwardButton;
   private JoystickButton flowReverseButton;  
   private JoystickButton gripperSoloTurnButton;
+  private JoystickButton gripperProtectorButton;
   
   private JoystickButton throwerEnableButton;
 
-  private JoystickButton enableClimb;
+  public static JoystickButton manualLeftClimbUpButton;
+  public static JoystickButton manualLeftClimbDownButton;
+  public static JoystickButton manualRightClimbUpButton;
+  public static JoystickButton manualRightClimbDownButton;
+
+  private JoystickButton enableClimbButton;
   
 
   public RobotContainer() {
@@ -49,6 +59,7 @@ public class RobotContainer extends Commands {
    */
 
   private void configureJoysticks() {
+
     if(Constants.STEERING_WHEEL_USAGE) {
       driveJoystick = new Joystick(Constants.JOYSTICK_DRIVE_ID);
       steerJoystick = new Joystick(Constants.JOYSTICK_STEER_ID);
@@ -59,6 +70,18 @@ public class RobotContainer extends Commands {
 
   private void configureButtonBindings() {
 
+    disableRobotButton = new JoystickButton(driveJoystick, Constants.SJ_DISABLE_ROBOT_BUTTON_ID);
+    disableAutonomousSystemsButton = new JoystickButton(driveJoystick, Constants.SJ_DISABLE_AUTONOMOUS_SYSTEMS_BUTTON_ID);
+
+    if(disableRobotButton.get()) {
+      CommandScheduler.getInstance().cancelAll();
+      Motors.disableAll();
+    }
+
+    if(disableAutonomousSystemsButton.get()) {
+      Constants.AUTONOMOUS_SYSTEMS_ENABLED = !Constants.AUTONOMOUS_SYSTEMS_ENABLED;
+    }
+
     if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
       controlPanelLiftButton = new JoystickButton(driveJoystick, Constants.SJ_CONTROL_PANEL_LIFT_BUTTON_ID);
       controlPanelTurnButton = new JoystickButton(driveJoystick, Constants.SJ_CONTROL_PANEL_TURN_BUTTON_ID);
@@ -68,9 +91,18 @@ public class RobotContainer extends Commands {
     }
 
     if(Constants.IS_GRIPPER_SUBSYSTEM_IN_USE) {
-//      gripperSoloTurnButton = new JoystickButton(driveJoystick, Constants.SJ_GRIPPER_SOLO_TURN_BUTTON_ID);
+      gripperSoloTurnButton = new JoystickButton(driveJoystick, Constants.SJ_GRIPPER_SOLO_TURN_BUTTON_ID);
 
-//      gripperSoloTurnButton.whenHeld(gripperSoloTurnConditionalCommand);
+      gripperSoloTurnButton.whenPressed(gripperSoloTurnConditionalCommand);
+
+      if(Constants.IS_GRIPPER_PROTECTOR_IN_USE) {
+
+        gripperProtectorButton = new JoystickButton(driveJoystick, Constants.SJ_GRIPPER_PROTECTOR_BUTTON_ID);
+
+        gripperProtectorButton.whenPressed(gripperProtectorConditionalCommand);
+
+      }
+
     }
 
     if(Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
@@ -90,10 +122,20 @@ public class RobotContainer extends Commands {
     }
 
     if(Constants.IS_CLIMBING_SUBSYSTEM_IN_USE) {
-      enableClimb = new JoystickButton(driveJoystick, Constants.ENABLE_CLIMB_BUTTON);
+      manualLeftClimbDownButton = new JoystickButton(steerJoystick, Constants.SWJ_LEFT_CLIMB_DOWN_BUTTON);
+      manualLeftClimbUpButton = new JoystickButton(steerJoystick, Constants.SWJ_LEFT_CLIMB_UP_BUTTON);
+      manualRightClimbDownButton = new JoystickButton(steerJoystick, Constants.SWJ_RIGHT_CLIMB_DOWN_BUTTON);
+      manualRightClimbUpButton = new JoystickButton(steerJoystick, Constants.SWJ_RIGHT_CLIMB_UP_BUTTON);
 
-      enableClimb.whileHeld(climbUPCommand, false);
-      enableClimb.whenReleased(climbStopCommand);
+      manualLeftClimbDownButton.whenHeld(manualClimbCommand);
+      manualLeftClimbUpButton.whenHeld(manualClimbCommand);
+      manualRightClimbDownButton.whenHeld(manualClimbCommand);
+      manualRightClimbUpButton.whenHeld(manualClimbCommand);
+
+      enableClimbButton = new JoystickButton(driveJoystick, Constants.ENABLE_CLIMB_BUTTON);
+
+      enableClimbButton.whileHeld(climbUPCommand, false);
+      enableClimbButton.whenReleased(climbStopCommand);
     }
 
   }

@@ -52,10 +52,10 @@ public class ControlPanelSubsystem extends SubsystemBase {
   private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
 */
 
-  private final Color kBlueTarget = ColorMatch.makeColor(0.09, 0.427, 0.499);
-  private final Color kGreenTarget = ColorMatch.makeColor(0.154 , 0.605, 0.240);
-  private final Color kRedTarget = ColorMatch.makeColor(0.54, 0.35, 0.10);
-  private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
+  private final Color kBlueTarget = ColorMatch.makeColor(0.13, 0.43, 0.43);
+  private final Color kGreenTarget = ColorMatch.makeColor(0.199, 0.562, 0.239);
+  private final Color kRedTarget = ColorMatch.makeColor(0.489, 0.376, 0.134);
+  private final Color kYellowTarget = ColorMatch.makeColor(0.3366, 0.5446, 0.1176);
 
 
   public enum ControlPanelMode {
@@ -236,7 +236,7 @@ public class ControlPanelSubsystem extends SubsystemBase {
         System.out.println("Error Detecting color");
       }
     } else {
-      Motors.control_panel_motor.set(ControlMode.PercentOutput, 0.3);
+      Motors.control_panel_motor.set(ControlMode.PercentOutput, Constants.CONTROL_PANEL_TURN_SPEED);
     }
   }
 
@@ -262,7 +262,7 @@ public class ControlPanelSubsystem extends SubsystemBase {
         System.out.println("Error Detecting color");
       }
     } else {
-      Motors.control_panel_motor.set(ControlMode.PercentOutput, 0.2);
+      Motors.control_panel_motor.set(ControlMode.PercentOutput, Constants.CONTROL_PANEL_TURN_SPEED);
     }
   }
 
@@ -270,15 +270,15 @@ public class ControlPanelSubsystem extends SubsystemBase {
     System.out.println("position control");
     if(startColorID > readFMS()) {
       if(calculateDistantce() - 2 < 0) {
-        driveStepCount(0.3, Math.abs(calculateDistantce() - 2));
+        driveStepCount(Constants.CONTROL_PANEL_TURN_SPEED, Math.abs(calculateDistantce() - 2));
       } else {
-        driveStepCount(-0.3, Math.abs(calculateDistantce() - 2));
+        driveStepCount(-Constants.CONTROL_PANEL_TURN_SPEED, Math.abs(calculateDistantce() - 2));
       }
     } else {
       if(calculateDistantce() - 2 < 0) {
-        driveStepCount(-0.3, Math.abs(calculateDistantce() - 2));
+        driveStepCount(-Constants.CONTROL_PANEL_TURN_SPEED, Math.abs(calculateDistantce() - 2));
       } else {
-        driveStepCount(0.3, Math.abs(calculateDistantce() - 2));
+        driveStepCount(Constants.CONTROL_PANEL_TURN_SPEED, Math.abs(calculateDistantce() - 2));
       }
     }
   }

@@ -7,6 +7,7 @@
 
 package ch.team6417.motorcontroller;
 
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.Sendable;
@@ -16,9 +17,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
  * Add your docs here.
  */
 public class FridoCANSparkMax extends CANSparkMax implements Sendable {
+    CANEncoder m_encoder;
 
     public FridoCANSparkMax(int deviceID, MotorType type) {
         super(deviceID, type);
+        m_encoder = super.getEncoder();
+    }
+
+    @Override
+    public CANEncoder getEncoder() {
+        return m_encoder;
     }
 
     @Override
@@ -26,8 +34,8 @@ public class FridoCANSparkMax extends CANSparkMax implements Sendable {
         builder.setSmartDashboardType("CANSparkMax");
         builder.setActuator(true);
         builder.setSafeState(() -> this.stopMotor());
-        builder.addDoubleProperty("Encoder Position", () -> this.getEncoder().getPosition(), pos -> this.getEncoder().setPosition(pos));
-        builder.addDoubleProperty("Velocity", () -> this.getEncoder().getVelocity(), null);
+        builder.addDoubleProperty("Encoder Position", () -> this.m_encoder.getPosition(), pos -> this.m_encoder.setPosition(pos));
+        builder.addDoubleProperty("Velocity", () -> this.m_encoder.getVelocity(), null);
         builder.addDoubleProperty("Temperature C", () -> this.getMotorTemperature(), null);
     }
     

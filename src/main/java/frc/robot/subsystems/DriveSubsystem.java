@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Commands;
 import frc.robot.Constants;
 import frc.robot.Motors;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.ShuffleBoard;
 
@@ -35,42 +36,42 @@ public class DriveSubsystem extends SubsystemBase {
    * Creates a new DriveSubsystem.
    */
   public DriveSubsystem() {
+
+
+    Robot.ahrs.reset();
+    resetEncoders();
+
     diffdrive = new DifferentialDrive(Motors.leftMotors, Motors.rightMotors);
     diffdrive.setRightSideInverted(true);
     super.addChild("Drive Front Right", Motors.drive_motor_front_right);
     super.addChild("Drive Front Left", Motors.drive_motor_front_left);
     super.addChild("Drive Back Right", Motors.drive_motor_back_right);
     super.addChild("Drive Back Left", Motors.drive_motor_back_left);
-//    odometry = new DifferentialDriveOdometry(getGyroAngle(), new Pose2d(5.0, 13.5, new Rotation2d()));
+    odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getAngle()), new Pose2d(0, 0, new Rotation2d(0)));
     super.addChild("Drive Front Right", Motors.drive_motor_front_right);
     super.addChild("Drive Front Left", Motors.drive_motor_front_left);
     super.addChild("Drive Back Right", Motors.drive_motor_back_right);
     super.addChild("Drive Back Left", Motors.drive_motor_back_left);
 
-    try {
-      ahrs = new AHRS(SPI.Port.kMXP);
-    } catch (RuntimeException ex) {
-      System.out.println("Error instantiating navX-MXP:  " + ex.getMessage());
-    }
   }
 
   @Override
   public void periodic() {
-    Constants.STEERING_WHEEL_USAGE = ShuffleBoard.joystick.getBoolean(false);
+    Constants.STEERING_WHEEL_USAGE = ShuffleBoard.joystick.getBoolean(true);
+    odometry.update(Rotation2d.fromDegrees(- getAngle()), getEncoderLeftMetric(), getEncoderRightMetric());
   }
 
   public void arcadeDrive() {
     double drive;
     double steer;
-if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
-  double maxSpeed = Commands.controlPanelSubsystem.influenceDrive();
-
-  drive = Math.min(-RobotContainer.driveJoystick.getY(), maxSpeed);
-  steer = Algorithms.scale(RobotContainer.driveJoystick.getX(), -1, 1, -maxSpeed, maxSpeed);
-} else {
-  drive = -RobotContainer.driveJoystick.getY();
-  steer = RobotContainer.driveJoystick.getX();
-}
+    if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
+      double maxSpeed = Commands.controlPanelSubsystem.influenceDrive();
+      drive = Math.min(-RobotContainer.driveJoystick.getY(), maxSpeed);
+      steer = Algorithms.scale(RobotContainer.driveJoystick.getX(), -1, 1, -maxSpeed, maxSpeed);
+    } else {
+      drive = -RobotContainer.driveJoystick.getY();
+      steer = RobotContainer.driveJoystick.getX();
+    }
 
     if(Constants.STEERING_WHEEL_USAGE) {
 //turn with wheel      diffdrive.arcadeDrive(-RobotContainer.driveJoystick.getY(), RobotContainer.steerJoystick.getX());
@@ -79,11 +80,11 @@ if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
 
 
       if(RobotContainer.steerJoystick.getX() < 0) {
-        diffdrive.tankDrive((RobotContainer.steerJoystick.getX() + 0.5) * 2 * (-RobotContainer.driveJoystick.getY()), -RobotContainer.driveJoystick.getY());
+        diffdrive.tankDrive((RobotContainer.steerJoystick.getX() + 0.5) * 2 * (drive), drive);
       } else {
-        diffdrive.tankDrive(-RobotContainer.driveJoystick.getY(), (RobotContainer.steerJoystick.getX() - 0.5) * 2 * (RobotContainer.driveJoystick.getY()));
+        diffdrive.tankDrive(drive, (RobotContainer.steerJoystick.getX() - 0.5) * 2 * (-drive));
       }
-      SmartDashboard.putNumber("Drive Joystick", -RobotContainer.driveJoystick.getY());
+      SmartDashboard.putNumber("Drive Joystick", drive);
       SmartDashboard.putNumber("Steer Joystick", RobotContainer.steerJoystick.getX());
 
 
@@ -97,8 +98,7 @@ if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
   }
   
   public float getAngle() {
-    return ahrs.getYaw();
-
+    return Robot.ahrs.getYaw();
   }
 
     
@@ -110,15 +110,23 @@ if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
     ahrs.reset();
   }
 
+  private void resetEncoders() {
+    Motors.drive_encoder_back_right.setPosition(0);
+    Motors.drive_encoder_back_left.setPosition(0);
+    Motors.drive_encoder_front_right.setPosition(0);
+    Motors.drive_encoder_front_left.setPosition(0);
+  }
 
+  public double getEncoderLeftMetric() {
+    return (Motors.drive_encoder_back_left.getPosition()/Constants.GEARBOX_TRANSLATION) * Constants.WHEEL_CIRCUMFERENCE;
+  }
 
-
-  public void updatePose() {
-//    mPose2d = odometry.update(getGyroAngle(), Motors.drive_motor_front_right.getEncoder().getPosition(), Motors.drive_motor_front_right.getEncoder().getPosition());
+  public double getEncoderRightMetric() {
+    return -(Motors.drive_encoder_back_right.getPosition()/Constants.GEARBOX_TRANSLATION) * Constants.WHEEL_CIRCUMFERENCE;
   }
 
    public Pose2d getPose() {
-     return mPose2d;
+     return odometry.getPoseMeters();
    }
 
   public void resetPose(Pose2d poseMeters) {
@@ -128,16 +136,25 @@ if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-/*    builder.addDoubleProperty("Encoder Front Left", () -> Motors.drive_motor_front_left.getEncoder().getPosition(),
-        pos -> Motors.drive_motor_front_left.getEncoder().setPosition((int) pos));
+    if(!Constants.TEST_ROBOT) {
+    builder.addDoubleProperty("Encoder Front Left", () -> Motors.drive_encoder_front_left.getPosition(),
+        pos -> Motors.drive_encoder_front_left.setPosition((int) pos));
         
-    builder.addDoubleProperty("Encoder Back Left", () -> Motors.drive_motor_back_left.getEncoder().getPosition(),
-        pos -> Motors.drive_motor_back_left.getEncoder().setPosition((int) pos));
+    builder.addDoubleProperty("Encoder Back Left", () -> Motors.drive_encoder_back_left.getPosition(),
+        pos -> Motors.drive_encoder_back_left.setPosition((int) pos));
 
-    builder.addDoubleProperty("Encoder Front Right", () -> Motors.drive_motor_front_right.getEncoder().getPosition(),
-        pos -> Motors.drive_motor_front_right.getEncoder().setPosition((int) pos));
+    builder.addDoubleProperty("Encoder Front Right", () -> Motors.drive_encoder_front_right.getPosition(),
+        pos -> Motors.drive_encoder_front_right.setPosition((int) pos));
 
-    builder.addDoubleProperty("Encoder Back Right", () -> Motors.drive_motor_back_right.getEncoder().getPosition(),
-        pos -> Motors.drive_motor_back_right.getEncoder().setPosition((int) pos));
-  */  }
+    builder.addDoubleProperty("Encoder Back Right", () -> Motors.drive_encoder_back_right.getPosition(),
+        pos -> Motors.drive_encoder_back_right.setPosition((int) pos));
+
+    builder.addStringProperty("Pose", () -> (getPose().toString()), null);
+
+    builder.addStringProperty("Rotation", () -> getPose().getRotation().toString(), null);
+
+    builder.addDoubleProperty("Navx", () -> getAngle(), null);
+    }
+
+  }
 }

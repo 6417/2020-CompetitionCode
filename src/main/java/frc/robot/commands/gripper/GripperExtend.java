@@ -26,7 +26,7 @@ public class GripperExtend extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_subsystem.setGripperExtended(true);
     m_subsystem.extendGripper();
-    System.out.println("Gripper Extended");
   }
 }

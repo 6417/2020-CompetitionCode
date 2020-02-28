@@ -20,7 +20,12 @@ public class GripperSubsystem extends SubsystemBase {
   private final DoubleSolenoid gripperSolenoid = new DoubleSolenoid(Constants.PCM_CAN_ID,
       Constants.GRIPPER_SOLENOID_EXTEND_ID, Constants.GRIPPER_SOLENOID_RETRACT_ID);
 
+  private final DoubleSolenoid gripperProtectorSolenoid = new DoubleSolenoid(Constants.PCM_CAN_ID,
+      Constants.GRIPPER_PROTECTOR_SOLENOID_EXTEND_ID, Constants.GRIPPER_PROTECTOR_SOLENOID_RETRACT_ID);
+
   private boolean cancel = false;
+  private boolean protectorExtended = false;
+  private boolean gripperExtended = false;
 
   /**
    * Creates a new GripperSubsystem.
@@ -38,20 +43,32 @@ public class GripperSubsystem extends SubsystemBase {
     gripperSolenoid.set(Value.kForward);
   }
 
+  public void extendProtector() {
+    gripperProtectorSolenoid.set(Value.kForward);
+  }
+
   public void retractGripper() {
     gripperSolenoid.set(Value.kReverse);
+  }
+
+  public void retractProtector() {
+    gripperProtectorSolenoid.set(Value.kReverse);
   }
 
   public void closeGripper() {
     gripperSolenoid.close();
   }
 
+  public void closeProtector() {
+    gripperProtectorSolenoid.close();
+  }
+
   public void setBackwards() {
-    Motors.gripper_motor.set(ControlMode.PercentOutput, -Constants.GRIPPER_MOTOR_SPEED);
+    Motors.gripper_motor.set(ControlMode.PercentOutput, Constants.GRIPPER_MOTOR_SPEED_REVERSE);
   }
 
   public void setForward() {
-    Motors.gripper_motor.set(ControlMode.PercentOutput, Constants.GRIPPER_MOTOR_SPEED);
+    Motors.gripper_motor.set(ControlMode.PercentOutput, Constants.GRIPPER_MOTOR_SPEED_FORWARD);
   }
 
   public void stopGripper() {
@@ -70,6 +87,22 @@ public class GripperSubsystem extends SubsystemBase {
 //    return Motors.gripper_motor.isRevLimitSwitchClosed() == 0;
     return false;
   }
+
+public void setProtectorExtended(boolean extended) {
+  protectorExtended = extended;
+}
+
+public void setGripperExtended(boolean extended) {
+  gripperExtended = extended;
+}
+
+public boolean isProtectorExtended() {
+  return protectorExtended;
+}
+
+public boolean isGripperExtended() {
+  return gripperExtended;
+}
 
   public boolean isTurningForward() {
     if(Motors.gripper_motor.getMotorOutputVoltage() < 0) {

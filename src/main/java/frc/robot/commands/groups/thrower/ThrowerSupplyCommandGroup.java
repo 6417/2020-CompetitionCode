@@ -9,6 +9,7 @@ package frc.robot.commands.groups.thrower;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.thrower.ThrowerSupplyCommand;
+import frc.robot.commands.tunnel.TunnelFeedCommand;
 import frc.robot.commands.tunnel.TunnelNorthCommand;
 import frc.robot.subsystems.ThrowerSubsystem;
 import frc.robot.subsystems.TunnelSubsystem;
@@ -21,6 +22,6 @@ public class ThrowerSupplyCommandGroup extends ParallelCommandGroup {
    * Creates a new ThrowerSuppliesCommandGroup.
    */
   public ThrowerSupplyCommandGroup(TunnelSubsystem tunnelSubsystem, ThrowerSubsystem throwerSubsystem) {
-    super(new TunnelNorthCommand(tunnelSubsystem), new ThrowerSupplyCommand(throwerSubsystem));
+    super(new TunnelFeedCommand(tunnelSubsystem), new ThrowerSupplyCommand(throwerSubsystem));
   }
 }

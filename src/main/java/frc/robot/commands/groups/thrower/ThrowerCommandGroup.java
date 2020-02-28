@@ -9,7 +9,12 @@ package frc.robot.commands.groups.thrower;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.gripper.GripperForward;
+import frc.robot.commands.gripper.GripperRetract;
+import frc.robot.commands.gripper.GripperStop;
 import frc.robot.commands.thrower.ThrowerExtrudeCommand;
+import frc.robot.commands.tunnel.TunnelSouthCommand;
+import frc.robot.subsystems.GripperSubsystem;
 import frc.robot.subsystems.ThrowerSubsystem;
 import frc.robot.subsystems.TunnelSubsystem;
 
@@ -20,7 +25,7 @@ public class ThrowerCommandGroup extends SequentialCommandGroup {
   /**
    * Creates a new ThrowerCommandGroup.
    */
-  public ThrowerCommandGroup(ThrowerSubsystem throwerSubsystem, TunnelSubsystem tunnelSubsystem) {
-    super(new ThrowerExtrudeCommand(throwerSubsystem), new WaitCommand(1), new ThrowerSupplyCommandGroup(tunnelSubsystem, throwerSubsystem));
+  public ThrowerCommandGroup(GripperSubsystem gripperSubsystem, ThrowerSubsystem throwerSubsystem, TunnelSubsystem tunnelSubsystem) {
+    super(new GripperStop(gripperSubsystem), new ThrowerExtrudeCommand(throwerSubsystem), new TunnelSouthCommand(tunnelSubsystem), new WaitCommand(1), new ThrowerSupplyCommandGroup(tunnelSubsystem, throwerSubsystem), new WaitCommand(0.5), new GripperForward(gripperSubsystem), new GripperRetract(gripperSubsystem), new WaitCommand(0.4), new GripperStop(gripperSubsystem));
   }
 }

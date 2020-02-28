@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Motors;
-import frc.robot.ShuffleBoard;
 
 public class TunnelSubsystem extends SubsystemBase {
   /**
@@ -29,12 +28,16 @@ public class TunnelSubsystem extends SubsystemBase {
   }
 
   public void runForward() {
-    Motors.tunnel_motor.set(ControlMode.PercentOutput, Constants.TUNNEL_MOTOR_SPEED);
+    Motors.tunnel_motor.set(ControlMode.PercentOutput, Constants.TUNNEL_MOTOR_SPEED_FORWARD);
 //    Motors.tunnel_motor.set(ControlMode.PercentOutput, ShuffleBoard.tunnelMotor.getDouble(0.0));
   }
 
   public void runReverse() {
-    Motors.tunnel_motor.set(ControlMode.PercentOutput, -Constants.TUNNEL_MOTOR_SPEED);
+    Motors.tunnel_motor.set(ControlMode.PercentOutput, -Constants.TUNNEL_MOTOR_SPEED_REVERSE);
+  }
+
+  public void runFeeder() {
+    Motors.tunnel_motor.set(ControlMode.PercentOutput, Constants.TUNNEL_MOTOR_SPEED_FEEDER);
   }
 
   public void stopTunnel() {

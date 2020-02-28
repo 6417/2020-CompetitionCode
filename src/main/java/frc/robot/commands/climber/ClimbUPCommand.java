@@ -9,24 +9,14 @@ package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.DriveSubsystem;
 
 public class ClimbUPCommand extends CommandBase {
 
   private final ClimberSubsystem m_subsystem;
 
-  private DriveSubsystem m_driveSubsystem;
-
   /**
    * Creates a new ClimbUPCommand.
    */
-  public ClimbUPCommand(ClimberSubsystem subsystem, DriveSubsystem driveSubsystem) {
-    m_subsystem = subsystem;
-    m_driveSubsystem = driveSubsystem;
-
-    addRequirements(m_subsystem, driveSubsystem);
-  }
-
   public ClimbUPCommand(ClimberSubsystem subsystem) {
     m_subsystem = subsystem;
 

@@ -22,6 +22,6 @@ public class GripperForwardCommandGroup extends SequentialCommandGroup {
    * Creates a new GripperExtendCommandGroup.
    */
   public GripperForwardCommandGroup(GripperSubsystem subsystem) {
-    super(new GripperExtend(subsystem), new GripperForward(subsystem));
+    super(new GripperExtend(subsystem), new WaitCommand(1), new GripperForward(subsystem));
   }
 }
