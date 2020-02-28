@@ -28,7 +28,7 @@ public class ThrowerSubsystem extends SubsystemBase {
    */
   public ThrowerSubsystem() {
     if(Constants.IS_VISION_SUBSYSTEM_IN_USE) {
-      visionSupport = true;
+      visionSupport = false; //TODO enable vision Support
     } else {
       visionSupport = false;
     }

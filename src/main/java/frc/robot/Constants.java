@@ -36,7 +36,7 @@ public final class Constants {
     public static final boolean IS_THROWER_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_TUNNEL_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_CLIMBING_SUBSYSTEM_IN_USE = true;
-    public static final boolean IS_VISION_SUBSYSTEM_IN_USE = false;
+    public static final boolean IS_VISION_SUBSYSTEM_IN_USE = true;
 
     /* PCM CAN ID */
     public static final int PCM_CAN_ID = 30;

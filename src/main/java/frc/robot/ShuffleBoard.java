@@ -92,14 +92,14 @@ public class ShuffleBoard {
         Constants.THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED = throwerLowerMotor.getDouble(Constants.THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED);
         Constants.THROWER_MOTOR_REVERSE_SPEED = throwerReversMotorSpeed.getDouble(Constants.THROWER_MOTOR_REVERSE_SPEED);
        
-        Constants.GRIPPER_MOTOR_SPEED_FORWARD = gripperMotorSpeed.getDouble(Constants.GRIPPER_MOTOR_SPEED_FORWARD);
-        Constants.GRIPPER_MOTOR_SPEED_REVERSE = gripperMotorReverseSpeed.getDouble(Constants.GRIPPER_MOTOR_SPEED_REVERSE);
+//        Constants.GRIPPER_MOTOR_SPEED_FORWARD = gripperMotorSpeed.getDouble(Constants.GRIPPER_MOTOR_SPEED_FORWARD);
+//        Constants.GRIPPER_MOTOR_SPEED_REVERSE = gripperMotorReverseSpeed.getDouble(Constants.GRIPPER_MOTOR_SPEED_REVERSE);
 
-        Constants.TUNNEL_MOTOR_SPEED_FEEDER = tunnelMotorFeederSpeed.getDouble(Constants.TUNNEL_MOTOR_SPEED_FEEDER);
-        Constants.TUNNEL_MOTOR_SPEED_FORWARD = tunnelMotorForward.getDouble(Constants.GRIPPER_MOTOR_SPEED_FORWARD);
-        Constants.TUNNEL_MOTOR_SPEED_REVERSE = tunnelMotorReverse.getDouble(Constants.GRIPPER_MOTOR_SPEED_REVERSE);
+//        Constants.TUNNEL_MOTOR_SPEED_FEEDER = tunnelMotorFeederSpeed.getDouble(Constants.TUNNEL_MOTOR_SPEED_FEEDER);
+//        Constants.TUNNEL_MOTOR_SPEED_FORWARD = tunnelMotorForward.getDouble(Constants.GRIPPER_MOTOR_SPEED_FORWARD);
+//        Constants.TUNNEL_MOTOR_SPEED_REVERSE = tunnelMotorReverse.getDouble(Constants.GRIPPER_MOTOR_SPEED_REVERSE);
 
-        Constants.CONTROL_PANEL_TURN_SPEED = controlPanelTurnSpeed.getDouble(Constants.CONTROL_PANEL_TURN_SPEED);
+//        Constants.CONTROL_PANEL_TURN_SPEED = controlPanelTurnSpeed.getDouble(Constants.CONTROL_PANEL_TURN_SPEED);
     }
 
 }

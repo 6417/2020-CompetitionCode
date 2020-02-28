@@ -10,10 +10,13 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
+
+  private DigitalOutput visionLight = new DigitalOutput(1);
 
   private NetworkTableEntry Distance;
   private NetworkTableEntry Angle;
@@ -41,7 +44,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putBoolean("Vision Light activated", visionLight.get());
   }
 
   public void printValues() {
@@ -77,6 +80,10 @@ public class VisionSubsystem extends SubsystemBase {
   public boolean isAligned() {
     //TODO return true when target is ready to shoot at
     return true;
+  }
+
+  public void toggleVisionLight() {
+    visionLight.set(!visionLight.get());
   }
 
 }

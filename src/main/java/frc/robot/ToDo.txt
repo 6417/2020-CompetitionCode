@@ -25,3 +25,12 @@ Button Bindings:
  - sensor für vorderster ball 
  - bei wechsel von reverse flow auf forward flow gripper nicht einfahren
  - control panel mit POV bedienen
+
+
+
+ Vision:
+
+ autoexposure=1 (manual)
+ exposure=40
+ brightness=15
+ weissabgleich=0 (manual)

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -36,6 +37,7 @@ public class RobotContainer extends Commands {
   private JoystickButton gripperProtectorButton;
   
   private JoystickButton throwerEnableButton;
+  private JoystickButton throwerVisionEnableButton;
 
   public static JoystickButton manualLeftClimbUpButton;
   public static JoystickButton manualLeftClimbDownButton;
@@ -109,6 +111,12 @@ public class RobotContainer extends Commands {
       throwerEnableButton = new JoystickButton(driveJoystick, Constants.SJ_THROWER_ENABLE_BUTTON_ID);
 
       throwerEnableButton.whenPressed(throwerCommandGroup);
+
+      if(Constants.IS_VISION_SUBSYSTEM_IN_USE) {
+        throwerVisionEnableButton = new JoystickButton(driveJoystick, Constants.SJ_THROWER_VISION_ENABLE_BUTTON_ID);
+        
+        throwerVisionEnableButton.whenPressed(switchVisionLightCommand);
+      }
     }
 
     //TODO change Statement for flow commands

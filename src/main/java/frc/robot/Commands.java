@@ -29,6 +29,7 @@ import frc.robot.commands.groups.thrower.ThrowerStopCommandGroup;
 import frc.robot.commands.tunnel.TunnelNorthCommand;
 import frc.robot.commands.tunnel.TunnelStopCommand;
 import frc.robot.commands.vision.ReadVisionDataCommand;
+import frc.robot.commands.vision.SwitchVisionLightCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ClimberSubsystem.ClimbType;
 import frc.robot.subsystems.ControlPanelSubsystem;
@@ -73,6 +74,8 @@ public class Commands {
     protected FlowStopCommandGroup flowStopCommandGroup;
 
     public static VisionSubsystem visionSubsystem;
+
+    protected SwitchVisionLightCommand switchVisionLightCommand;
 
     public static DriveSubsystem driveSubsystem;
 
@@ -219,6 +222,8 @@ public class Commands {
 
             visionSubsystem = new VisionSubsystem();
             visionSubsystem.setDefaultCommand(new ReadVisionDataCommand(visionSubsystem));
+
+            switchVisionLightCommand = new SwitchVisionLightCommand(visionSubsystem);
 
         }
 
