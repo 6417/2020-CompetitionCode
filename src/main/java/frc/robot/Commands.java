@@ -30,6 +30,7 @@ import frc.robot.commands.tunnel.TunnelNorthCommand;
 import frc.robot.commands.tunnel.TunnelStopCommand;
 import frc.robot.commands.vision.ReadVisionDataCommand;
 import frc.robot.commands.vision.SwitchVisionLightCommand;
+import frc.robot.commands.vision.VisionAlignCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ClimberSubsystem.ClimbType;
 import frc.robot.subsystems.ControlPanelSubsystem;
@@ -76,6 +77,7 @@ public class Commands {
     public static VisionSubsystem visionSubsystem;
 
     protected SwitchVisionLightCommand switchVisionLightCommand;
+    protected VisionAlignCommand visionAlignCommand;
 
     public static DriveSubsystem driveSubsystem;
 
@@ -224,6 +226,10 @@ public class Commands {
             visionSubsystem.setDefaultCommand(new ReadVisionDataCommand(visionSubsystem));
 
             switchVisionLightCommand = new SwitchVisionLightCommand(visionSubsystem);
+
+            if(Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
+                visionAlignCommand = new VisionAlignCommand(visionSubsystem, driveSubsystem);
+            }
 
         }
 

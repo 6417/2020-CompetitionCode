@@ -121,7 +121,7 @@ public final class Constants {
     ;
     public static double THROWER_MOTOR_REVERSE_SPEED = 0.3;
     public static double THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED = -0.48;
-    public static double THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED = 0.9;
+    public static double THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED = 1.0;
     public static double CONTROL_PANEL_TURN_SPEED = 0.3;
     public static double CLIMBING_MOTOR_SPEED = 0.5;
     public static double MANUAL_CLIMB_SPEED = 0.3;
@@ -133,5 +133,11 @@ public final class Constants {
 
     public static final double WHEEL_CIRCUMFERENCE = 0.4787787204060999;  // IN METER
     public static final double GEARBOX_TRANSLATION = 10.71;
+
+    /* PID Constants */
+    public static final double TURN_KP = 0.16;
+    public static final double TURN_KI = 0.003;
+    public static final double TURN_KD = 0.001;
+    public static final double AIM_TOLERANCE = 0.30; // in meter
 
 }

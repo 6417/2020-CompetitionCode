@@ -9,14 +9,13 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import ch.team6417.utils.Algorithms;
-import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Commands;
 import frc.robot.Constants;
@@ -31,6 +30,7 @@ public class DriveSubsystem extends SubsystemBase {
   private DifferentialDriveOdometry odometry;
   private Pose2d mPose2d;
   private AHRS ahrs;
+  public PIDController turnController;
 
   /**
    * Creates a new DriveSubsystem.
@@ -53,6 +53,8 @@ public class DriveSubsystem extends SubsystemBase {
     super.addChild("Drive Back Right", Motors.drive_motor_back_right);
     super.addChild("Drive Back Left", Motors.drive_motor_back_left);
 
+    turnController = new PIDController(Constants.TURN_KP, Constants.TURN_KI, Constants.TURN_KD);
+    turnController.setTolerance(Constants.AIM_TOLERANCE);
   }
 
   @Override
@@ -66,11 +68,12 @@ public class DriveSubsystem extends SubsystemBase {
     double steer;
     if(Constants.IS_CONTORL_PANEL_SUBSYSTEM_IN_USE) {
       double maxSpeed = Commands.controlPanelSubsystem.influenceDrive();
-      drive = Math.min(-RobotContainer.driveJoystick.getY(), maxSpeed);
-      steer = Algorithms.scale(RobotContainer.driveJoystick.getX(), -1, 1, -maxSpeed, maxSpeed);
+      drive = Math.min(RobotContainer.driveJoystick.getY(), maxSpeed);
+      // steer = -Algorithms.scale(RobotContainer.driveJoystick.getX(), -1, 1, -maxSpeed, maxSpeed);
+      steer = -RobotContainer.driveJoystick.getX();
     } else {
-      drive = -RobotContainer.driveJoystick.getY();
-      steer = RobotContainer.driveJoystick.getX();
+      drive = RobotContainer.driveJoystick.getY();
+      steer = -RobotContainer.driveJoystick.getX();
     }
 
     if(Constants.STEERING_WHEEL_USAGE) {
@@ -79,13 +82,13 @@ public class DriveSubsystem extends SubsystemBase {
 
 
 
-      if(RobotContainer.steerJoystick.getX() < 0) {
-        diffdrive.tankDrive((RobotContainer.steerJoystick.getX() + 0.5) * 2 * (drive), drive);
+      if(-RobotContainer.steerJoystick.getX() < 0) {
+        diffdrive.tankDrive((-RobotContainer.steerJoystick.getX() + 0.5) * 2 * (drive), drive);
       } else {
-        diffdrive.tankDrive(drive, (RobotContainer.steerJoystick.getX() - 0.5) * 2 * (-drive));
+        diffdrive.tankDrive(drive, (-RobotContainer.steerJoystick.getX() - 0.5) * 2 * (-drive));
       }
       SmartDashboard.putNumber("Drive Joystick", drive);
-      SmartDashboard.putNumber("Steer Joystick", RobotContainer.steerJoystick.getX());
+      SmartDashboard.putNumber("Steer Joystick", -RobotContainer.steerJoystick.getX());
 
 
 
@@ -96,6 +99,13 @@ public class DriveSubsystem extends SubsystemBase {
       diffdrive.arcadeDrive(drive * ShuffleBoard.joystickMaxSpeed.getDouble(1.0), steer * ShuffleBoard.joystickMaxSpeed.getDouble(1.0) * 0.6);
     }
   }
+
+  public void arcadeDrive(double xSpeed, double zRotate) {
+    System.out.println("drive xspeed: " + xSpeed + "dirve zRotate: " + zRotate);
+    Motors.leftMotors.set(zRotate);
+    Motors.rightMotors.set(zRotate);
+  }
+
   
   public float getAngle() {
     return Robot.ahrs.getYaw();

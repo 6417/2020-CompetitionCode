@@ -22,6 +22,7 @@ public class VisionSubsystem extends SubsystemBase {
   private NetworkTableEntry Angle;
   private NetworkTableEntry Offset;
   private NetworkTableEntry Target;
+  private NetworkTableEntry New;
 
   private double distance;
   private double angle;
@@ -40,10 +41,12 @@ public class VisionSubsystem extends SubsystemBase {
     Angle = table.getEntry("Angle");
     Offset = table.getEntry("XOffset");
     Target = table.getEntry("Target");
+    New = table.getEntry("New");
   }
 
   @Override
   public void periodic() {
+    readData();
     SmartDashboard.putBoolean("Vision Light activated", visionLight.get());
   }
 
@@ -52,6 +55,7 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Distance", Distance.getDouble(0));
     SmartDashboard.putNumber("Angle", Angle.getDouble(0));
     SmartDashboard.putNumber("Offset", Offset.getDouble(0));
+    SmartDashboard.putBoolean("New", New.getBoolean(false));
   }
 
   public void readData() {
@@ -65,21 +69,50 @@ public class VisionSubsystem extends SubsystemBase {
     return target;
   }
 
+  /**
+   * Distance to target plane normal from camera plane
+   * @return distance in meters
+   */
   public double getDistance() {
     return distance;
   }
 
+  /**
+   * Angle between normal of camera plane and target plane
+   * @return angle in radians
+   */
   public double getAngle() {
     return angle;
   }
 
+  /**
+   * Offset from camera center to target
+   * @return offset is positive when target is right from camera center
+   */
   public double getOffset() {
-    return offset;
+    return -offset;
   }
 
+  @Deprecated
   public boolean isAligned() {
     //TODO return true when target is ready to shoot at
     return true;
+  }
+
+  /**
+   * Distance between the center point of the target and
+   * where the camera plane normal intersects with target plane
+   * @return deviation in Meter
+   */
+  public double getDeviationToTarget() {
+    // TODO do complicated math.
+    return 0;
+  }
+
+  public boolean newValueReceived() {
+    boolean ret = New.getBoolean(false);
+    New.setBoolean(false);
+    return ret;
   }
 
   public void toggleVisionLight() {
