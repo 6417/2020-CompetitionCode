@@ -135,9 +135,9 @@ public final class Constants {
     public static final double GEARBOX_TRANSLATION = 10.71;
 
     /* PID Constants */
-    public static final double TURN_KP = 0.16;
-    public static final double TURN_KI = 0.003;
-    public static final double TURN_KD = 0.001;
-    public static final double AIM_TOLERANCE = 0.30; // in meter
+    public static final double TURN_KP = 0.17;
+    public static final double TURN_KI = 0.0;
+    public static final double TURN_KD = 0.0;
+    public static final double AIM_TOLERANCE = 0.0; // in meter
 
 }

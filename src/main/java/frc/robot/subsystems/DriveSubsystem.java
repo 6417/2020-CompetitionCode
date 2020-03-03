@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import ch.team6417.utils.Algorithms;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -101,7 +102,27 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public void arcadeDrive(double xSpeed, double zRotate) {
-    System.out.println("drive xspeed: " + xSpeed + "dirve zRotate: " + zRotate);
+    // zRotate *= -0.001;
+    // zRotate += (2 * Commands.visionSubsystem.getCalculatedAngle());
+    // zRotate /= 3;
+    zRotate *= -4.5;
+    zRotate = Math.min(Math.max(zRotate, -25), 25);
+
+
+    if(zRotate > 0) {
+      zRotate = Algorithms.scale(zRotate, 0, 25, 0.15, 0.3);
+      // if(zRotate < 0.2) {
+      //   zRotate = 0.2;
+      // }
+    } else {
+      zRotate = Algorithms.scale(zRotate, -25, 0, -0.3, -0.15);
+      // if(zRotate > -0.2) {
+      //   zRotate=-0.2;
+      // }
+    }
+
+    SmartDashboard.putNumber("dirve zRotate: ", zRotate);
+
     Motors.leftMotors.set(zRotate);
     Motors.rightMotors.set(zRotate);
   }
@@ -121,10 +142,14 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   private void resetEncoders() {
-    Motors.drive_encoder_back_right.setPosition(0);
-    Motors.drive_encoder_back_left.setPosition(0);
-    Motors.drive_encoder_front_right.setPosition(0);
-    Motors.drive_encoder_front_left.setPosition(0);
+    if(Constants.TEST_ROBOT) {
+      
+    } else {
+      Motors.drive_encoder_back_right.setPosition(0);
+      Motors.drive_encoder_back_left.setPosition(0);
+      Motors.drive_encoder_front_right.setPosition(0);
+      Motors.drive_encoder_front_left.setPosition(0);
+    }
   }
 
   public double getEncoderLeftMetric() {

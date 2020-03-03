@@ -48,6 +48,7 @@ public class VisionSubsystem extends SubsystemBase {
   public void periodic() {
     readData();
     SmartDashboard.putBoolean("Vision Light activated", visionLight.get());
+    SmartDashboard.putNumber("AngleToRotate", Math.toDegrees(getCalculatedAngle()));
   }
 
   public void printValues() {
@@ -56,6 +57,7 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Angle", Angle.getDouble(0));
     SmartDashboard.putNumber("Offset", Offset.getDouble(0));
     SmartDashboard.putBoolean("New", New.getBoolean(false));
+    
   }
 
   public void readData() {
@@ -63,6 +65,10 @@ public class VisionSubsystem extends SubsystemBase {
     angle = Angle.getDouble(0);
     offset = Offset.getDouble(0);
     target = Target.getBoolean(false);
+  }
+
+  public double getCalculatedAngle() {
+    return Math.atan(getOffset() / getDistance());
   }
 
   public boolean getTarget() {
