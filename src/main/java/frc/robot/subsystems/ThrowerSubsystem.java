@@ -7,16 +7,24 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Motors;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.ShuffleBoard;
 
 public class ThrowerSubsystem extends SubsystemBase {
 
-  private boolean visionSupport;
+  private DigitalInput stackSensor;
+
+  private boolean visionSupport, stackClear, stackPushing, timeStarted;
+
+  private long startTime;
 
   private final SlewRateLimiter throwerLimiter = new SlewRateLimiter(3);
   private double upperSpeed;
@@ -27,6 +35,12 @@ public class ThrowerSubsystem extends SubsystemBase {
    * Creates a new ThrowerSubsystem.
    */
   public ThrowerSubsystem() {
+    stackSensor = new DigitalInput(0);
+
+    stackClear = false;
+    stackPushing = false;
+    timeStarted = false;
+
     if(Constants.IS_VISION_SUBSYSTEM_IN_USE) {
       visionSupport = false; //TODO enable vision Support
     } else {
@@ -41,12 +55,12 @@ public class ThrowerSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
     SmartDashboard.putNumber("Ampere 775", Motors.thrower_motor_upper_shaft_right.getOutputCurrent());
     SmartDashboard.putNumber("Volts 775", Motors.thrower_motor_upper_shaft_right.getBusVoltage());
     ShuffleBoard.shooterVelocity.setDouble(Motors.thrower_encoder_right.getVelocity());
     setPoint = ShuffleBoard.throwerUpperMotor.getDouble(0)* 2000;
 //    Motors.throwerPIDController.setReference(setPoint, ControlType.kVelocity);
+    feedStack();
   }
 
   public void turnReverse() {
@@ -72,6 +86,7 @@ public class ThrowerSubsystem extends SubsystemBase {
   public void stopThrower() {
     Motors.thrower_motor_lower_shaft.stopMotor();
     Motors.thrower_motor_upper_shaft_right.stopMotor();
+    stackClear = true;
   }
 
   public void setVisionSupport(boolean enable) {
@@ -89,6 +104,33 @@ public class ThrowerSubsystem extends SubsystemBase {
     } else {
       System.out.println("Called False");
       return false;
+    }
+  }
+
+  public void feedStack() {
+    System.out.println(stackSensor.get());
+    if(stackClear == true && Motors.thrower_motor_upper_shaft_right.get() == 0 && Motors.tunnel_motor.getMotorOutputPercent() != 0) {
+      System.out.println("time to take it up");
+      if(stackSensor.get() == false || stackPushing == true) {
+        System.out.println("Sensor got or stack is pushing");
+        stackPushing = true;
+        if(timeStarted == false) {
+          startTime = System.currentTimeMillis();
+          Motors.thrower_motor_lower_shaft.getEncoder().setPosition(0);
+        }
+        timeStarted = true;
+        if(System.currentTimeMillis() >= startTime + 700) {
+          System.out.println("waited for time");
+          Motors.thrower_motor_lower_shaft.set(-0.1);
+          if(Motors.thrower_motor_lower_shaft.getEncoder().getPosition() < -2) {
+            System.out.println("stopped");
+            Motors.thrower_motor_lower_shaft.stopMotor();
+            stackClear = false;
+            stackPushing = false;
+            timeStarted = false;
+          }
+        }
+      }
     }
   }
 
