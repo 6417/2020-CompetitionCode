@@ -103,6 +103,11 @@ public class ControlPanelSubsystem extends SubsystemBase {
     } else if(RobotContainer.driveJoystick.getRawButton(8)) {
       enablePositionControl();
     }
+    if(RobotContainer.driveJoystick.getPOV() == 90) {  
+      Motors.control_panel_motor.set(Constants.CONTROL_PANEL_TURN_SPEED);
+    } else if(RobotContainer.driveJoystick.getPOV() == 270) {
+      Motors.control_panel_motor.set(-Constants.CONTROL_PANEL_TURN_SPEED);
+    }
   }
 
   public void addColorsToColorMatcher(Color... colors) {
