@@ -104,9 +104,11 @@ public class ControlPanelSubsystem extends SubsystemBase {
       enablePositionControl();
     }
     if(RobotContainer.driveJoystick.getPOV() == 90) {  
-      Motors.control_panel_motor.set(Constants.CONTROL_PANEL_TURN_SPEED);
+      Motors.control_panel_motor.set(Constants.CONTROL_PANEL_MANUAL_TURN_SPEED);
     } else if(RobotContainer.driveJoystick.getPOV() == 270) {
-      Motors.control_panel_motor.set(-Constants.CONTROL_PANEL_TURN_SPEED);
+      Motors.control_panel_motor.set(-Constants.CONTROL_PANEL_MANUAL_TURN_SPEED);
+    } else {
+      Motors.control_panel_motor.stopMotor();
     }
   }
 
@@ -166,16 +168,16 @@ public class ControlPanelSubsystem extends SubsystemBase {
     set(liftSolenoid, PneumaticState.OFF);
   }
 
-  public void extendDamper() {
-    set(damperSolenoid, PneumaticState.FORWARD);
+  public void extendDamper() { 
+//    set(damperSolenoid, PneumaticState.FORWARD);
   }
 
   public void retractDamper() {
-    set(damperSolenoid, PneumaticState.REVERSE);
+//    set(damperSolenoid, PneumaticState.REVERSE);
   }
 
   public void closeDamper() {
-    set(damperSolenoid, PneumaticState.OFF);
+//    set(damperSolenoid, PneumaticState.OFF);
   }
 
   /* Motor */
@@ -216,11 +218,22 @@ public class ControlPanelSubsystem extends SubsystemBase {
   }
 
   public void setRotationControl() {
-    if(colorChanges > 3) {
-      driveNextSteps();
+    /* if color sensor is demounted */
+
+    if(getSensorPos() < Constants.TICKS_THREE_ROTATIONS + Constants.ROTATION_CONTROL_SAFETY_TICKS) {
+      Motors.control_panel_motor.set(Constants.CONTROL_PANEL_TURN_SPEED);
     } else {
-      driveLastSteps();
+      Motors.control_panel_motor.stopMotor();
+      rotationControlFinished = true;
     }
+
+    /* if color sensor is mounted */
+    
+    // if(colorChanges > 3) {
+    //   driveNextSteps();
+    // } else {
+    //   driveLastSteps();
+    // }
   }
 
   private void driveNextSteps() {
@@ -273,19 +286,35 @@ public class ControlPanelSubsystem extends SubsystemBase {
 
   public void setPositionControl() {
     System.out.println("position control");
-    if(startColorID > readFMS()) {
-      if(calculateDistantce() - 2 < 0) {
-        driveStepCount(Constants.CONTROL_PANEL_TURN_SPEED, Math.abs(calculateDistantce() - 2));
-      } else {
-        driveStepCount(-Constants.CONTROL_PANEL_TURN_SPEED, Math.abs(calculateDistantce() - 2));
-      }
+
+    /* if color sensor is demounted */
+    
+    if(RobotContainer.driveJoystick.getRawButton(6)) {
+      Motors.control_panel_motor.set(Constants.CONTROL_PANEL_MANUAL_TURN_SPEED);
     } else {
-      if(calculateDistantce() - 2 < 0) {
-        driveStepCount(-Constants.CONTROL_PANEL_TURN_SPEED, Math.abs(calculateDistantce() - 2));
-      } else {
-        driveStepCount(Constants.CONTROL_PANEL_TURN_SPEED, Math.abs(calculateDistantce() - 2));
-      }
+      Motors.control_panel_motor.stopMotor();
     }
+    if(RobotContainer.driveJoystick.getRawButton(4)) {
+      positionControlFinished = true;
+    }
+
+
+
+    /* if color sensor is mounted */
+
+    // if(startColorID > readFMS()) {
+    //   if(calculateDistantce() - 2 < 0) {
+    //     driveStepCount(Constants.CONTROL_PANEL_TURN_SPEED, Math.abs(calculateDistantce() - 2));
+    //   } else {
+    //     driveStepCount(-Constants.CONTROL_PANEL_TURN_SPEED, Math.abs(calculateDistantce() - 2));
+    //   }
+    // } else {
+    //   if(calculateDistantce() - 2 < 0) {
+    //     driveStepCount(-Constants.CONTROL_PANEL_TURN_SPEED, Math.abs(calculateDistantce() - 2));
+    //   } else {
+    //     driveStepCount(Constants.CONTROL_PANEL_TURN_SPEED, Math.abs(calculateDistantce() - 2));
+    //   }
+    // }
   }
 
   private int calculateDistantce() {
@@ -379,15 +408,16 @@ public class ControlPanelSubsystem extends SubsystemBase {
     return Motors.control_panel_motor.isRevLimitSwitchClosed() == 1;
   }
 
-  public boolean getFrontReed() {
-    return Motors.control_panel_motor.isFwdLimitSwitchClosed() == 1;
-  }
+  /* TODO uncomment if front reed is mounted */
+  // public boolean getFrontReed() {
+  //   return Motors.control_panel_motor.isFwdLimitSwitchClosed() == 1;
+  // }
 
   public double influenceDrive() {
     if(getBottomReed()) {
       return 1.0;
-    } else if (!getFrontReed()) {
-      return 0.0;
+    // } else if (!getFrontReed()) { //TODO remove else if, if upper cilinder is removed
+    //   return 0.0;
     }
     return 0.35;
   }

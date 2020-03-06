@@ -9,7 +9,6 @@ package frc.robot.commands.controlpanel;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ControlPanelSubsystem;
-import frc.robot.subsystems.ControlPanelSubsystem.ColorDetected;
 
 public class TurnControlPanelCommand extends CommandBase {
 
@@ -28,7 +27,8 @@ public class TurnControlPanelCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(m_subsystem.getBottomReed() || m_subsystem.getFrontReed()) {
+ //   if(m_subsystem.getBottomReed() || m_subsystem.getFrontReed()) {//TODO remove getFront Reed when upper cilinder is removed
+    if(m_subsystem.getBottomReed()) {
       m_subsystem.setCancel(true);
       System.out.println("CP Command Canceled " + m_subsystem.getCancel());
     }

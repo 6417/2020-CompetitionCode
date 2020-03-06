@@ -36,7 +36,7 @@ public final class Constants {
     public static final boolean IS_THROWER_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_TUNNEL_SUBSYSTEM_IN_USE = true;
     public static final boolean IS_CLIMBING_SUBSYSTEM_IN_USE = true;
-    public static final boolean IS_VISION_SUBSYSTEM_IN_USE = true;
+    public static final boolean IS_VISION_SUBSYSTEM_IN_USE = false;
 
     /* PCM CAN ID */
     public static final int PCM_CAN_ID = 30;
@@ -112,6 +112,8 @@ public final class Constants {
     
     /* Numbers */
     public static final int CONTROL_PANEL_MIN_ROTATIONS_IN_TICKS = 20000;
+    public static final int TICKS_THREE_ROTATIONS = 20000;
+    public static final int ROTATION_CONTROL_SAFETY_TICKS = 1000;
 
     public static double GRIPPER_MOTOR_SPEED_FORWARD = -0.9;
     public static double GRIPPER_MOTOR_SPEED_REVERSE = 0.5;
@@ -123,6 +125,7 @@ public final class Constants {
     public static double THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED = -0.48;
     public static double THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED = 1.0;
     public static double CONTROL_PANEL_TURN_SPEED = 0.3;
+    public static double CONTROL_PANEL_MANUAL_TURN_SPEED = 0.15;
     public static double CLIMBING_MOTOR_SPEED = 0.5;
     public static double MANUAL_CLIMB_SPEED = 0.3;
 
