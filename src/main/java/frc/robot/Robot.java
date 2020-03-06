@@ -122,7 +122,7 @@ public class Robot extends TimedRobot {
     // if(System.currentTimeMillis() < autonomousStartTime + 1000) {
 
       System.out.println("driving");
-      Motors.drive_motor_front_right.set(0.1);
+      Motors.thrower_motor_lower_shaft.set(0.1);
   //    Motors.drive_motor_front_right.set(0.4);
     // } else {
     //   System.out.println("stopped");

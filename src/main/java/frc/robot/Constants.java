@@ -42,7 +42,7 @@ public final class Constants {
     public static final int PCM_CAN_ID = 30;
 
     /* Motor ID */
-    public static final int MOTOR_DRIVE_FRONT_RIGHT_ID = 12;
+    public static final int MOTOR_DRIVE_FRONT_RIGHT_ID = 21;
     public static final int MOTOR_DRIVE_FRONT_LEFT_ID = 10;
     public static final int MOTOR_DRIVE_BACK_RIGHT_ID = 13;
     public static final int MOTOR_DRIVE_BACK_LEFT_ID = 11;
@@ -51,7 +51,7 @@ public final class Constants {
 
     public static final int MOTOR_GRIPPER_ID = 14;
 
-    public static final int MOTOR_LOWER_THROWER_SHAFT_ID = 21;
+    public static final int MOTOR_LOWER_THROWER_SHAFT_ID = 12;
     public static final int MOTOR_UPPER_THROWER_SHAFT_LEFT_ID = 23; 
     public static final int MOTOR_UPPER_THROWER_SHAFT_RIGHT_ID = 22;
 
