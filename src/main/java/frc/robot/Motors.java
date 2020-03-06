@@ -45,8 +45,8 @@ public class Motors {
     public static WPI_TalonSRX talon_drive_motor_back_right;
     public static WPI_TalonSRX talon_drive_motor_back_left;
 
-    public static SpeedControllerGroup leftMotors;
-    public static SpeedControllerGroup rightMotors;
+    // public static SpeedControllerGroup leftMotors;
+    // public static SpeedControllerGroup rightMotors;
 
     public static WPI_TalonSRX control_panel_motor;
 
@@ -121,8 +121,8 @@ public class Motors {
                 talon_drive_motor_back_right.setInverted(false);
                 talon_drive_motor_back_left.setInverted(false);
 
-                leftMotors = new SpeedControllerGroup(talon_drive_motor_front_left, talon_drive_motor_back_left);
-                rightMotors = new SpeedControllerGroup(talon_drive_motor_front_right, talon_drive_motor_back_right);
+            //     leftMotors = new SpeedControllerGroup(talon_drive_motor_front_left, talon_drive_motor_back_left);
+            //     rightMotors = new SpeedControllerGroup(talon_drive_motor_front_right, talon_drive_motor_back_right);
             } else {
                 drive_motor_front_right = new FridoCANSparkMax(Constants.MOTOR_DRIVE_FRONT_RIGHT_ID, MotorType.kBrushless);
                 drive_motor_front_left = new FridoCANSparkMax(Constants.MOTOR_DRIVE_FRONT_LEFT_ID, MotorType.kBrushless);
@@ -142,8 +142,8 @@ public class Motors {
                 drive_motor_back_right.follow(drive_motor_front_right, false);
                 drive_motor_back_left.follow(drive_motor_front_left, false);
 
-                leftMotors = new SpeedControllerGroup(drive_motor_front_left, drive_motor_back_left);
-                rightMotors = new SpeedControllerGroup(drive_motor_front_right, drive_motor_back_right);
+                // leftMotors = new SpeedControllerGroup(drive_motor_front_left, drive_motor_back_left);
+                // rightMotors = new SpeedControllerGroup(drive_motor_front_right, drive_motor_back_right);
 
                 drive_encoder_front_right = drive_motor_front_right.getEncoder();
                 drive_encoder_front_left = drive_motor_front_left.getEncoder();

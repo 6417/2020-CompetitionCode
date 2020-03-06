@@ -44,7 +44,8 @@ public class DriveSubsystem extends SubsystemBase {
     Robot.ahrs.reset();
     resetEncoders();
 
-    diffdrive = new DifferentialDrive(Motors.leftMotors, Motors.rightMotors);
+    // diffdrive = new DifferentialDrive(Motors.leftMotors, Motors.rightMotors);
+    diffdrive = new DifferentialDrive(Motors.drive_motor_front_left, Motors.drive_motor_front_right);
     //diffdrive.setRightSideInverted(true);
 
     // Sets the distance per pulse for the encoders
