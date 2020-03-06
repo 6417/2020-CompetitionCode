@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Motors;
+import frc.robot.ShuffleBoard;
 
 public class GripperSubsystem extends SubsystemBase {
 
@@ -36,7 +37,11 @@ public class GripperSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if(Motors.gripper_motor.getMotorOutputPercent() != 0) {
+      ShuffleBoard.gripperVelocity.setBoolean(true);
+    } else {
+      ShuffleBoard.gripperVelocity.setBoolean(false);
+    }
   }
 
   public void extendGripper() {
