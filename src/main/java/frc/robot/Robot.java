@@ -28,6 +28,8 @@ public class Robot extends TimedRobot {
   private ShuffleBoard shuffleBoard;
   private RobotContainer m_robotContainer;
 
+  private double autonomousStartTime = 0;
+
   public static AHRS ahrs;
 
   /**
@@ -86,13 +88,26 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-/*    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+
+    // Motors.drive_motor_front_left.setInverted(true);
+    // Motors.drive_motor_front_right.setInverted(true);
+    // Motors.drive_motor_back_left.setInverted(true);
+    // Motors.drive_motor_back_right.setInverted(true);
+
+    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-*/
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.schedule();
+    // }
+
+
+    Commands.gripperSubsystem.extendProtector();
+    Commands.gripperSubsystem.setProtectorExtended(true);
+
+    autonomousStartTime = System.currentTimeMillis();
+
   }
 
   /**
@@ -100,6 +115,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+
+    System.out.println("autonomous start time: " + autonomousStartTime);
+    System.out.println("time: " + System.currentTimeMillis());
+    System.out.println("Difference: " + (System.currentTimeMillis() - (autonomousStartTime + 1000)));
+    // if(System.currentTimeMillis() < autonomousStartTime + 1000) {
+
+      System.out.println("driving");
+      Motors.drive_motor_front_right.set(0.1);
+  //    Motors.drive_motor_front_right.set(0.4);
+    // } else {
+    //   System.out.println("stopped");
+    //   Motors.leftMotors.stopMotor();
+    //   Motors.rightMotors.stopMotor();
+    // }
+
   }
 
   @Override

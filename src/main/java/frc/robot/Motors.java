@@ -134,7 +134,7 @@ public class Motors {
                 drive_motor_back_right.restoreFactoryDefaults();
                 drive_motor_back_left.restoreFactoryDefaults();   
 
-                drive_motor_front_right.setIdleMode(IdleMode.kBrake);
+                drive_motor_front_right.setIdleMode(IdleMode.kCoast);
                 drive_motor_front_left.setIdleMode(IdleMode.kBrake);
                 drive_motor_back_right.setIdleMode(IdleMode.kBrake);
                 drive_motor_back_left.setIdleMode(IdleMode.kBrake); 
@@ -142,29 +142,8 @@ public class Motors {
                 drive_motor_back_right.follow(drive_motor_front_right, false);
                 drive_motor_back_left.follow(drive_motor_front_left, false);
 
-                drivePIDLeft = drive_motor_back_left.getPIDController();
-                drivePIDRight = drive_motor_back_right.getPIDController();
-
                 leftMotors = new SpeedControllerGroup(drive_motor_front_left, drive_motor_back_left);
                 rightMotors = new SpeedControllerGroup(drive_motor_front_right, drive_motor_back_right);
-
-                // PID coefficients
-                kPclimber = 0.015; 
-                kIclimber = 0.001;
-                kDclimber = 0.000; 
-                kIzclimber = 0.0;
-                kFFclimber = 0.000; 
-                kMaxOutputclimber = 0.7; 
-                kMinOutputclimber = -0.7;
-                maxRPMclimber = 5700;
-
-                // set PID coefficients
-                drivePIDLeft.setP(kPclimber);
-                drivePIDLeft.setI(kIclimber);
-                drivePIDLeft.setD(kDclimber);
-                drivePIDRight.setP(kPclimber);
-                drivePIDRight.setI(kIclimber);
-                drivePIDRight.setD(kDclimber);
 
                 drive_encoder_front_right = drive_motor_front_right.getEncoder();
                 drive_encoder_front_left = drive_motor_front_left.getEncoder();
