@@ -134,7 +134,7 @@ public class Motors {
                 drive_motor_back_right.restoreFactoryDefaults();
                 drive_motor_back_left.restoreFactoryDefaults();   
 
-                drive_motor_front_right.setIdleMode(IdleMode.kCoast);
+                drive_motor_front_right.setIdleMode(IdleMode.kBrake);
                 drive_motor_front_left.setIdleMode(IdleMode.kBrake);
                 drive_motor_back_right.setIdleMode(IdleMode.kBrake);
                 drive_motor_back_left.setIdleMode(IdleMode.kBrake); 
