@@ -12,9 +12,12 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.LinearFilter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Motors;
 import frc.robot.RobotContainer;
+import frc.robot.commands.vision.VisionAlignCommand;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -30,6 +33,9 @@ public class VisionSubsystem extends SubsystemBase {
   private double angle;
   private double offset;
   private boolean target;
+  private boolean visionAligned;
+
+  private LinearFilter linearFilter = LinearFilter.singlePoleIIR(0.06, 0.02);
     
   /**
    * Creates a new VisionSubsystem.
@@ -49,6 +55,11 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     readData();
+  //  calculateData();
+    printValues();
+    if(Motors.thrower_motor_upper_shaft_right.getEncoder().getVelocity() != 0) {
+      visionAligned = false;
+    }
     SmartDashboard.putBoolean("Vision Light activated", visionLight.get());
     SmartDashboard.putNumber("AngleToRotate", Math.toDegrees(getCalculatedAngle()));
   }
@@ -58,6 +69,7 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Distance", Distance.getDouble(0));
     SmartDashboard.putNumber("Angle", Angle.getDouble(0));
     SmartDashboard.putNumber("Offset", Offset.getDouble(0));
+    SmartDashboard.putNumber("calculated Angle", Math.toDegrees(getCalculatedAngle()));
     SmartDashboard.putBoolean("New", New.getBoolean(false));
     
   }
@@ -69,10 +81,15 @@ public class VisionSubsystem extends SubsystemBase {
     target = Target.getBoolean(false);
   }
 
+  public void calculateData() {
+    offset = linearFilter.calculate(offset);
+    distance = linearFilter.calculate(distance);
+  }
+
   public double getCalculatedAngle() {
-    return Algorithms.scale(RobotContainer.driveJoystick.getThrottle(), -1, 1, -30, 30) ;
+    //return Algorithms.scale(RobotContainer.driveJoystick.getThrottle(), -1, 1, -30, 30) ;
     //TODO uncomment the debug angle method
-    //    return Math.atan(getOffset() / getDistance());
+        return Math.atan(getOffset() / getDistance());
   }
 
   public boolean getTarget() {
@@ -103,10 +120,17 @@ public class VisionSubsystem extends SubsystemBase {
     return -offset;
   }
 
-  @Deprecated
+  public void setVisionAligned(boolean state) {
+    visionAligned = state;
+  }
+
   public boolean isAligned() {
     //TODO return true when target is ready to shoot at
-    return true;
+    if(visionAligned == true) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**

@@ -20,7 +20,8 @@ public class ShuffleBoard {
     public ShuffleBoard() {}
     
     private static ShuffleboardTab speeds = Shuffleboard.getTab("2020Speeds");
-    private static ShuffleboardTab tab = Shuffleboard.getTab("2020");
+    private static ShuffleboardTab competition = Shuffleboard.getTab("Competition");
+    private static ShuffleboardTab tab = Shuffleboard.getTab("extra");
 
     //Setters
     public static NetworkTableEntry throwerUpperMotor =
@@ -68,13 +69,13 @@ public class ShuffleBoard {
 
     //getters
     public static NetworkTableEntry shooterVelocity =
-        tab.add("Shooter Velocity", 0)
-        .withWidget(BuiltInWidgets.kGraph)
+        competition.add("Shooter Velocity", false)
+        .withWidget(BuiltInWidgets.kBooleanBox)
         .getEntry();
 
-    public static NetworkTableEntry gripperMotor =
-        tab.add("Gripper Velocity", 0)
-        .withWidget(BuiltInWidgets.kNumberSlider)
+    public static NetworkTableEntry gripperVelocity =
+        competition.add("Gripper Velocity", false)
+        .withWidget(BuiltInWidgets.kBooleanBox)
         .getEntry();
 
     public static NetworkTableEntry joystick =

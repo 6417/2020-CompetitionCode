@@ -56,9 +56,11 @@ public class ThrowerSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Ampere 775", Motors.thrower_motor_upper_shaft_right.getOutputCurrent());
-    SmartDashboard.putNumber("Volts 775", Motors.thrower_motor_upper_shaft_right.getBusVoltage());
-    ShuffleBoard.shooterVelocity.setDouble(Motors.thrower_encoder_right.getVelocity());
+    if(Motors.thrower_motor_upper_shaft_right.getEncoder().getVelocity() != 0) {
+      ShuffleBoard.shooterVelocity.setBoolean(true);
+    } else {
+      ShuffleBoard.shooterVelocity.setBoolean(false);
+    }    
     setPoint = ShuffleBoard.throwerUpperMotor.getDouble(0)* 2000;
 //    Motors.throwerPIDController.setReference(setPoint, ControlType.kVelocity);
     feedStack();
@@ -70,8 +72,8 @@ public class ThrowerSubsystem extends SubsystemBase {
   }
 
   public void enableUpperThrower() {
-    if(visionSupport == true) {
-      double speed = 0.0003 * Commands.visionSubsystem.getDistance() + 0.6875;
+    if(visionSupport == true && Commands.visionSubsystem.isAligned() == true) {
+      double speed = 0.0003 * Commands.visionSubsystem.getDistance() + 0.711;
       SmartDashboard.putNumber("Shooter speed", speed);
       upperSpeed = throwerLimiter.calculate(speed);
       Motors.thrower_motor_upper_shaft_right.set(upperSpeed);
@@ -112,7 +114,6 @@ public class ThrowerSubsystem extends SubsystemBase {
   }
 
   public void feedStack() {
-    System.out.println(stackSensor.get());
     if(stackClear == true && Motors.thrower_motor_upper_shaft_right.get() == 0 && Motors.tunnel_motor.getMotorOutputPercent() != 0) {
       System.out.println("time to take it up");
       if(stackSensor.get() == false || stackPushing == true) {
