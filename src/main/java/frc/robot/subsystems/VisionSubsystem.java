@@ -7,12 +7,14 @@
 
 package frc.robot.subsystems;
 
+import ch.team6417.utils.Algorithms;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 public class VisionSubsystem extends SubsystemBase {
 
@@ -68,7 +70,9 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getCalculatedAngle() {
-    return Math.atan(getOffset() / getDistance());
+    return Algorithms.scale(RobotContainer.driveJoystick.getThrottle(), -1, 1, -30, 30) ;
+    //TODO uncomment the debug angle method
+    //    return Math.atan(getOffset() / getDistance());
   }
 
   public boolean getTarget() {

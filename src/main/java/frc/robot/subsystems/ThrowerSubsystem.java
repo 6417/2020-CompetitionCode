@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Commands;
 import frc.robot.Constants;
 import frc.robot.Motors;
 import frc.robot.Robot;
@@ -42,7 +43,7 @@ public class ThrowerSubsystem extends SubsystemBase {
     timeStarted = false;
 
     if(Constants.IS_VISION_SUBSYSTEM_IN_USE) {
-      visionSupport = false; //TODO enable vision Support
+      visionSupport = true; //TODO enable vision Support
     } else {
       visionSupport = false;
     }
@@ -70,7 +71,10 @@ public class ThrowerSubsystem extends SubsystemBase {
 
   public void enableUpperThrower() {
     if(visionSupport == true) {
-
+      double speed = 0.0003 * Commands.visionSubsystem.getDistance() + 0.6875;
+      SmartDashboard.putNumber("Shooter speed", speed);
+      upperSpeed = throwerLimiter.calculate(speed);
+      Motors.thrower_motor_upper_shaft_right.set(upperSpeed);
     } else {
 //      upperSpeed = throwerLimiter.calculate(ShuffleBoard.throwerUpperMotor.getDouble(0.0));
       upperSpeed = throwerLimiter.calculate(Constants.THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED);

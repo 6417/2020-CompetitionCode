@@ -7,34 +7,29 @@
 
 package frc.robot.commands.vision;
 
-import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.PIDCommand;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Motors;
 import frc.robot.Robot;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
-public class VisionAlignCommand extends PIDCommand {
+public class VisionAlignCommand extends CommandBase {
 
   private DriveSubsystem m_driveSubsystem;
   private VisionSubsystem m_visionSubsystem;
-  // codesmell
   private static double angleToRotate = 0;
   private static double angleToRotateUpdated = 0;
   private boolean firstTargetFound = false;
   private double yaw = 0;
   private double preAngle = 0;
-  private static double offset= 0;
   private boolean didtwice = false;
 
   /**
    * Creates a new VisionAlignCommand.
    */
   public VisionAlignCommand(VisionSubsystem visionSubsystem, DriveSubsystem driveSubsystem) {
-    super(driveSubsystem.turnController, () -> offset, () -> 0.0,
-        (output) -> driveSubsystem.arcadeDrive(0, output), driveSubsystem);
     m_visionSubsystem = visionSubsystem;
     m_driveSubsystem = driveSubsystem;
 
@@ -44,9 +39,8 @@ public class VisionAlignCommand extends PIDCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("Vision allign initialized");
     Robot.ahrs.reset();
-    angleToRotate = calculateAngleToRotate();
+    angleToRotate = m_visionSubsystem.getCalculatedAngle();
     firstTargetFound = false;
     didtwice = false;
     preAngle = (Robot.ahrs.getYaw());
@@ -58,10 +52,8 @@ public class VisionAlignCommand extends PIDCommand {
     if (m_visionSubsystem.newValueReceived() && m_visionSubsystem.getTarget()) {
       System.out.println("new value true");
       firstTargetFound = true;
-//      angleToRotate = calculateAngleToRotate();
       yaw = Math.toRadians(Robot.ahrs.getYaw());
 //      preAngle = (Robot.ahrs.getYaw());
-      offset = m_visionSubsystem.getOffset();
     } else if(firstTargetFound == true) {
       angleToRotateUpdated = angleToRotate;
     }
@@ -70,10 +62,7 @@ public class VisionAlignCommand extends PIDCommand {
       System.out.println("New value false, target detected: " + m_visionSubsystem.getTarget());
 
 
-      // Motors.drivePIDLeft.setReference(Motors.drive_encoder_back_left.getPosition() + angleToRotate * 10, ControlType.kPosition);
-      // Motors.drivePIDRight.setReference(Motors.drive_encoder_back_right.getPosition() + angleToRotate * 10, ControlType.kPosition);
       SmartDashboard.putNumber("angle to rotate", Math.toDegrees(angleToRotate));
-      SmartDashboard.putNumber("offset", offset);
       SmartDashboard.putNumber("angle to rotate updated: ", (angleToRotateUpdated));
       SmartDashboard.putNumber("encoder left", Motors.talon_drive_motor_back_left.getSelectedSensorPosition());
       SmartDashboard.putNumber("encoder right", Motors.talon_drive_motor_front_left.getSelectedSensorPosition());
@@ -82,7 +71,6 @@ public class VisionAlignCommand extends PIDCommand {
       SmartDashboard.putNumber("NavxAngle", Math.toDegrees(yaw));
       yaw = Math.toRadians(Robot.ahrs.getYaw());
       m_driveSubsystem.arcadeDrive(0,angleToRotateUpdated);
-//      super.execute();
   }
 
   // Called once the command ends or is interrupted.
@@ -98,7 +86,6 @@ public class VisionAlignCommand extends PIDCommand {
   public boolean isFinished() {
     if (firstTargetFound) {
       // TODO add return true when in tolerance
-      System.out.println("Offset: " + m_visionSubsystem.getOffset());
       if(angleToRotateUpdated < 1 && angleToRotateUpdated > -1) {
         if(didtwice == false){
         m_driveSubsystem.arcadeDrive(0.0, 0.0);
@@ -107,7 +94,7 @@ public class VisionAlignCommand extends PIDCommand {
       } else {
         m_driveSubsystem.arcadeDrive(0.0, 0.0);
         Robot.ahrs.reset();
-        angleToRotate = calculateAngleToRotate();
+        angleToRotate = m_visionSubsystem.getCalculatedAngle();
         firstTargetFound = false;
         didtwice = true;
         preAngle = (Robot.ahrs.getYaw());
@@ -119,10 +106,6 @@ public class VisionAlignCommand extends PIDCommand {
     } else {
       return false;
     }
-  }
-
-  private double calculateAngleToRotate() {
-    return Math.atan(m_visionSubsystem.getOffset() / m_visionSubsystem.getDistance());
   }
 
   @Override
