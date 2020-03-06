@@ -43,7 +43,7 @@ public class VisionAlignCommand extends CommandBase {
     angleToRotate = m_visionSubsystem.getCalculatedAngle();
     firstTargetFound = false;
     didtwice = false;
-    preAngle = (Robot.ahrs.getYaw());
+    preAngle = (-Robot.ahrs.getYaw());
  }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -52,24 +52,21 @@ public class VisionAlignCommand extends CommandBase {
     if (m_visionSubsystem.newValueReceived() && m_visionSubsystem.getTarget()) {
       System.out.println("new value true");
       firstTargetFound = true;
-      yaw = Math.toRadians(Robot.ahrs.getYaw());
+      yaw = Math.toRadians(-Robot.ahrs.getYaw());
 //      preAngle = (Robot.ahrs.getYaw());
     } else if(firstTargetFound == true) {
       angleToRotateUpdated = angleToRotate;
     }
-    angleToRotateUpdated = Math.toDegrees(angleToRotate) - (preAngle - (Robot.ahrs.getYaw()));
+    angleToRotateUpdated = Math.toDegrees(angleToRotate) - (preAngle - (-Robot.ahrs.getYaw()));
 
       System.out.println("New value false, target detected: " + m_visionSubsystem.getTarget());
 
 
       SmartDashboard.putNumber("angle to rotate", Math.toDegrees(angleToRotate));
       SmartDashboard.putNumber("angle to rotate updated: ", (angleToRotateUpdated));
-      SmartDashboard.putNumber("encoder left", Motors.talon_drive_motor_back_left.getSelectedSensorPosition());
-      SmartDashboard.putNumber("encoder right", Motors.talon_drive_motor_front_left.getSelectedSensorPosition());
-      SmartDashboard.putNumber("reference left", (double)Motors.talon_drive_motor_back_left.getSelectedSensorPosition() + angleToRotate * 10);
-      SmartDashboard.putNumber("reference right", (double)Motors.talon_drive_motor_front_right.getSelectedSensorPosition() - angleToRotate * 10);
       SmartDashboard.putNumber("NavxAngle", Math.toDegrees(yaw));
       yaw = Math.toRadians(Robot.ahrs.getYaw());
+      SmartDashboard.putNumber("Angle", Robot.ahrs.getYaw());
       m_driveSubsystem.arcadeDrive(0,angleToRotateUpdated);
   }
 
@@ -78,34 +75,36 @@ public class VisionAlignCommand extends CommandBase {
   public void end(boolean interrupted) {
     m_driveSubsystem.arcadeDrive(0,0);
     firstTargetFound = false;
-    m_visionSubsystem.toggleVisionLight();
+    m_visionSubsystem.setVisionAligned(true);
+//    m_visionSubsystem.toggleVisionLight();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (firstTargetFound) {
+    // if (firstTargetFound) {
       // TODO add return true when in tolerance
-      if(angleToRotateUpdated < 1 && angleToRotateUpdated > -1) {
-        if(didtwice == false){
-        m_driveSubsystem.arcadeDrive(0.0, 0.0);
-        System.out.println("Command finished");
-        return true;
-      } else {
-        m_driveSubsystem.arcadeDrive(0.0, 0.0);
-        Robot.ahrs.reset();
-        angleToRotate = m_visionSubsystem.getCalculatedAngle();
-        firstTargetFound = false;
-        didtwice = true;
-        preAngle = (Robot.ahrs.getYaw());
-        return false;
-      }
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
+      // if(angleToRotateUpdated < 1 && angleToRotateUpdated > -1) {
+      //   if(didtwice == false){
+      //   m_driveSubsystem.arcadeDrive(0.0, 0.0);
+      //   System.out.println("Command finished");
+      //   return true;
+      //   } else {
+      //     m_driveSubsystem.arcadeDrive(0.0, 0.0);
+      //     Robot.ahrs.reset();
+      //     angleToRotate = m_visionSubsystem.getCalculatedAngle();
+      //     firstTargetFound = false;
+      //     didtwice = true;
+      //     preAngle = (Robot.ahrs.getYaw());
+      //     return false;
+      //   }
+      // } else {
+      //   return false;
+      // }
+    // } else {
+    //   return false;
+    // }
+    return true;
   }
 
   @Override
