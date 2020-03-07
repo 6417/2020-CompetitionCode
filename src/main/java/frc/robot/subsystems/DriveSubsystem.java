@@ -45,7 +45,8 @@ public class DriveSubsystem extends SubsystemBase {
     resetEncoders();
 
     diffdrive = new DifferentialDrive(Motors.leftMotors, Motors.rightMotors);
-    //diffdrive.setRightSideInverted(true);
+    // diffdrive = new DifferentialDrive(Motors.drive_motor_front_right, Motors.drive_motor_front_left);
+    diffdrive.setRightSideInverted(true);
 
     // Sets the distance per pulse for the encoders
     Motors.drive_encoder_front_left.setPositionConversionFactor(DriveConstants.kEncoderDistancePerPulse);
@@ -188,9 +189,9 @@ public class DriveSubsystem extends SubsystemBase {
      return odometry.getPoseMeters();
    }
 
-  public void resetPose(Pose2d pose) {
-    resetEncoders();
-    odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
+  public void resetPose() {
+    // resetEncoders();
+    odometry.resetPosition(new Pose2d(0, 0, new Rotation2d(0)), Rotation2d.fromDegrees(Robot.ahrs.getYaw()));
   }
 
   /**

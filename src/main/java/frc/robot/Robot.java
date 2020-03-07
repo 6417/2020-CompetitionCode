@@ -116,19 +116,25 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
 
-    System.out.println("autonomous start time: " + autonomousStartTime);
-    System.out.println("time: " + System.currentTimeMillis());
+
+      Motors.thrower_motor_upper_shaft_right.set(0.8);
     System.out.println("Difference: " + (System.currentTimeMillis() - (autonomousStartTime + 1000)));
     // if(System.currentTimeMillis() < autonomousStartTime + 1000) {
 
-      System.out.println("driving");
-      Motors.drive_motor_front_right.set(0.1);
-  //    Motors.drive_motor_front_right.set(0.4);
-    // } else {
-    //   System.out.println("stopped");
-    //   Motors.leftMotors.stopMotor();
+      if(System.currentTimeMillis() > autonomousStartTime + 7000) {
+        Motors.tunnel_motor.stopMotor();
+        Motors.thrower_motor_lower_shaft.stopMotor();
+        Motors.thrower_motor_upper_shaft_right.stopMotor();
+        // if (m_autonomousCommand != null) {
+        //   m_autonomousCommand.schedule();
     //   Motors.rightMotors.stopMotor();
-    // }
+        // }
+      } else if(System.currentTimeMillis() > autonomousStartTime + 3000) {
+        Motors.tunnel_motor.set(Constants.TUNNEL_MOTOR_SPEED_FEEDER);
+        Motors.thrower_motor_lower_shaft.set(-0.45);
+      }
+
+//      Motors.drive_motor_front_right.set(0.1);
 
   }
 

@@ -78,6 +78,11 @@ public class ShuffleBoard {
         .withWidget(BuiltInWidgets.kBooleanBox)
         .getEntry();
 
+    public static NetworkTableEntry visionLight =
+        competition.add("Vision Light", false)
+        .withWidget(BuiltInWidgets.kBooleanBox)
+        .getEntry();
+
     public static NetworkTableEntry joystick =
         tab.add("Steering Wheel Joystick", true)
         .withWidget(BuiltInWidgets.kToggleButton)

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
@@ -196,7 +197,7 @@ public class RobotContainer extends Commands {
             .addConstraint(autoVoltageConstraint);
 
     // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+    Trajectory driveFromLine = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
         // // Pass through these two interior waypoints, making an 's' curve path
@@ -206,13 +207,27 @@ public class RobotContainer extends Commands {
         ),
         // End 3 meters straight ahead of where we started, facing forward
 //        new Pose2d(3, 0, new Rotation2d(0)),
-        new Pose2d(3, 0, new Rotation2d(0)),
+        new Pose2d(0.4, 0, new Rotation2d(0)),
+        // Pass config
+        config
+    );
+
+
+    Trajectory sixBallAutonomous = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0.4)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(
+            new Translation2d(-6.05 ,0)
+        ),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(-2.8, 0.5, new Rotation2d(0.2)),
         // Pass config
         config
     );
 
     RamseteCommand ramseteCommand = new RamseteCommand(
-        exampleTrajectory,
+        driveFromLine,
         Commands.driveSubsystem::getPose,
         new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
         new SimpleMotorFeedforward(DriveConstants.ksVolts,

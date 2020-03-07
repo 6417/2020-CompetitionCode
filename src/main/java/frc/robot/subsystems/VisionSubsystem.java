@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Motors;
 import frc.robot.RobotContainer;
+import frc.robot.ShuffleBoard;
 import frc.robot.commands.vision.VisionAlignCommand;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -60,7 +61,7 @@ public class VisionSubsystem extends SubsystemBase {
     if(Motors.thrower_motor_upper_shaft_right.getEncoder().getVelocity() != 0) {
       visionAligned = false;
     }
-    SmartDashboard.putBoolean("Vision Light activated", visionLight.get());
+    ShuffleBoard.visionLight.setBoolean(visionLight.get());
     SmartDashboard.putNumber("AngleToRotate", Math.toDegrees(getCalculatedAngle()));
   }
 
@@ -150,6 +151,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public void toggleVisionLight() {
+    System.out.println("visionLightActivated");
     visionLight.set(!visionLight.get());
   }
 

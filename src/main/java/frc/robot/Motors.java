@@ -100,30 +100,7 @@ public class Motors {
     private void configDriveMotors() {
         
         if(Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
-            if(Constants.TEST_ROBOT) {
-                talon_drive_motor_front_right = new WPI_TalonSRX(7);
-                talon_drive_motor_front_left = new WPI_TalonSRX(6);
-                talon_drive_motor_back_right = new WPI_TalonSRX(4);
-                talon_drive_motor_back_left = new WPI_TalonSRX(5);
-
-                talon_drive_motor_front_right.configFactoryDefault();
-                talon_drive_motor_front_left.configFactoryDefault();
-                talon_drive_motor_back_right.configFactoryDefault();
-                talon_drive_motor_back_left.configFactoryDefault();    
-
-                talon_drive_motor_front_right.setNeutralMode(NeutralMode.Brake);
-                talon_drive_motor_front_left.setNeutralMode(NeutralMode.Brake);
-                talon_drive_motor_back_right.setNeutralMode(NeutralMode.Brake);
-                talon_drive_motor_back_left.setNeutralMode(NeutralMode.Brake);    
-
-                talon_drive_motor_back_right.follow(talon_drive_motor_front_right);
-                talon_drive_motor_back_left.follow(talon_drive_motor_front_left);
-                talon_drive_motor_back_right.setInverted(false);
-                talon_drive_motor_back_left.setInverted(false);
-
-                leftMotors = new SpeedControllerGroup(talon_drive_motor_front_left, talon_drive_motor_back_left);
-                rightMotors = new SpeedControllerGroup(talon_drive_motor_front_right, talon_drive_motor_back_right);
-            } else {
+           
                 drive_motor_front_right = new FridoCANSparkMax(Constants.MOTOR_DRIVE_FRONT_RIGHT_ID, MotorType.kBrushless);
                 drive_motor_front_left = new FridoCANSparkMax(Constants.MOTOR_DRIVE_FRONT_LEFT_ID, MotorType.kBrushless);
                 drive_motor_back_right = new FridoCANSparkMax(Constants.MOTOR_DRIVE_BACK_RIGHT_ID, MotorType.kBrushless);
@@ -134,13 +111,13 @@ public class Motors {
                 drive_motor_back_right.restoreFactoryDefaults();
                 drive_motor_back_left.restoreFactoryDefaults();   
 
+                drive_motor_back_right.follow(drive_motor_front_right, false);
+                drive_motor_back_left.follow(drive_motor_front_left, false);
+
                 drive_motor_front_right.setIdleMode(IdleMode.kBrake);
                 drive_motor_front_left.setIdleMode(IdleMode.kBrake);
                 drive_motor_back_right.setIdleMode(IdleMode.kBrake);
                 drive_motor_back_left.setIdleMode(IdleMode.kBrake); 
-
-                drive_motor_back_right.follow(drive_motor_front_right, false);
-                drive_motor_back_left.follow(drive_motor_front_left, false);
 
                 leftMotors = new SpeedControllerGroup(drive_motor_front_left, drive_motor_back_left);
                 rightMotors = new SpeedControllerGroup(drive_motor_front_right, drive_motor_back_right);
@@ -149,8 +126,7 @@ public class Motors {
                 drive_encoder_front_left = drive_motor_front_left.getEncoder();
                 drive_encoder_back_right = drive_motor_back_right.getEncoder();
                 drive_encoder_back_left = drive_motor_back_left.getEncoder();
-           }
-        }
+    }
     }
 
     private void configContorlPanelMotors() {
