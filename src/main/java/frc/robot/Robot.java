@@ -9,8 +9,17 @@ package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -50,6 +59,21 @@ public class Robot extends TimedRobot {
     shuffleBoard = new ShuffleBoard();
     motors = new Motors();
     m_robotContainer = new RobotContainer();
+
+    new Thread (() -> {
+      UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+      camera.setResolution(625, 360);
+      CvSink cvSink = CameraServer.getInstance().getVideo();
+      CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 625, 360);
+      Mat source = new Mat();
+      Mat output = new Mat();
+      while(!Thread.interrupted()) {
+        cvSink.grabFrame(source);
+        Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
+        outputStream.putFrame(output);
+      }
+
+    }).start();
     
   }
 
@@ -88,13 +112,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-
-
-    // Motors.drive_motor_front_left.setInverted(true);
-    // Motors.drive_motor_front_right.setInverted(true);
-    // Motors.drive_motor_back_left.setInverted(true);
-    // Motors.drive_motor_back_right.setInverted(true);
-
     // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -102,11 +119,12 @@ public class Robot extends TimedRobot {
     //   m_autonomousCommand.schedule();
     // }
 
+    CommandScheduler.getInstance().schedule(Commands.autonomousDrive);
 
-    Commands.gripperSubsystem.extendProtector();
-    Commands.gripperSubsystem.setProtectorExtended(true);
+    // Commands.gripperSubsystem.extendProtector(); 
+    // Commands.gripperSubsystem.setProtectorExtended(true);
 
-    autonomousStartTime = System.currentTimeMillis();
+    // autonomousStartTime = System.currentTimeMillis();
 
   }
 
@@ -117,24 +135,17 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
 
 
-      Motors.thrower_motor_upper_shaft_right.set(0.8);
-    System.out.println("Difference: " + (System.currentTimeMillis() - (autonomousStartTime + 1000)));
-    // if(System.currentTimeMillis() < autonomousStartTime + 1000) {
+      // Motors.thrower_motor_upper_shaft_right.set(0.8);
 
-      if(System.currentTimeMillis() > autonomousStartTime + 7000) {
-        Motors.tunnel_motor.stopMotor();
-        Motors.thrower_motor_lower_shaft.stopMotor();
-        Motors.thrower_motor_upper_shaft_right.stopMotor();
-        // if (m_autonomousCommand != null) {
-        //   m_autonomousCommand.schedule();
-    //   Motors.rightMotors.stopMotor();
-        // }
-      } else if(System.currentTimeMillis() > autonomousStartTime + 3000) {
-        Motors.tunnel_motor.set(Constants.TUNNEL_MOTOR_SPEED_FEEDER);
-        Motors.thrower_motor_lower_shaft.set(-0.45);
-      }
+      // if(System.currentTimeMillis() > autonomousStartTime + 7000) {
+      //   Motors.tunnel_motor.stopMotor();
+      //   Motors.thrower_motor_lower_shaft.stopMotor();
+      //   Motors.thrower_motor_upper_shaft_right.stopMotor();
+      // } else if(System.currentTimeMillis() > autonomousStartTime + 3000) {
+      //   Motors.tunnel_motor.set(Constants.TUNNEL_MOTOR_SPEED_FEEDER);
+      //   Motors.thrower_motor_lower_shaft.set(-0.45);
+      // }
 
-//      Motors.drive_motor_front_right.set(0.1);
 
   }
 

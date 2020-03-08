@@ -176,7 +176,7 @@ public class RobotContainer extends Commands {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  public static Command getAutonomousCommand() {
 
     // Create a voltage constraint to ensure we don't accelerate too fast
     var autoVoltageConstraint =
@@ -207,7 +207,7 @@ public class RobotContainer extends Commands {
         ),
         // End 3 meters straight ahead of where we started, facing forward
 //        new Pose2d(3, 0, new Rotation2d(0)),
-        new Pose2d(0.4, 0, new Rotation2d(0)),
+        new Pose2d(2, 0, new Rotation2d(0)),
         // Pass config
         config
     );

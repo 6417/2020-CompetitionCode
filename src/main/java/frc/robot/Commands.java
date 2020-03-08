@@ -9,6 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.commands.autonomous.AutonomousDrive;
 import frc.robot.commands.climber.ClimbStopCommand;
 import frc.robot.commands.climber.ClimbUPCommand;
 import frc.robot.commands.climber.ManualClimbCommand;
@@ -89,6 +90,8 @@ public class Commands {
     protected ManualClimbCommand manualClimbCommand;
     protected ClimbStopCommand climbStopCommand;
 
+    protected static AutonomousDrive autonomousDrive;
+
     private void initialize() {
 
         configPneumatics();
@@ -108,6 +111,8 @@ public class Commands {
         configVisionCommands();
 
         configClimbCommands();
+
+        configAutonomousCommands();
 
     }
 
@@ -244,6 +249,16 @@ public class Commands {
             climbStopCommand = new ClimbStopCommand(climberSubsystem);
             manualClimbCommand = new ManualClimbCommand(climberSubsystem);
         }
+    }
+
+    private void configAutonomousCommands() {
+
+        if(Constants.AUTONOMOUS_SYSTEMS_ENABLED && Constants.IS_GRIPPER_SUBSYSTEM_IN_USE && Constants.IS_THROWER_SUBSYSTEM_IN_USE && Constants.IS_TUNNEL_SUBSYSTEM_IN_USE && Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
+
+            autonomousDrive = new AutonomousDrive(gripperSubsystem, throwerSubsystem, tunnelSubsystem, driveSubsystem);
+
+        }
+
     }
 
 }

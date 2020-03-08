@@ -175,6 +175,11 @@ public class DriveSubsystem extends SubsystemBase {
       Motors.drive_encoder_back_left.setPosition(0);
       Motors.drive_encoder_front_right.setPosition(0);
       Motors.drive_encoder_front_left.setPosition(0);
+
+      Motors.drive_encoder_front_left.setPositionConversionFactor(DriveConstants.kEncoderDistancePerPulse);
+      Motors.drive_encoder_front_left.setVelocityConversionFactor(DriveConstants.kWheelRPMinMeterPerSeconds);
+      Motors.drive_encoder_front_right.setPositionConversionFactor(DriveConstants.kEncoderDistancePerPulse);
+      Motors.drive_encoder_front_right.setVelocityConversionFactor(DriveConstants.kWheelRPMinMeterPerSeconds);
   }
 
   public double getEncoderLeftMetric() {
@@ -190,7 +195,7 @@ public class DriveSubsystem extends SubsystemBase {
    }
 
   public void resetPose() {
-    // resetEncoders();
+    resetEncoders();
     odometry.resetPosition(new Pose2d(0, 0, new Rotation2d(0)), Rotation2d.fromDegrees(Robot.ahrs.getYaw()));
   }
 
