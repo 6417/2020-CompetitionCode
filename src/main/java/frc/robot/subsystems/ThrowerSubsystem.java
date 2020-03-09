@@ -115,7 +115,6 @@ public class ThrowerSubsystem extends SubsystemBase {
 
   public void feedStack() {
     if(stackClear == true && Motors.thrower_motor_upper_shaft_right.get() == 0 && Motors.tunnel_motor.getMotorOutputPercent() != 0) {
-      System.out.println("time to take it up");
       if(stackSensor.get() == false || stackPushing == true) {
         System.out.println("Sensor got or stack is pushing");
         stackPushing = true;

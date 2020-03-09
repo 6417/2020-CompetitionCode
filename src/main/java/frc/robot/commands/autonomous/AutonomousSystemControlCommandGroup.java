@@ -26,13 +26,17 @@ public class AutonomousSystemControlCommandGroup extends SequentialCommandGroup 
    * Creates a new AutonomousSystemCommandGroup.
    */
   public AutonomousSystemControlCommandGroup(GripperSubsystem gripperSubsystem, ThrowerSubsystem throwerSubsystem, TunnelSubsystem tunnelSubsystem) {
-    super(new GripperProtectorExtend(gripperSubsystem), new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem), new WaitCommand(3), new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem));
-/*    super(new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem),
+    // super(new GripperProtectorExtend(gripperSubsystem), new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem), new WaitCommand(3), new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem));
+/*    super(new GripperProtectorExtend(gripperSubsystem), new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem),
       new WaitCommand(3), new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem), new WaitCommand(2),
-      new FlowForwardRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem), new WaitCommand(3),
+      new FlowForwardRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem), new WaitCommand(6),
       new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem), new WaitCommand(4),
       new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem), new WaitCommand(3),
-      new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem));
-*/
+      new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem));*/
+
+      super(new GripperProtectorExtend(gripperSubsystem), new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem),
+      new WaitCommand(1.5), new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem), new WaitCommand(0.5),
+      new FlowForwardRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem), new WaitCommand(6),
+      new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem));
   }
 }

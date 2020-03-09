@@ -37,13 +37,17 @@ public class Motors {
     public static CANEncoder drive_encoder_back_right;
     public static CANEncoder drive_encoder_back_left;
 
+    private CANDigitalInput leftFrontForwardLimit;
+    private CANDigitalInput leftBackForwardLimit;
+    private CANDigitalInput rightFrontForwardLimit;
+    private CANDigitalInput rightBackForwardLimit;
+    private CANDigitalInput leftFrontReverseLimit;
+    private CANDigitalInput leftBackReverseLimit;
+    private CANDigitalInput rightFrontReverseLimit;
+    private CANDigitalInput rightBackReverseLimit;
+
     public static CANPIDController drivePIDLeft;
     public static CANPIDController drivePIDRight;
-
-    public static WPI_TalonSRX talon_drive_motor_front_right;
-    public static WPI_TalonSRX talon_drive_motor_front_left;
-    public static WPI_TalonSRX talon_drive_motor_back_right;
-    public static WPI_TalonSRX talon_drive_motor_back_left;
 
     public static SpeedControllerGroup leftMotors;
     public static SpeedControllerGroup rightMotors;
@@ -110,6 +114,24 @@ public class Motors {
                 drive_motor_front_left.restoreFactoryDefaults();
                 drive_motor_back_right.restoreFactoryDefaults();
                 drive_motor_back_left.restoreFactoryDefaults();   
+
+                leftFrontForwardLimit = drive_motor_front_left.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+                leftBackForwardLimit = drive_motor_back_left.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+                rightFrontForwardLimit = drive_motor_front_right.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+                rightBackForwardLimit = drive_motor_back_right.getForwardLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+                leftFrontReverseLimit = drive_motor_front_left.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+                leftBackReverseLimit = drive_motor_back_left.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+                rightFrontReverseLimit = drive_motor_front_right.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+                rightBackReverseLimit = drive_motor_back_right.getReverseLimitSwitch(LimitSwitchPolarity.kNormallyOpen);
+
+                leftFrontForwardLimit.enableLimitSwitch(true);
+                leftBackForwardLimit.enableLimitSwitch(true);
+                rightFrontForwardLimit.enableLimitSwitch(true);
+                rightBackForwardLimit.enableLimitSwitch(true); 
+                leftFrontReverseLimit.enableLimitSwitch(true); 
+                leftBackReverseLimit.enableLimitSwitch(true);
+                rightFrontReverseLimit.enableLimitSwitch(true);
+                rightBackReverseLimit.enableLimitSwitch(true); 
 
                 drive_motor_back_right.follow(drive_motor_front_right, false);
                 drive_motor_back_left.follow(drive_motor_front_left, false);

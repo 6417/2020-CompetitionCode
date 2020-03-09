@@ -7,6 +7,7 @@
 
 package frc.robot.commands.autonomous;
 
+import ch.team6417.utils.SystemWaitCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.drive.ResetPose;
@@ -20,6 +21,7 @@ public class TrajectoryDrive extends SequentialCommandGroup {
    * Creates a new TrajectoryDrive.
    */
   public TrajectoryDrive(DriveSubsystem driveSubsystem) {
-    super(new ResetPose(driveSubsystem), new WaitCommand(7), new RamsedeCommand(driveSubsystem));
+    // super(new ResetPose(driveSubsystem), new WaitCommand(7), new RamsedeCommand(1), new WaitCommand(5), new RamsedeCommand(2));
+    super(new ResetPose(driveSubsystem), new WaitCommand(3.5), new RamsedeCommand(1), new WaitCommand(7));
   }
 }

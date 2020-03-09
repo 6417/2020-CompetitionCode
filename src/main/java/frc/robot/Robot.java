@@ -18,6 +18,7 @@ import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -62,15 +63,13 @@ public class Robot extends TimedRobot {
 
     new Thread (() -> {
       UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
-      camera.setResolution(625, 360);
+      camera.setResolution(256, 144);
       CvSink cvSink = CameraServer.getInstance().getVideo();
-      CvSource outputStream = CameraServer.getInstance().putVideo("Blur", 625, 360);
+      CvSource outputStream = CameraServer.getInstance().putVideo("Stream", 256, 144);
       Mat source = new Mat();
-      Mat output = new Mat();
       while(!Thread.interrupted()) {
         cvSink.grabFrame(source);
-        Imgproc.cvtColor(source, output, Imgproc.COLOR_BGR2GRAY);
-        outputStream.putFrame(output);
+        outputStream.putFrame(source);
       }
 
     }).start();
@@ -123,7 +122,7 @@ public class Robot extends TimedRobot {
 
     // Commands.gripperSubsystem.extendProtector(); 
     // Commands.gripperSubsystem.setProtectorExtended(true);
-
+ 
     // autonomousStartTime = System.currentTimeMillis();
 
   }
@@ -146,7 +145,7 @@ public class Robot extends TimedRobot {
       //   Motors.thrower_motor_lower_shaft.set(-0.45);
       // }
 
-
+        
   }
 
   @Override
@@ -155,9 +154,15 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.cancel();
+    // }
+    
+    CommandScheduler.getInstance().cancelAll();
+
+    // if(CommandScheduler.getInstance().isScheduled(Commands.autonomousDrive)) {
+    //   CommandScheduler.getInstance().cancel(Commands.autonomousDrive);
+    // }
   }
 
   /**

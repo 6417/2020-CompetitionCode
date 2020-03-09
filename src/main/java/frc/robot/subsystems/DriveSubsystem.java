@@ -47,6 +47,7 @@ public class DriveSubsystem extends SubsystemBase {
     diffdrive = new DifferentialDrive(Motors.leftMotors, Motors.rightMotors);
     // diffdrive = new DifferentialDrive(Motors.drive_motor_front_right, Motors.drive_motor_front_left);
     diffdrive.setRightSideInverted(true);
+    diffdrive.setSafetyEnabled(false);
 
     // Sets the distance per pulse for the encoders
     Motors.drive_encoder_front_left.setPositionConversionFactor(DriveConstants.kEncoderDistancePerPulse);
@@ -74,7 +75,8 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     Constants.STEERING_WHEEL_USAGE = ShuffleBoard.joystick.getBoolean(true);
-    odometry.update(Rotation2d.fromDegrees(- getAngle()), getEncoderLeftMetric(), getEncoderRightMetric());
+    // odometry.update(Rotation2d.fromDegrees(- getAngle()), getEncoderLeftMetric(), getEncoderRightMetric());
+    odometry.update(Rotation2d.fromDegrees(getAngle()), getEncoderLeftMetric(), getEncoderRightMetric());
     
     SmartDashboard.putNumber("Velocity Left Encoder", Motors.drive_encoder_front_left.getVelocity());
     SmartDashboard.putNumber("Position Left Encoder", Motors.drive_encoder_front_left.getPosition());
@@ -196,6 +198,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   public void resetPose() {
     resetEncoders();
+    // Robot.ahrs.reset();
+    // odometry.resetPosition(new Pose2d(0, 0, new Rotation2d(0)), new Rotation2d(0));
     odometry.resetPosition(new Pose2d(0, 0, new Rotation2d(0)), Rotation2d.fromDegrees(Robot.ahrs.getYaw()));
   }
 

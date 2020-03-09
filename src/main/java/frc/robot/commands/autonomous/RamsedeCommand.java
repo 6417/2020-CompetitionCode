@@ -17,20 +17,19 @@ public class RamsedeCommand extends InstantCommand {
   private DriveSubsystem m_driveSubsystem;
 
   private Command m_autonomousCommand;
+  private int commandid;
 
   /**
    * Creates a new AutonomousCommand.
    */
-  public RamsedeCommand(DriveSubsystem driveSubsystem) {
-    m_driveSubsystem = driveSubsystem;
-
-    addRequirements(m_driveSubsystem);
+  public RamsedeCommand(int command_ID) {
+    commandid = command_ID;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_autonomousCommand = RobotContainer.getAutonomousCommand();
+    m_autonomousCommand = RobotContainer.getAutonomousCommand(commandid);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

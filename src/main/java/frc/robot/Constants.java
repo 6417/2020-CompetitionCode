@@ -127,7 +127,7 @@ public final class Constants {
     public static double CONTROL_PANEL_TURN_SPEED = 0.3;
     public static double CONTROL_PANEL_MANUAL_TURN_SPEED = 0.15;
     public static double CLIMBING_MOTOR_SPEED = 0.5;
-    public static double MANUAL_CLIMB_SPEED = 0.3;
+    public static double MANUAL_CLIMB_SPEED = 0.5;
 
     public static final double CLIMBER_LEVEL_SAFETY_TICKS = 10;
 

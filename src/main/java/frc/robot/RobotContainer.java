@@ -131,14 +131,17 @@ public class RobotContainer extends Commands {
       throwerEnableButton = new JoystickButton(driveJoystick, Constants.SJ_THROWER_ENABLE_BUTTON_ID);
 
       throwerEnableButton.whenPressed(throwerCommandGroup);
+      throwerVisionEnableButton = new  JoystickButton(driveJoystick, Constants.SJ_THROWER_VISION_ENABLE_BUTTON_ID);
 
-      if(Constants.IS_VISION_SUBSYSTEM_IN_USE) {
-        throwerVisionEnableButton = new JoystickButton(driveJoystick, Constants.SJ_THROWER_VISION_ENABLE_BUTTON_ID);
+      throwerVisionEnableButton.whenPressed(throwerCommandGroup);
+
+      // if(Constants.IS_VISION_SUBSYSTEM_IN_USE) {
+      //   throwerVisionEnableButton = new JoystickButton(driveJoystick, Constants.SJ_THROWER_VISION_ENABLE_BUTTON_ID);
         
-        if(Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
-          throwerVisionEnableButton.whenPressed(new SequentialCommandGroup(switchVisionLightCommand, visionAlignCommand, new WaitCommand(1), new VisionAlignCommand(visionSubsystem, driveSubsystem), new WaitCommand(1), new VisionAlignCommand(visionSubsystem, driveSubsystem), new SwitchVisionLightCommand(visionSubsystem)));
-        }
-      }
+      //   if(Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
+      //     throwerVisionEnableButton.whenPressed(new SequentialCommandGroup(switchVisionLightCommand, visionAlignCommand, new WaitCommand(1), new VisionAlignCommand(visionSubsystem, driveSubsystem), new WaitCommand(1), new VisionAlignCommand(visionSubsystem, driveSubsystem), new SwitchVisionLightCommand(visionSubsystem)));
+      //   }
+      // }
     }
 
     //TODO change Statement for flow commands
@@ -176,7 +179,7 @@ public class RobotContainer extends Commands {
    *
    * @return the command to run in autonomous
    */
-  public static Command getAutonomousCommand() {
+  public static Command getAutonomousCommand(int command_ID) {
 
     // Create a voltage constraint to ensure we don't accelerate too fast
     var autoVoltageConstraint =
@@ -202,32 +205,62 @@ public class RobotContainer extends Commands {
         new Pose2d(0, 0, new Rotation2d(0)),
         // // Pass through these two interior waypoints, making an 's' curve path
         List.of(
-        //     new Translation2d(1, 1),
-        //     new Translation2d(2, 1)
+            // new Translation2d(1, 1),
+            // new Translation2d(2, 1)
         ),
         // End 3 meters straight ahead of where we started, facing forward
-//        new Pose2d(3, 0, new Rotation2d(0)),
-        new Pose2d(2, 0, new Rotation2d(0)),
+      //  new Pose2d(3, 0, new Rotation2d(0)),
+        new Pose2d(1, 0, new Rotation2d(0)),
         // Pass config
         config
     );
 
 
-    Trajectory sixBallAutonomous = TrajectoryGenerator.generateTrajectory(
+    Trajectory sixBallAutonomousGrab = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0.4)),
+        new Pose2d(0, 0, new Rotation2d(0.0)),
         // Pass through these two interior waypoints, making an 's' curve path
         List.of(
-            new Translation2d(-6.05 ,0)
+            new Translation2d(1.6 , 1.5)
         ),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(-2.8, 0.5, new Rotation2d(0.2)),
+        new Pose2d(5.2, 1.5, new Rotation2d(0.0)),
         // Pass config
         config
     );
 
-    RamseteCommand ramseteCommand = new RamseteCommand(
-        driveFromLine,
+    //Reset Pose befor starting this
+    Trajectory sixBallAutonomousShoot = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0.0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(
+            new Translation2d(1.6 , 1.5)
+        ),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(5.2, 1.5, new Rotation2d(0.0)),
+        // Pass config
+        config
+  );
+
+  RamseteCommand ramseteCommand_default = new RamseteCommand(
+    driveFromLine,
+    Commands.driveSubsystem::getPose,
+    new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+    new SimpleMotorFeedforward(DriveConstants.ksVolts,
+                               DriveConstants.kvVoltSecondsPerMeter,
+                               DriveConstants.kaVoltSecondsSquaredPerMeter),
+    DriveConstants.kDriveKinematics,
+    Commands.driveSubsystem::getWheelSpeeds,
+    new PIDController(DriveConstants.kPDriveVel, 0, 0),
+    new PIDController(DriveConstants.kPDriveVel, 0, 0),
+    // RamseteCommand passes volts to the callback
+    Commands.driveSubsystem::tankDriveVolts,
+    Commands.driveSubsystem
+);
+
+    RamseteCommand ramseteCommand_1 = new RamseteCommand(
+        sixBallAutonomousGrab,
         Commands.driveSubsystem::getPose,
         new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
         new SimpleMotorFeedforward(DriveConstants.ksVolts,
@@ -238,11 +271,35 @@ public class RobotContainer extends Commands {
         new PIDController(DriveConstants.kPDriveVel, 0, 0),
         new PIDController(DriveConstants.kPDriveVel, 0, 0),
         // RamseteCommand passes volts to the callback
-        Commands.driveSubsystem::tankDriveVolts,
-        Commands.driveSubsystem
+        Commands.driveSubsystem::tankDriveVolts
+        // Commands.driveSubsystem
     );
 
+    RamseteCommand ramseteCommand_2 = new RamseteCommand(
+      sixBallAutonomousShoot,
+      Commands.driveSubsystem::getPose,
+      new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+      new SimpleMotorFeedforward(DriveConstants.ksVolts,
+                                 DriveConstants.kvVoltSecondsPerMeter,
+                                 DriveConstants.kaVoltSecondsSquaredPerMeter),
+      DriveConstants.kDriveKinematics,
+      Commands.driveSubsystem::getWheelSpeeds,
+      new PIDController(DriveConstants.kPDriveVel, 0, 0),
+      new PIDController(DriveConstants.kPDriveVel, 0, 0),
+      // RamseteCommand passes volts to the callback
+      Commands.driveSubsystem::tankDriveVolts
+      // Commands.driveSubsystem
+  );
+
+  if(command_ID == 1) {
     // Run path following command, then stop at the end.
-    return ramseteCommand.andThen(() -> Commands.driveSubsystem.tankDriveVolts(0, 0));
+    return ramseteCommand_1.andThen(() -> Commands.driveSubsystem.tankDriveVolts(0, 0));
+  } else if(command_ID == 2) {
+    // Run path following command, then stop at the end.
+    return ramseteCommand_2.andThen(() -> Commands.driveSubsystem.tankDriveVolts(0, 0));
+  } else {
+    // Run path following command, then stop at the end.
+    return ramseteCommand_default.andThen(() -> Commands.driveSubsystem.tankDriveVolts(0, 0));
+  }
   }
 }
