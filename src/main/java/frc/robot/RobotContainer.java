@@ -133,7 +133,7 @@ public class RobotContainer extends Commands {
       throwerEnableButton.whenPressed(throwerCommandGroup);
       throwerVisionEnableButton = new  JoystickButton(driveJoystick, Constants.SJ_THROWER_VISION_ENABLE_BUTTON_ID);
 
-      throwerVisionEnableButton.whenPressed(throwerCommandGroup);
+      // throwerVisionEnableButton.whenPressed(new SetThrowerSpeedCommand(throwerSubsystem, Constants.THROWER_MOTOR_UPPER_SHAFT_LONG_THROW_SPEED).andThen(throwerCommandGroup));
 
       // if(Constants.IS_VISION_SUBSYSTEM_IN_USE) {
       //   throwerVisionEnableButton = new JoystickButton(driveJoystick, Constants.SJ_THROWER_VISION_ENABLE_BUTTON_ID);
@@ -210,7 +210,7 @@ public class RobotContainer extends Commands {
         ),
         // End 3 meters straight ahead of where we started, facing forward
       //  new Pose2d(3, 0, new Rotation2d(0)),
-        new Pose2d(1, 0, new Rotation2d(0)),
+        new Pose2d(2, 0, new Rotation2d(0)),
         // Pass config
         config
     );
@@ -224,7 +224,7 @@ public class RobotContainer extends Commands {
             new Translation2d(1.6 , 1.5)
         ),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(5.2, 1.5, new Rotation2d(0.0)),
+        new Pose2d(5.1, 1.6, new Rotation2d(0.0)),
         // Pass config
         config
     );
@@ -255,9 +255,8 @@ public class RobotContainer extends Commands {
     new PIDController(DriveConstants.kPDriveVel, 0, 0),
     new PIDController(DriveConstants.kPDriveVel, 0, 0),
     // RamseteCommand passes volts to the callback
-    Commands.driveSubsystem::tankDriveVolts,
-    Commands.driveSubsystem
-);
+    Commands.driveSubsystem::tankDriveVolts
+    );
 
     RamseteCommand ramseteCommand_1 = new RamseteCommand(
         sixBallAutonomousGrab,
