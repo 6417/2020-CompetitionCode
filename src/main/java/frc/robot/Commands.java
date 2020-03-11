@@ -26,6 +26,7 @@ import frc.robot.commands.groups.ballflow.FlowForwardRace;
 import frc.robot.commands.groups.ballflow.FlowReverseRace;
 import frc.robot.commands.groups.ballflow.FlowStopCommandGroup;
 import frc.robot.commands.groups.thrower.ThrowerCommandGroup;
+import frc.robot.commands.groups.thrower.ThrowerFastCommandGroup;
 import frc.robot.commands.groups.thrower.ThrowerStopCommandGroup;
 import frc.robot.commands.tunnel.TunnelNorthCommand;
 import frc.robot.commands.tunnel.TunnelStopCommand;
@@ -70,6 +71,7 @@ public class Commands {
     public static ThrowerSubsystem throwerSubsystem;
 
     protected ConditionalCommand throwerCommandGroup;
+    protected ConditionalCommand throwerFastCommandGroup;
 
     protected ConditionalCommand flowForwardConditionalCommand;
     protected ConditionalCommand flowReverseConditionalCommand;
@@ -198,7 +200,7 @@ public class Commands {
             throwerSubsystem = new ThrowerSubsystem();
 
             throwerCommandGroup = new ConditionalCommand(new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem), throwerSubsystem::isrunning);
-
+            throwerFastCommandGroup = new ConditionalCommand(new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem), new ThrowerFastCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem), throwerSubsystem::isrunning);
         }
         
 

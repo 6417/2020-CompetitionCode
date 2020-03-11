@@ -84,6 +84,11 @@ public class ThrowerSubsystem extends SubsystemBase {
     }
   }
 
+  public void enableUpperThrowerFast() {
+      upperSpeed = throwerLimiter.calculate(Constants.THROWER_MOTOR_UPPER_SHAFT_FAST_SPEED);
+      Motors.thrower_motor_upper_shaft_right.set(upperSpeed);
+  }
+
   public void enableLowerThrower() {
     Motors.thrower_motor_lower_shaft.set(Constants.THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED);
 //    Motors.thrower_motor_lower_shaft.set(ShuffleBoard.throwerLowerMotor.getDouble(0.0));

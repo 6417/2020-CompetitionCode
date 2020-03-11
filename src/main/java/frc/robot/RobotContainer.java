@@ -132,6 +132,7 @@ public class RobotContainer extends Commands {
 
       throwerEnableButton.whenPressed(throwerCommandGroup);
       throwerVisionEnableButton = new  JoystickButton(driveJoystick, Constants.SJ_THROWER_VISION_ENABLE_BUTTON_ID);
+      throwerVisionEnableButton.whenPressed(throwerFastCommandGroup);
 
       // throwerVisionEnableButton.whenPressed(new SetThrowerSpeedCommand(throwerSubsystem, Constants.THROWER_MOTOR_UPPER_SHAFT_LONG_THROW_SPEED).andThen(throwerCommandGroup));
 
@@ -210,7 +211,7 @@ public class RobotContainer extends Commands {
         ),
         // End 3 meters straight ahead of where we started, facing forward
       //  new Pose2d(3, 0, new Rotation2d(0)),
-        new Pose2d(2, 0, new Rotation2d(0)),
+        new Pose2d(1, 0, new Rotation2d(0)),
         // Pass config
         config
     );

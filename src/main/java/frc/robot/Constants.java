@@ -124,6 +124,7 @@ public final class Constants {
     public static double THROWER_MOTOR_REVERSE_SPEED = 0.3;
     public static double THROWER_MOTOR_LOWER_SHAFT_STANDARD_SPEED = -0.48;
     public static double THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED = 0.8;
+    public static double THROWER_MOTOR_UPPER_SHAFT_FAST_SPEED = 0.91;
     public static double CONTROL_PANEL_TURN_SPEED = 0.3;
     public static double CONTROL_PANEL_MANUAL_TURN_SPEED = 0.15;
     public static double CLIMBING_MOTOR_SPEED = 0.5;

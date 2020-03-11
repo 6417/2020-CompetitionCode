@@ -38,5 +38,8 @@ public class AutonomousSystemControlCommandGroup extends SequentialCommandGroup 
       new WaitCommand(1.5), new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem), new WaitCommand(0.5),
       new FlowForwardRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem), new WaitCommand(6),
       new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem));
+
+/*      super(new GripperProtectorExtend(gripperSubsystem), new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem),
+      new WaitCommand(1.5), new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem));*/
   }
 }
