@@ -56,6 +56,7 @@ public class ThrowerSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // System.out.println(Motors.thrower_motor_upper_shaft_right.get());
     if(Motors.thrower_motor_upper_shaft_right.getEncoder().getVelocity() != 0) {
       ShuffleBoard.shooterVelocity.setBoolean(true);
     } else {

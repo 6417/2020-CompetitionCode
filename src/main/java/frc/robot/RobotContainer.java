@@ -244,6 +244,20 @@ public class RobotContainer extends Commands {
         config
   );
 
+      //Reset Pose befor starting this
+      Trajectory fiveBallAutonomousGrab = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0.0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(
+            new Translation2d(2.1 , -4.1)
+        ),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(3.3, -5.2, new Rotation2d(0.9)),
+        // Pass config
+        config
+  );
+
   RamseteCommand ramseteCommand_default = new RamseteCommand(
     driveFromLine,
     Commands.driveSubsystem::getPose,
@@ -291,12 +305,30 @@ public class RobotContainer extends Commands {
       // Commands.driveSubsystem
   );
 
+  RamseteCommand ramseteCommand_3 = new RamseteCommand(
+    fiveBallAutonomousGrab,
+    Commands.driveSubsystem::getPose,
+    new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
+    new SimpleMotorFeedforward(DriveConstants.ksVolts,
+                               DriveConstants.kvVoltSecondsPerMeter,
+                               DriveConstants.kaVoltSecondsSquaredPerMeter),
+    DriveConstants.kDriveKinematics,
+    Commands.driveSubsystem::getWheelSpeeds,
+    new PIDController(DriveConstants.kPDriveVel, 0, 0),
+    new PIDController(DriveConstants.kPDriveVel, 0, 0),
+    // RamseteCommand passes volts to the callback
+    Commands.driveSubsystem::tankDriveVolts
+    // Commands.driveSubsystem
+);
+
   if(command_ID == 1) {
     // Run path following command, then stop at the end.
     return ramseteCommand_1.andThen(() -> Commands.driveSubsystem.tankDriveVolts(0, 0));
   } else if(command_ID == 2) {
     // Run path following command, then stop at the end.
     return ramseteCommand_2.andThen(() -> Commands.driveSubsystem.tankDriveVolts(0, 0));
+  } else if(command_ID == 3) {
+    return ramseteCommand_3.andThen(() -> Commands.driveSubsystem.tankDriveVolts(0, 0));
   } else {
     // Run path following command, then stop at the end.
     return ramseteCommand_default.andThen(() -> Commands.driveSubsystem.tankDriveVolts(0, 0));
