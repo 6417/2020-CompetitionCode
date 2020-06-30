@@ -28,5 +28,6 @@ public class ResetPose extends InstantCommand {
   public void initialize() {
     System.out.println("Pose Resetted");
     m_driveSubsystem.resetPose();
+    m_driveSubsystem.resetReversePose();
   }
 }

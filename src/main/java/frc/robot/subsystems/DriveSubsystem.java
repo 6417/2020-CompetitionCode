@@ -31,6 +31,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   private DifferentialDrive diffdrive;
   private DifferentialDriveOdometry odometry;
+  private DifferentialDriveOdometry reverseOdometry;
   private Pose2d mPose2d;
   private AHRS ahrs;
   public PIDController turnController;
@@ -66,6 +67,7 @@ public class DriveSubsystem extends SubsystemBase {
     super.addChild("Drive Back Right", Motors.drive_motor_back_right);
     super.addChild("Drive Back Left", Motors.drive_motor_back_left);
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getAngle()), new Pose2d(0, 0, new Rotation2d(0)));
+    reverseOdometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getAngle()), new Pose2d(0, 0, new Rotation2d(0)));
     super.addChild("Drive Front Right", Motors.drive_motor_front_right);
     super.addChild("Drive Front Left", Motors.drive_motor_front_left);
     super.addChild("Drive Back Right", Motors.drive_motor_back_right);
@@ -77,12 +79,16 @@ public class DriveSubsystem extends SubsystemBase {
     Constants.STEERING_WHEEL_USAGE = ShuffleBoard.joystick.getBoolean(true);
     // odometry.update(Rotation2d.fromDegrees(- getAngle()), getEncoderLeftMetric(), getEncoderRightMetric());
     odometry.update(Rotation2d.fromDegrees(getAngle()), getEncoderLeftMetric(), getEncoderRightMetric());
-    
+
+    //The odometry calculates the position with the average of the encoder values so it doesnt matter which one is where
+    reverseOdometry.update(Rotation2d.fromDegrees(getAngle()), -getEncoderLeftMetric(), -getEncoderRightMetric());
+  
     SmartDashboard.putNumber("Velocity Left Encoder", Motors.drive_encoder_front_left.getVelocity());
     SmartDashboard.putNumber("Position Left Encoder", Motors.drive_encoder_front_left.getPosition());
     SmartDashboard.putNumber("Velocity Right Encoder", -Motors.drive_encoder_front_right.getVelocity());
     SmartDashboard.putNumber("Position Right Encoder", -Motors.drive_encoder_front_right.getPosition());
     SmartDashboard.putString("Pose", odometry.getPoseMeters().toString());
+    SmartDashboard.putString("reversePose", reverseOdometry.getPoseMeters().toString());
 
   }
 
@@ -160,6 +166,11 @@ public class DriveSubsystem extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(Motors.drive_encoder_front_left.getVelocity(), -Motors.drive_encoder_front_right.getVelocity());
   }
 
+  //called when the trajectory needs to drive backwards
+  public DifferentialDriveWheelSpeeds getReverseWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(-Motors.drive_encoder_front_right.getVelocity(), Motors.drive_encoder_front_left.getVelocity());
+  }
+
   public float getAngle() {
     return Robot.ahrs.getYaw();
   }
@@ -196,11 +207,22 @@ public class DriveSubsystem extends SubsystemBase {
      return odometry.getPoseMeters();
    }
 
+   public Pose2d getReversePose() {
+     return reverseOdometry.getPoseMeters();
+   }
+
   public void resetPose() {
     resetEncoders();
     // Robot.ahrs.reset();
     // odometry.resetPosition(new Pose2d(0, 0, new Rotation2d(0)), new Rotation2d(0));
     odometry.resetPosition(new Pose2d(0, 0, new Rotation2d(0)), Rotation2d.fromDegrees(Robot.ahrs.getYaw()));
+  }
+
+  public void resetReversePose() {
+    resetEncoders();
+    // Robot.ahrs.reset();
+    // odometry.resetPosition(new Pose2d(0, 0, new Rotation2d(0)), new Rotation2d(0));
+    reverseOdometry.resetPosition(new Pose2d(0, 0, new Rotation2d(0)), Rotation2d.fromDegrees(Robot.ahrs.getYaw()));
   }
 
   /**
@@ -212,6 +234,12 @@ public class DriveSubsystem extends SubsystemBase {
   public void tankDriveVolts(double leftVolts, double rightVolts) {
     Motors.leftMotors.setVoltage(leftVolts);
     Motors.rightMotors.setVoltage(-rightVolts);
+    diffdrive.feed();
+  }
+
+  public void reverseTankDriveVolts(double leftVolts, double rightVolts) {
+    Motors.leftMotors.setVoltage(-rightVolts);
+    Motors.rightMotors.setVoltage(leftVolts);
     diffdrive.feed();
   }
 
