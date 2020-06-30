@@ -13,6 +13,7 @@ import frc.robot.commands.gripper.GripperForward;
 import frc.robot.commands.gripper.GripperRetract;
 import frc.robot.commands.gripper.GripperStop;
 import frc.robot.commands.thrower.ThrowerExtrudeCommand;
+import frc.robot.commands.thrower.ThrowerExtrudeFastCommand;
 import frc.robot.commands.tunnel.TunnelSouthCommand;
 import frc.robot.subsystems.GripperSubsystem;
 import frc.robot.subsystems.ThrowerSubsystem;
@@ -21,11 +22,11 @@ import frc.robot.subsystems.TunnelSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class ThrowerCommandGroup extends SequentialCommandGroup {
+public class ThrowerFastCommandGroup extends SequentialCommandGroup {
   /**
    * Creates a new ThrowerCommandGroup.
    */
-  public ThrowerCommandGroup(GripperSubsystem gripperSubsystem, ThrowerSubsystem throwerSubsystem, TunnelSubsystem tunnelSubsystem) {
-    super(new GripperStop(gripperSubsystem), new ThrowerExtrudeCommand(throwerSubsystem), new TunnelSouthCommand(tunnelSubsystem), new WaitCommand(1), new ThrowerSupplyCommandGroup(tunnelSubsystem, throwerSubsystem), new WaitCommand(0.5), new GripperForward(gripperSubsystem), new GripperRetract(gripperSubsystem), new WaitCommand(0.4), new GripperStop(gripperSubsystem));
+  public ThrowerFastCommandGroup(GripperSubsystem gripperSubsystem, ThrowerSubsystem throwerSubsystem, TunnelSubsystem tunnelSubsystem) {
+    super(new GripperStop(gripperSubsystem), new ThrowerExtrudeFastCommand(throwerSubsystem), new TunnelSouthCommand(tunnelSubsystem), new WaitCommand(1), new ThrowerSupplyCommandGroup(tunnelSubsystem, throwerSubsystem), new WaitCommand(0.5), new GripperForward(gripperSubsystem), new GripperRetract(gripperSubsystem), new WaitCommand(0.4), new GripperStop(gripperSubsystem));
   }
 }

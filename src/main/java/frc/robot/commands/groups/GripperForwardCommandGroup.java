@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.gripper.GripperExtend;
 import frc.robot.commands.gripper.GripperForward;
+import frc.robot.commands.gripper.GripperReverse;
 import frc.robot.subsystems.GripperSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more

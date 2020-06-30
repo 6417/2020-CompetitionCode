@@ -8,21 +8,37 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import frc.robot.commands.autonomous.AutonomousDrive;
+import frc.robot.commands.climber.ClimbStopCommand;
+import frc.robot.commands.climber.ClimbUPCommand;
+import frc.robot.commands.climber.ManualClimbCommand;
 import frc.robot.commands.controlpanel.ReadControlPanelFMSData;
 import frc.robot.commands.controlpanel.TurnControlPanelCommand;
+import frc.robot.commands.drive.DriveCommand;
 import frc.robot.commands.gripper.GripperForward;
-import frc.robot.commands.gripper.GripperReverse;
+import frc.robot.commands.gripper.GripperProtectorExtend;
+import frc.robot.commands.gripper.GripperProtectorRetract;
+import frc.robot.commands.gripper.GripperStop;
 import frc.robot.commands.groups.ControlPanelExtendCommandGroup;
 import frc.robot.commands.groups.ControlPanelRetractCommandGroup;
 import frc.robot.commands.groups.ballflow.FlowForwardRace;
 import frc.robot.commands.groups.ballflow.FlowReverseRace;
 import frc.robot.commands.groups.ballflow.FlowStopCommandGroup;
 import frc.robot.commands.groups.thrower.ThrowerCommandGroup;
+import frc.robot.commands.groups.thrower.ThrowerFastCommandGroup;
 import frc.robot.commands.groups.thrower.ThrowerStopCommandGroup;
+import frc.robot.commands.tunnel.TunnelNorthCommand;
+import frc.robot.commands.tunnel.TunnelStopCommand;
 import frc.robot.commands.vision.ReadVisionDataCommand;
+import frc.robot.commands.vision.SwitchVisionLightCommand;
+import frc.robot.commands.vision.VisionAlignCommand;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.ClimberSubsystem.ClimbType;
 import frc.robot.subsystems.ControlPanelSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GripperSubsystem;
+import frc.robot.subsystems.PneumaticsSubsystem;
 import frc.robot.subsystems.ThrowerSubsystem;
 import frc.robot.subsystems.TunnelSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -36,37 +52,57 @@ public class Commands {
         initialize();
     }
 
-    // The robot's subsystems and commands are defined here...
-    public ControlPanelSubsystem controlPanelSubsystem;
+    // The robot's subsystems and commands are defined here..
+    public static PneumaticsSubsystem pneumaticsSubsystem;
+    
+    public static ControlPanelSubsystem controlPanelSubsystem;
 
     protected TurnControlPanelCommand turnControlPanelCommand;
 
     protected ConditionalCommand contorlPanelConditionalCommand;
 
-    public GripperSubsystem gripperSubsystem;
+    public static GripperSubsystem gripperSubsystem;
 
     protected ConditionalCommand gripperSoloTurnConditionalCommand;
+    protected ConditionalCommand gripperProtectorConditionalCommand;
 
-    public TunnelSubsystem tunnelSubsystem;
+    public static TunnelSubsystem tunnelSubsystem;
 
-    public ThrowerSubsystem throwerSubsystem;
+    public static ThrowerSubsystem throwerSubsystem;
 
     protected ConditionalCommand throwerCommandGroup;
+    protected ConditionalCommand throwerFastCommandGroup;
 
     protected ConditionalCommand flowForwardConditionalCommand;
     protected ConditionalCommand flowReverseConditionalCommand;
+    protected FlowStopCommandGroup flowStopCommandGroup;
 
-    public VisionSubsystem visionSubsystem;
+    public static VisionSubsystem visionSubsystem;
 
-    public DriveSubsystem driveSubsystem;
+    protected SwitchVisionLightCommand switchVisionLightCommand;
+    protected VisionAlignCommand visionAlignCommand;
+
+    public static DriveSubsystem driveSubsystem;
+
+    protected DriveCommand driveCommand;
+
+    public static ClimberSubsystem climberSubsystem;
+
+    protected ClimbUPCommand climbUPCommand;
+    protected ManualClimbCommand manualClimbCommand;
+    protected ClimbStopCommand climbStopCommand;
+
+    protected static AutonomousDrive autonomousDrive;
 
     private void initialize() {
 
+        configPneumatics();
+
         configControlPanelCommands();
+        
+        configTunnelCommands();
 
         configGripperCommands();
-
-        configTunnelCommands();
 
         configDriveCommands();
 
@@ -75,6 +111,20 @@ public class Commands {
         configFlowCommands();
 
         configVisionCommands();
+
+        configClimbCommands();
+
+        configAutonomousCommands();
+
+    }
+
+    private void configPneumatics() {
+
+        if(Constants.IS_PNEUMATICS_SUBSYSTEM_IN_USE) {
+
+            pneumaticsSubsystem = new PneumaticsSubsystem();
+
+        }
 
     }
 
@@ -102,10 +152,20 @@ public class Commands {
 
             gripperSubsystem = new GripperSubsystem();
 
-            gripperSoloTurnConditionalCommand = new ConditionalCommand(new GripperReverse(gripperSubsystem), new GripperForward(gripperSubsystem),
+            if(Constants.IS_TUNNEL_SUBSYSTEM_IN_USE) {
+                gripperSoloTurnConditionalCommand = new ConditionalCommand(new ParallelCommandGroup(new GripperStop(gripperSubsystem), new TunnelStopCommand(tunnelSubsystem)), new ParallelCommandGroup(new GripperForward(gripperSubsystem), new TunnelNorthCommand(tunnelSubsystem)),
                     gripperSubsystem::isTurningForward);
+            }
+
+            if(Constants.IS_GRIPPER_PROTECTOR_IN_USE) {
+                gripperProtectorConditionalCommand = new ConditionalCommand(new GripperProtectorRetract(gripperSubsystem), new GripperProtectorExtend(gripperSubsystem),
+                        gripperSubsystem::isProtectorExtended);
+
+            }
 
         }
+
+
 
     }
 
@@ -125,18 +185,22 @@ public class Commands {
 
             driveSubsystem = new DriveSubsystem();
 
+            driveCommand = new DriveCommand(driveSubsystem);
+
+            driveSubsystem.setDefaultCommand(driveCommand);
+
         }
 
     }
 
     private void configThrowerCommands() {
 
-        if (Constants.IS_THROWER_SUBSYSTEM_IN_USE && Constants.IS_TUNNEL_SUBSYSTEM_IN_USE) {
+        if (Constants.IS_THROWER_SUBSYSTEM_IN_USE && Constants.IS_TUNNEL_SUBSYSTEM_IN_USE && Constants.IS_GRIPPER_SUBSYSTEM_IN_USE) {
 
             throwerSubsystem = new ThrowerSubsystem();
 
-            throwerCommandGroup = new ConditionalCommand(new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem), new ThrowerCommandGroup(throwerSubsystem, tunnelSubsystem), throwerSubsystem::isrunning);
-
+            throwerCommandGroup = new ConditionalCommand(new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem), throwerSubsystem::isrunning);
+            throwerFastCommandGroup = new ConditionalCommand(new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem), new ThrowerFastCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem), throwerSubsystem::isrunning);
         }
         
 
@@ -145,16 +209,17 @@ public class Commands {
     private void configFlowCommands() {
 
         if (Constants.IS_TUNNEL_SUBSYSTEM_IN_USE && Constants.IS_GRIPPER_SUBSYSTEM_IN_USE
-                && Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
+                && Constants.IS_THROWER_SUBSYSTEM_IN_USE && false == false) { //TODO change Statement for Flow commands
 
+            flowStopCommandGroup = new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem);
             flowForwardConditionalCommand = new ConditionalCommand(
-                    new FlowForwardRace(gripperSubsystem, tunnelSubsystem),
                     new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
-                    gripperSubsystem::getInsideReed);
+                    new FlowForwardRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
+                    gripperSubsystem::isGripperExtended);
             flowReverseConditionalCommand = new ConditionalCommand(
-                    new FlowReverseRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
                     new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
-                    gripperSubsystem::getInsideReed);
+                    new FlowReverseRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem),
+                    gripperSubsystem::isGripperExtended);
 
         }
 
@@ -166,6 +231,33 @@ public class Commands {
 
             visionSubsystem = new VisionSubsystem();
             visionSubsystem.setDefaultCommand(new ReadVisionDataCommand(visionSubsystem));
+
+            switchVisionLightCommand = new SwitchVisionLightCommand(visionSubsystem);
+
+            if(Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
+                visionAlignCommand = new VisionAlignCommand(visionSubsystem, driveSubsystem);
+            }
+
+        }
+
+    }
+
+    private void configClimbCommands() {
+
+        if(Constants.IS_CLIMBING_SUBSYSTEM_IN_USE) {
+
+            climberSubsystem = new ClimberSubsystem();
+            climbUPCommand = new ClimbUPCommand(climberSubsystem);
+            climbStopCommand = new ClimbStopCommand(climberSubsystem);
+            manualClimbCommand = new ManualClimbCommand(climberSubsystem);
+        }
+    }
+
+    private void configAutonomousCommands() {
+
+        if(Constants.AUTONOMOUS_SYSTEMS_ENABLED && Constants.IS_GRIPPER_SUBSYSTEM_IN_USE && Constants.IS_THROWER_SUBSYSTEM_IN_USE && Constants.IS_TUNNEL_SUBSYSTEM_IN_USE && Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
+
+            autonomousDrive = new AutonomousDrive(gripperSubsystem, throwerSubsystem, tunnelSubsystem, driveSubsystem);
 
         }
 

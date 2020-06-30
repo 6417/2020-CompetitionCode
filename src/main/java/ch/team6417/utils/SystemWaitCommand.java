@@ -5,28 +5,23 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.gripper;
+package ch.team6417.utils;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.GripperSubsystem;
 
-public class GripperForward extends CommandBase {
-
-  private GripperSubsystem m_subsystem;
+public class SystemWaitCommand extends CommandBase {
 
   /**
-   * Creates a new GripperForward.
+   * Creates a new SystemWaitCommand.
    */
-  public GripperForward(GripperSubsystem subsystem) {
-    m_subsystem = subsystem;
+  public SystemWaitCommand() {
 
-    addRequirements(m_subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.setForward();
+    System.out.println("first Spline ended");  
   }
 
   // Returns true when the command should end.

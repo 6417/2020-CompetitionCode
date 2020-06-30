@@ -5,24 +5,29 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.groups.ballflow;
+package frc.robot.commands.gripper;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.groups.GripperForwardCommandGroup;
-import frc.robot.commands.groups.GripperReverseCommandGroup;
-import frc.robot.commands.tunnel.TunnelNorthCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.GripperSubsystem;
-import frc.robot.subsystems.ThrowerSubsystem;
-import frc.robot.subsystems.TunnelSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class FlowForwardRace extends ParallelCommandGroup {
-  /**
-   * Creates a new FlowReverseRace.
-   */
-  public FlowForwardRace(GripperSubsystem gripperSubsystem, TunnelSubsystem tunnelSubsystem, ThrowerSubsystem throwerSubsystem) {
-    super(new GripperForwardCommandGroup(gripperSubsystem), new TunnelNorthCommand(tunnelSubsystem));
+public class GripperProtectorExtend extends InstantCommand {
+
+  private final GripperSubsystem m_subsystem;
+
+  public GripperProtectorExtend(GripperSubsystem subsystem) {
+    m_subsystem = subsystem;
+
+    addRequirements(m_subsystem);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    m_subsystem.extendProtector();
+    m_subsystem.setProtectorExtended(true);
+    System.out.println("gripper Protector extended");
   }
 }

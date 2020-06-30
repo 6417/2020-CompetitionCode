@@ -5,28 +5,28 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.gripper;
+package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.GripperSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class GripperExtend extends InstantCommand {
+public class ResetPose extends InstantCommand {
 
-  private final GripperSubsystem m_subsystem;
+  private DriveSubsystem m_driveSubsystem;
 
-  public GripperExtend(GripperSubsystem subsystem) {
-    m_subsystem = subsystem;
+  public ResetPose(DriveSubsystem driveSubsystem) {
+    m_driveSubsystem = driveSubsystem;
 
-    addRequirements(m_subsystem);
+    addRequirements(m_driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.setGripperExtended(true);
-    m_subsystem.extendGripper();
+    System.out.println("Pose Resetted");
+    m_driveSubsystem.resetPose();
   }
 }

@@ -7,6 +7,7 @@
 
 package frc.robot.commands.groups.ballflow;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import frc.robot.commands.groups.GripperReverseCommandGroup;
 import frc.robot.commands.thrower.ThrowerRevertCommand;
@@ -18,7 +19,7 @@ import frc.robot.subsystems.TunnelSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class FlowReverseRace extends ParallelRaceGroup {
+public class FlowReverseRace extends ParallelCommandGroup {
   /**
    * Creates a new FlowReverseRace.
    */

@@ -5,20 +5,18 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package ch;
-
-import java.util.function.BooleanSupplier;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+package ch.team6417.utils;
 
 /**
  * Add your docs here.
  */
-public class FridoConditionalCommand extends ConditionalCommand {
+public class Algorithms {
 
-    public FridoConditionalCommand(Command onTrue, Command onFalse, BooleanSupplier condition) {
-        super(onTrue, onFalse, condition);
+    public static double scale(double x, double inMin, double inMax, double outMin, double outMax) {
+        double result = (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+        result = Math.max(result, outMin);
+        result = Math.min(result, outMax);
+        return result;
     }
 
 }

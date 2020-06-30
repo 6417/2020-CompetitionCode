@@ -5,12 +5,10 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.groups.ballflow;
+package frc.robot.commands.autonomous;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.commands.groups.GripperForwardCommandGroup;
-import frc.robot.commands.groups.GripperReverseCommandGroup;
-import frc.robot.commands.tunnel.TunnelNorthCommand;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.GripperSubsystem;
 import frc.robot.subsystems.ThrowerSubsystem;
 import frc.robot.subsystems.TunnelSubsystem;
@@ -18,11 +16,13 @@ import frc.robot.subsystems.TunnelSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class FlowForwardRace extends ParallelCommandGroup {
+public class AutonomousDrive extends ParallelCommandGroup {
   /**
-   * Creates a new FlowReverseRace.
+   * Creates a new autonomousDrive.
    */
-  public FlowForwardRace(GripperSubsystem gripperSubsystem, TunnelSubsystem tunnelSubsystem, ThrowerSubsystem throwerSubsystem) {
-    super(new GripperForwardCommandGroup(gripperSubsystem), new TunnelNorthCommand(tunnelSubsystem));
+  public AutonomousDrive(GripperSubsystem gripperSubsystem, ThrowerSubsystem throwerSubsystem, TunnelSubsystem tunnelSubsystem, DriveSubsystem driveSubsystem) {
+    super(new AutonomousSystemControlCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem),
+      new TrajectoryDrive(driveSubsystem));
+      // super(new AutonomousSystemControlCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem));
   }
 }

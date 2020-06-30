@@ -5,28 +5,32 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.gripper;
+package frc.robot.commands.thrower;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.GripperSubsystem;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.ThrowerSubsystem;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class GripperStop extends InstantCommand {
+public class ThrowerExtrudeFastCommand extends CommandBase {
 
-  private GripperSubsystem m_subsystem;
+  private ThrowerSubsystem m_subsystem;
 
-  public GripperStop(GripperSubsystem subsystem) {
+  /**
+   * Creates a new ThrowerExtrudeCommand.
+   */
+  public ThrowerExtrudeFastCommand(ThrowerSubsystem subsystem) {
     m_subsystem = subsystem;
 
     addRequirements(m_subsystem);
   }
 
-  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.stopGripper();
-    System.out.println("Gripper stopped");
+    m_subsystem.enableUpperThrowerFast();
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return true;
   }
 }

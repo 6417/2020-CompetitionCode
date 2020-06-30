@@ -5,33 +5,32 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.gripper;
+package frc.robot.commands.drive;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.GripperSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 
-public class GripperForward extends CommandBase {
+public class DriveCommand extends CommandBase {
 
-  private GripperSubsystem m_subsystem;
+  private final DriveSubsystem m_driveSubsystem;
 
   /**
-   * Creates a new GripperForward.
+   * Creates a new DriveCommand.
    */
-  public GripperForward(GripperSubsystem subsystem) {
-    m_subsystem = subsystem;
+  public DriveCommand(DriveSubsystem driveSubsystem) {
+    m_driveSubsystem = driveSubsystem;
 
-    addRequirements(m_subsystem);
+    addRequirements(m_driveSubsystem);
   }
 
-  // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_subsystem.setForward();
+  public void execute() {
+    m_driveSubsystem.arcadeDrive();
   }
-
+  
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return false;
   }
 }

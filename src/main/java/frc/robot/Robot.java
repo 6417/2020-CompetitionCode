@@ -7,7 +7,21 @@
 
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
+
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
+
+import edu.wpi.cscore.CvSink;
+import edu.wpi.cscore.CvSource;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -24,6 +38,10 @@ public class Robot extends TimedRobot {
   private ShuffleBoard shuffleBoard;
   private RobotContainer m_robotContainer;
 
+  private double autonomousStartTime = 0;
+
+  public static AHRS ahrs;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -32,10 +50,29 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+
+    try {
+      ahrs = new AHRS(SPI.Port.kMXP);
+    } catch (RuntimeException ex) {
+      System.out.println("Error instantiating navX-MXP:  " + ex.getMessage());
+    }
+
     shuffleBoard = new ShuffleBoard();
     motors = new Motors();
     m_robotContainer = new RobotContainer();
 
+    new Thread (() -> {
+      UsbCamera camera = CameraServer.getInstance().startAutomaticCapture();
+      camera.setResolution(256, 144);
+      CvSink cvSink = CameraServer.getInstance().getVideo();
+      CvSource outputStream = CameraServer.getInstance().putVideo("Stream", 256, 144);
+      Mat source = new Mat();
+      while(!Thread.interrupted()) {
+        cvSink.grabFrame(source);
+        outputStream.putFrame(source);
+      }
+
+    }).start();
     
   }
 
@@ -53,6 +90,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    shuffleBoard.updateShuffleboard();
   }
 
   /**
@@ -60,7 +98,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
-    CommandScheduler.getInstance().cancelAll();
+//    CommandScheduler.getInstance().cancelAll();
     motors.disableAll();
   }
 
@@ -73,13 +111,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-/*    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-*/
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.schedule();
+    // }
+
+    CommandScheduler.getInstance().schedule(Commands.autonomousDrive);
+
+    // Commands.gripperSubsystem.extendProtector(); 
+    // Commands.gripperSubsystem.setProtectorExtended(true);
+ 
+    // autonomousStartTime = System.currentTimeMillis();
+
   }
 
   /**
@@ -87,6 +132,20 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() {
+
+
+      // Motors.thrower_motor_upper_shaft_right.set(0.8);
+
+      // if(System.currentTimeMillis() > autonomousStartTime + 7000) {
+      //   Motors.tunnel_motor.stopMotor();
+      //   Motors.thrower_motor_lower_shaft.stopMotor();
+      //   Motors.thrower_motor_upper_shaft_right.stopMotor();
+      // } else if(System.currentTimeMillis() > autonomousStartTime + 3000) {
+      //   Motors.tunnel_motor.set(Constants.TUNNEL_MOTOR_SPEED_FEEDER);
+      //   Motors.thrower_motor_lower_shaft.set(-0.45);
+      // }
+
+        
   }
 
   @Override
@@ -95,9 +154,15 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.cancel();
+    // }
+    
+    CommandScheduler.getInstance().cancelAll();
+
+    // if(CommandScheduler.getInstance().isScheduled(Commands.autonomousDrive)) {
+    //   CommandScheduler.getInstance().cancel(Commands.autonomousDrive);
+    // }
   }
 
   /**
@@ -118,5 +183,21 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
+
+    if(RobotContainer.driveJoystick.getRawButton(1)) {
+      Motors.gripper_motor.set(RobotContainer.driveJoystick.getThrottle() * 1);
+//      Motors.thrower_motor_lower_shaft.set(-RobotContainer.driveJoystick.getThrottle() * 0.5);
+//      Motors.thrower_motor_upper_shaft_left.set(-RobotContainer.driveJoystick.getThrottle() * 0.5);
+      Motors.tunnel_motor.set(RobotContainer.driveJoystick.getThrottle() * 0.6);
+    } else {
+      Motors.gripper_motor.stopMotor();
+      Motors.tunnel_motor.stopMotor();
+//      Motors.thrower_motor_upper_shaft_right.stopMotor();
+//      Motors.thrower_motor_lower_shaft.stopMotor();
+    } 
+
+    SmartDashboard.putNumber("GripperSpeed", Motors.gripper_motor.get());
+    SmartDashboard.putNumber("Joystick Max Speed", ShuffleBoard.joystickMaxSpeed.getDouble(1));
+    SmartDashboard.putBoolean("Pressure Switch", Commands.pneumaticsSubsystem.getPreasureSwitchValue());
   }
 }

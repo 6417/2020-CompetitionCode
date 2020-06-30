@@ -23,21 +23,14 @@ public class TunnelSouthCommand extends CommandBase {
     addRequirements(m_subsystem);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
+  public void initialize() {
     m_subsystem.runReverse();
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    m_subsystem.stopTunnel();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

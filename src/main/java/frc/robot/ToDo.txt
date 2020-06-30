@@ -1,0 +1,36 @@
+Button Bindings:
+
+    1: Greifer rotation toggle
+    2: Greifer ein aus toggle
+    3: Werfen mit Vision toggle
+    5: Werfen ohne Vision toggle
+    4: ControlPanel aus / einfahren toggle
+    6: Activate control mode
+    7: disable robot
+    8: disable autonomous systems (disable climber pid)
+    9: toggle gripper protector
+    11: ball flow reverse
+
+    Throttle in autonomos systems == ture: Position of climb mechanism 1 = ausgefahren, -1 = eingefahren
+
+    SteeringWheel 8: climb left up
+    SteeringWheel 12: climb left down
+    SteeringWheel 7: climb right up
+    SteeringWheel 11: climb right down
+
+
+ - invert drive direction (thrower is front)
+
+ - vision beim aktivieren mit dem button 5
+ - sensor für vorderster ball 
+ - bei wechsel von reverse flow auf forward flow gripper nicht einfahren
+ - control panel mit POV bedienen
+
+
+
+ Vision:
+
+v4l2-ctl --set-ctrl brightness=15
+v4l2-ctl --set-ctrl auto_exposure=1
+v4l2-ctl --set-ctrl exposure_time_absolute=40
+v4l2-ctl --set-ctrl white_balance_auto_preset=0

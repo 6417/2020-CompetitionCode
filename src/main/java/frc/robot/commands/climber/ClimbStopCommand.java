@@ -5,19 +5,19 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.gripper;
+package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.GripperSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class GripperExtend extends InstantCommand {
+public class ClimbStopCommand extends InstantCommand {
 
-  private final GripperSubsystem m_subsystem;
+  private ClimberSubsystem m_subsystem;
 
-  public GripperExtend(GripperSubsystem subsystem) {
+  public ClimbStopCommand(ClimberSubsystem subsystem) {
     m_subsystem = subsystem;
 
     addRequirements(m_subsystem);
@@ -26,7 +26,6 @@ public class GripperExtend extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_subsystem.setGripperExtended(true);
-    m_subsystem.extendGripper();
+    m_subsystem.stopClimber();
   }
 }

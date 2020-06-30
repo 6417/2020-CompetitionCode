@@ -34,7 +34,7 @@ public class PneumaticsSubsystem extends SubsystemBase {
   /* Getters and Setters for the controll of the PCM */
   public boolean isCompressorEnabled() {
     return compressor.enabled();
-  }
+  } 
 
   public boolean isClosedLoopControl() {
     return compressor.getClosedLoopControl();
@@ -43,7 +43,7 @@ public class PneumaticsSubsystem extends SubsystemBase {
   public boolean getPreasureSwitchValue() {
     return compressor.getPressureSwitchValue();
   }
-  
+     
   public double getCompressorAmps() {
     return compressor.getCompressorCurrent();
   }

@@ -5,28 +5,23 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.gripper;
+package frc.robot.commands.autonomous;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.GripperSubsystem;
+import ch.team6417.utils.SystemWaitCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.drive.ResetPose;
+import frc.robot.subsystems.DriveSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class GripperExtend extends InstantCommand {
-
-  private final GripperSubsystem m_subsystem;
-
-  public GripperExtend(GripperSubsystem subsystem) {
-    m_subsystem = subsystem;
-
-    addRequirements(m_subsystem);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    m_subsystem.setGripperExtended(true);
-    m_subsystem.extendGripper();
+public class TrajectoryDrive extends SequentialCommandGroup {
+  /**
+   * Creates a new TrajectoryDrive.
+   */
+  public TrajectoryDrive(DriveSubsystem driveSubsystem) {
+    // super(new ResetPose(driveSubsystem), new WaitCommand(7), new RamsedeCommand(1), new WaitCommand(5), new RamsedeCommand(2));
+    super(new ResetPose(driveSubsystem), new WaitCommand(3.5), new RamsedeCommand(1), new WaitCommand(7));
   }
 }
