@@ -216,6 +216,15 @@ public class RobotContainer extends Commands {
         config
     );
 
+      // An example trajectory to follow.  All units in meters.
+      Trajectory testReverse = TrajectoryGenerator.generateTrajectory(
+          new Pose2d(0, 0, new Rotation2d(0)),
+          List.of(
+          ),
+          new Pose2d(1, 0.2, new Rotation2d(0)),
+          config
+      );
+
 
     Trajectory sixBallAutonomousGrab = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
@@ -259,18 +268,18 @@ public class RobotContainer extends Commands {
   );
 
   RamseteCommand ramseteCommand_default = new RamseteCommand(
-    driveFromLine,
-    Commands.driveSubsystem::getPose,
+    sixBallAutonomousGrab,
+    Commands.driveSubsystem::getReversePose,
     new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
     new SimpleMotorFeedforward(DriveConstants.ksVolts,
                                DriveConstants.kvVoltSecondsPerMeter,
                                DriveConstants.kaVoltSecondsSquaredPerMeter),
     DriveConstants.kDriveKinematics,
-    Commands.driveSubsystem::getWheelSpeeds,
+    Commands.driveSubsystem::getReverseWheelSpeeds,
     new PIDController(DriveConstants.kPDriveVel, 0, 0),
     new PIDController(DriveConstants.kPDriveVel, 0, 0),
     // RamseteCommand passes volts to the callback
-    Commands.driveSubsystem::tankDriveVolts
+    Commands.driveSubsystem::reverseTankDriveVolts
     );
 
     RamseteCommand ramseteCommand_1 = new RamseteCommand(
