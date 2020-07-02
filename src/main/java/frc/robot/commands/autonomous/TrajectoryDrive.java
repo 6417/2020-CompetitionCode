@@ -22,6 +22,6 @@ public class TrajectoryDrive extends SequentialCommandGroup {
    */
   public TrajectoryDrive(DriveSubsystem driveSubsystem) {
     // super(new ResetPose(driveSubsystem), new WaitCommand(7), new RamsedeCommand(1), new WaitCommand(5), new RamsedeCommand(2));
-    super(new ResetPose(driveSubsystem), new WaitCommand(3), new RamsedeCommand(1), new WaitCommand(9), new ResetPose(driveSubsystem), new RamsedeCommand(0), new WaitCommand(7));
+    super(new ResetPose(driveSubsystem), new WaitCommand(3), new RamsedeCommand(1), new WaitCommand(9), new ResetPose(driveSubsystem), new RamsedeCommand(2), new WaitCommand(7));
   }
 }

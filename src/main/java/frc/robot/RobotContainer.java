@@ -11,8 +11,8 @@ import java.util.List;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -25,14 +25,9 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.TrajectoryConstants.AutoConstants;
 import frc.robot.TrajectoryConstants.DriveConstants;
-import frc.robot.commands.vision.SwitchVisionLightCommand;
-import frc.robot.commands.vision.VisionAlignCommand;
-import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -172,175 +167,5 @@ public class RobotContainer extends Commands {
       enableClimbButton.whenReleased(climbStopCommand);
     }
 
-  }
-
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public static Command getAutonomousCommand(int command_ID) {
-
-    // Create a voltage constraint to ensure we don't accelerate too fast
-    var autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                       DriveConstants.kvVoltSecondsPerMeter,
-                                       DriveConstants.kaVoltSecondsSquaredPerMeter),
-            DriveConstants.kDriveKinematics,
-            10);
-
-    // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(AutoConstants.kMaxSpeedMetersPerSecond,
-                             AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics)
-            // Apply the voltage constraint
-            .addConstraint(autoVoltageConstraint);
-
-    // An example trajectory to follow.  All units in meters.
-    Trajectory driveFromLine = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // // Pass through these two interior waypoints, making an 's' curve path
-        List.of(
-            // new Translation2d(1, 1),
-            // new Translation2d(2, 1)
-        ),
-        // End 3 meters straight ahead of where we started, facing forward
-      //  new Pose2d(3, 0, new Rotation2d(0)),
-        new Pose2d(1, 0, new Rotation2d(0)),
-        // Pass config
-        config
-    );
-
-      // An example trajectory to follow.  All units in meters.
-      Trajectory testReverse = TrajectoryGenerator.generateTrajectory(
-          new Pose2d(0, 0, new Rotation2d(0)),
-          List.of(
-          ),
-          new Pose2d(1, 0.2, new Rotation2d(0)),
-          config
-      );
-
-
-    Trajectory sixBallAutonomousGrab = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0.0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(
-            new Translation2d(1.6 , 1.5)
-        ),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(5.1, 1.6, new Rotation2d(0.0)),
-        // Pass config
-        config
-    );
-
-    //Reset Pose befor starting this
-    Trajectory sixBallAutonomousShoot = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0.0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(
-            new Translation2d(1.6 , 1.5)
-        ),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(5.2, 1.5, new Rotation2d(0.0)),
-        // Pass config
-        config
-  );
-
-      //Reset Pose befor starting this
-      Trajectory fiveBallAutonomousGrab = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0.0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(
-            new Translation2d(2.1 , -4.1)
-        ),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3.3, -5.2, new Rotation2d(0.9)),
-        // Pass config
-        config
-  );
-
-  RamseteCommand ramseteCommand_default = new RamseteCommand(
-    sixBallAutonomousGrab,
-    Commands.driveSubsystem::getReversePose,
-    new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-    new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                               DriveConstants.kvVoltSecondsPerMeter,
-                               DriveConstants.kaVoltSecondsSquaredPerMeter),
-    DriveConstants.kDriveKinematics,
-    Commands.driveSubsystem::getReverseWheelSpeeds,
-    new PIDController(DriveConstants.kPDriveVel, 0, 0),
-    new PIDController(DriveConstants.kPDriveVel, 0, 0),
-    // RamseteCommand passes volts to the callback
-    Commands.driveSubsystem::reverseTankDriveVolts
-    );
-
-    RamseteCommand ramseteCommand_1 = new RamseteCommand(
-        sixBallAutonomousGrab,
-        Commands.driveSubsystem::getPose,
-        new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-        new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                   DriveConstants.kvVoltSecondsPerMeter,
-                                   DriveConstants.kaVoltSecondsSquaredPerMeter),
-        DriveConstants.kDriveKinematics,
-        Commands.driveSubsystem::getWheelSpeeds,
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        new PIDController(DriveConstants.kPDriveVel, 0, 0),
-        // RamseteCommand passes volts to the callback
-        Commands.driveSubsystem::tankDriveVolts
-        // Commands.driveSubsystem
-    );
-
-    RamseteCommand ramseteCommand_2 = new RamseteCommand(
-      sixBallAutonomousShoot,
-      Commands.driveSubsystem::getPose,
-      new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-      new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                                 DriveConstants.kvVoltSecondsPerMeter,
-                                 DriveConstants.kaVoltSecondsSquaredPerMeter),
-      DriveConstants.kDriveKinematics,
-      Commands.driveSubsystem::getWheelSpeeds,
-      new PIDController(DriveConstants.kPDriveVel, 0, 0),
-      new PIDController(DriveConstants.kPDriveVel, 0, 0),
-      // RamseteCommand passes volts to the callback
-      Commands.driveSubsystem::tankDriveVolts
-      // Commands.driveSubsystem
-  );
-
-  RamseteCommand ramseteCommand_3 = new RamseteCommand(
-    fiveBallAutonomousGrab,
-    Commands.driveSubsystem::getPose,
-    new RamseteController(AutoConstants.kRamseteB, AutoConstants.kRamseteZeta),
-    new SimpleMotorFeedforward(DriveConstants.ksVolts,
-                               DriveConstants.kvVoltSecondsPerMeter,
-                               DriveConstants.kaVoltSecondsSquaredPerMeter),
-    DriveConstants.kDriveKinematics,
-    Commands.driveSubsystem::getWheelSpeeds,
-    new PIDController(DriveConstants.kPDriveVel, 0, 0),
-    new PIDController(DriveConstants.kPDriveVel, 0, 0),
-    // RamseteCommand passes volts to the callback
-    Commands.driveSubsystem::tankDriveVolts
-    // Commands.driveSubsystem
-);
-
-  if(command_ID == 1) {
-    // Run path following command, then stop at the end.
-    return ramseteCommand_1.andThen(() -> Commands.driveSubsystem.tankDriveVolts(0, 0));
-  } else if(command_ID == 2) {
-    // Run path following command, then stop at the end.
-    return ramseteCommand_2.andThen(() -> Commands.driveSubsystem.tankDriveVolts(0, 0));
-  } else if(command_ID == 3) {
-    return ramseteCommand_3.andThen(() -> Commands.driveSubsystem.tankDriveVolts(0, 0));
-  } else {
-    // Run path following command, then stop at the end.
-    return ramseteCommand_default.andThen(() -> Commands.driveSubsystem.tankDriveVolts(0, 0));
-  }
   }
 }

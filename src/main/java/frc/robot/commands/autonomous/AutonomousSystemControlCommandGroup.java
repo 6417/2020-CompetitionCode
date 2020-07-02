@@ -26,20 +26,24 @@ public class AutonomousSystemControlCommandGroup extends SequentialCommandGroup 
    * Creates a new AutonomousSystemCommandGroup.
    */
   public AutonomousSystemControlCommandGroup(GripperSubsystem gripperSubsystem, ThrowerSubsystem throwerSubsystem, TunnelSubsystem tunnelSubsystem) {
-    // super(new GripperProtectorExtend(gripperSubsystem), new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem), new WaitCommand(3), new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem));
-/*    super(new GripperProtectorExtend(gripperSubsystem), new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem),
-      new WaitCommand(3), new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem), new WaitCommand(2),
+       
+    //This section is for a six ball autonomous with shooting two times
+    super(new GripperProtectorExtend(gripperSubsystem), new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem),
+      new WaitCommand(1.5), new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem), new WaitCommand(0.5),
       new FlowForwardRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem), new WaitCommand(6),
       new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem), new WaitCommand(4),
       new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem), new WaitCommand(3),
-      new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem));*/
+      new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem));
 
-      super(new GripperProtectorExtend(gripperSubsystem), new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem),
+    //This section is for autonomous shooting before grabing balls the newly grabed balls wont be shot out
+    /* super(new GripperProtectorExtend(gripperSubsystem), new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem),
       new WaitCommand(1.5), new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem), new WaitCommand(0.5),
       new FlowForwardRace(gripperSubsystem, tunnelSubsystem, throwerSubsystem), new WaitCommand(6),
       new FlowStopCommandGroup(gripperSubsystem, tunnelSubsystem, throwerSubsystem));
+    */
 
-/*      super(new GripperProtectorExtend(gripperSubsystem), new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem),
+    //This section is for the drive from line trajectory or a simple non driving autonomous
+    /* super(new GripperProtectorExtend(gripperSubsystem), new WaitCommand(0), new ThrowerCommandGroup(gripperSubsystem, throwerSubsystem, tunnelSubsystem),
       new WaitCommand(1.5), new ThrowerStopCommandGroup(throwerSubsystem, tunnelSubsystem));*/
   }
 }
