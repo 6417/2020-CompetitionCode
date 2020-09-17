@@ -73,16 +73,8 @@ public class ThrowerSubsystem extends SubsystemBase {
   }
 
   public void enableUpperThrower() {
-    if(visionSupport == true && Commands.visionSubsystem.isAligned() == true) {
-      double speed = 0.0003 * Commands.visionSubsystem.getDistance() + 0.711;
-      SmartDashboard.putNumber("Shooter speed", speed);
-      upperSpeed = throwerLimiter.calculate(speed);
-      Motors.thrower_motor_upper_shaft_right.set(upperSpeed);
-    } else {
-//      upperSpeed = throwerLimiter.calculate(ShuffleBoard.throwerUpperMotor.getDouble(0.0));
-      upperSpeed = throwerLimiter.calculate(Constants.THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED);
-      Motors.thrower_motor_upper_shaft_right.set(upperSpeed);
-    }
+    upperSpeed = throwerLimiter.calculate(Constants.THROWER_MOTOR_UPPER_SHAFT_STANDARD_SPEED);
+    Motors.thrower_motor_upper_shaft_right.set(upperSpeed);
   }
 
   public void enableUpperThrowerFast() {

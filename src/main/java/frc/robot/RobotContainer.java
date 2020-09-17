@@ -25,9 +25,12 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.TrajectoryConstants.AutoConstants;
 import frc.robot.TrajectoryConstants.DriveConstants;
+import frc.robot.commands.vision.SwitchVisionLightCommand;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -125,19 +128,19 @@ public class RobotContainer extends Commands {
     if(Constants.IS_THROWER_SUBSYSTEM_IN_USE) {
       throwerEnableButton = new JoystickButton(driveJoystick, Constants.SJ_THROWER_ENABLE_BUTTON_ID);
 
-      throwerEnableButton.whenPressed(throwerCommandGroup);
-      throwerVisionEnableButton = new  JoystickButton(driveJoystick, Constants.SJ_THROWER_VISION_ENABLE_BUTTON_ID);
-      throwerVisionEnableButton.whenPressed(throwerFastCommandGroup);
+      throwerEnableButton.whenPressed(throwerFastCommandGroup);
+      //throwerVisionEnableButton = new  JoystickButton(driveJoystick, Constants.SJ_THROWER_VISION_ENABLE_BUTTON_ID);
+      //throwerVisionEnableButton.whenPressed(throwerFastCommandGroup);
 
       // throwerVisionEnableButton.whenPressed(new SetThrowerSpeedCommand(throwerSubsystem, Constants.THROWER_MOTOR_UPPER_SHAFT_LONG_THROW_SPEED).andThen(throwerCommandGroup));
 
-      // if(Constants.IS_VISION_SUBSYSTEM_IN_USE) {
-      //   throwerVisionEnableButton = new JoystickButton(driveJoystick, Constants.SJ_THROWER_VISION_ENABLE_BUTTON_ID);
+      if(Constants.IS_VISION_SUBSYSTEM_IN_USE) {
+         throwerVisionEnableButton = new JoystickButton(driveJoystick, Constants.SJ_THROWER_VISION_ENABLE_BUTTON_ID);
         
-      //   if(Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
-      //     throwerVisionEnableButton.whenPressed(new SequentialCommandGroup(switchVisionLightCommand, visionAlignCommand, new WaitCommand(1), new VisionAlignCommand(visionSubsystem, driveSubsystem), new WaitCommand(1), new VisionAlignCommand(visionSubsystem, driveSubsystem), new SwitchVisionLightCommand(visionSubsystem)));
-      //   }
-      // }
+         if(Constants.IS_DRIVE_SUBSYSTEM_IN_USE) {
+           throwerVisionEnableButton.whenPressed(visionAlignCommandGroup);
+         }
+       }
     }
 
     //TODO change Statement for flow commands
