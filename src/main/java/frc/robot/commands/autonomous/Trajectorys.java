@@ -77,7 +77,7 @@ public class Trajectorys {
         new Pose2d(0, 0, new Rotation2d(0.0)),
         // Pass through these two interior waypoints, making an 's' curve path
         List.of(
-            new Translation2d(2.3 , 1.6)
+            new Translation2d(2.3 , 1.3)
         ),
         // End in the trenchrun after grabing the third ball
         new Pose2d(4.5, 1.7, new Rotation2d(0.0)),
@@ -92,7 +92,7 @@ public class Trajectorys {
             //there are no interior waypoints
         ),
         //Drives to the front left corner of the Trenchrun heading to the hole to shot in
-        new Pose2d(2.34, 1.0, new Rotation2d(0.1745)),
+        new Pose2d(4.31, 1.0, new Rotation2d(0.22)),
         // Pass config
         config
     );
